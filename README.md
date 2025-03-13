@@ -2,9 +2,14 @@
 
 A modern, interactive 3D profile website built with Three.js and HTML/CSS. This website showcases the professional profile of Yoyo Budianto with stunning 3D effects and interactive elements.
 
+## Live Demo
+
+Visit the live website: [https://abah.github.io/3d-profile](https://abah.github.io/3d-profile)
+
 ## Features
 
 - Interactive 3D Earth that users can rotate to discover information
+- Glowing markers that highlight information points
 - Profile content fragments placed on the surface of the Earth
 - Detailed information modal that appears when fragments are clicked or tapped
 - Explosion effects when hovering over or clicking on information fragments
@@ -22,6 +27,7 @@ A modern, interactive 3D profile website built with Three.js and HTML/CSS. This 
 ## Special Effects
 
 - **Interactive Earth**: A realistic 3D Earth with cloud layers that users can rotate to discover information
+- **Glowing Markers**: Subtle pulsing markers that indicate where information is located
 - **Surface Information Fragments**: Profile content is broken into fragments and placed on the Earth's surface
 - **Detailed Information Modal**: Clicking on a fragment displays a modal with the complete information
 - **Automatic Navigation**: Clicking on a fragment automatically rotates the Earth to center that information
@@ -38,6 +44,9 @@ A modern, interactive 3D profile website built with Three.js and HTML/CSS. This 
 ## Getting Started
 
 1. Clone this repository
+   ```
+   git clone https://github.com/abah/3d-profile.git
+   ```
 2. Open `index.html` in your web browser
 3. Alternatively, deploy to any web server
 
@@ -59,6 +68,10 @@ This website works best in modern browsers that support WebGL:
 │   └── main.js         # JavaScript with Three.js implementation
 └── README.md           # This file
 ```
+
+## Deployment
+
+This website is deployed using GitHub Pages. Any changes pushed to the master branch will be automatically deployed to the live site.
 
 ## Credits
 
