@@ -13,6 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x000000, 1);
+    
+    // Enable shadow mapping
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     // Set camera position
     camera.position.setZ(40);
@@ -24,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add directional light
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
     directionalLight.position.set(5, 5, 5);
+    directionalLight.castShadow = true;
     scene.add(directionalLight);
 
     // Add point lights with different colors
@@ -34,7 +39,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const pointLight2 = new THREE.PointLight(0xe74c3c, 2, 100); // Red
     pointLight2.position.set(-10, -10, 10);
     scene.add(pointLight2);
-
+    
+    // Variables to store references (keeping these for compatibility with the rest of the code)
+    let goldenTextMesh = null;
+    let goldenParticles = [];
+    
     // Create Earth
     const earthRadius = 20;
     const earthGeometry = new THREE.SphereGeometry(earthRadius, 64, 64);
@@ -137,8 +146,20 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Process each section to create 3D fragments
         sections.forEach((section, sectionIndex) => {
-            const sectionContent = section.textContent.trim();
+            // Get the section title
             const sectionTitle = section.querySelector('h1, h2, h3, h4')?.textContent || 'Information';
+            
+            // Get content without the title to avoid repetition
+            let sectionContent = section.textContent.trim();
+            
+            // Remove the title from the content to avoid repetition
+            sectionContent = sectionContent.replace(sectionTitle, '').trim();
+            
+            // Replace education section content with the specified text
+            if (sectionTitle.toLowerCase().includes('education') || 
+                sectionTitle.toLowerCase().includes('pendidikan')) {
+                sectionContent = "Magister Manajemen Telkom University, Institut Teknologi Bandung, SMA Negeri Plus Cisarua - Bandung";
+            }
             
             // Create multiple fragments from each section
             const numFragments = Math.min(3, Math.floor(sectionContent.length / 100) + 1); // Limit fragments per section
@@ -230,11 +251,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Create texture from canvas
                 const texture = new THREE.CanvasTexture(canvas);
                 
-                // Create material with the texture
+                // Create material with the texture - Modified to ensure text is always visible
                 const material = new THREE.MeshBasicMaterial({
                     map: texture,
                     transparent: true,
-                    side: THREE.DoubleSide
+                    side: THREE.DoubleSide,
+                    depthTest: false, // Disable depth testing so text is always visible
+                    depthWrite: false // Don't write to depth buffer
                 });
                 
                 // Create plane geometry for the fragment
@@ -248,6 +271,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 fragment.lookAt(0, 0, 0);
                 // Then rotate it 180 degrees so it faces outward, not inward
                 fragment.rotateY(Math.PI);
+                
+                // Set a high renderOrder to ensure it renders on top of other objects
+                fragment.renderOrder = 1000;
                 
                 // Create a glowing marker at the fragment position
                 createGlowingMarker(x, y, z, fragmentsGroup);
