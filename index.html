@@ -3,25 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yoyo Budianto - Digital Strategist</title>
+    <meta name="description" content="Profil profesional Yoyo Budianto — Digital Strategist, Ahli Manajemen Media Digital, dan Konsultan Strategi Pemerintahan.">
+    <meta name="theme-color" content="#0a0e1a">
+    <title>Yoyo Budianto — Digital Strategist</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div id="loading">
+        <div class="loading-brand">
+            <div class="loading-avatar">YB</div>
+            <p class="loading-name">Yoyo Budianto</p>
+        </div>
         <div class="spinner"></div>
-        <p>Loading...</p>
+        <p class="loading-text">Memuat pengalaman digital...</p>
     </div>
 
     <div id="container" class="fragments-active">
         <canvas id="bg"></canvas>
-        
-        <div id="instructions">
-            <p><i class="fas fa-globe"></i> Putar bumi untuk menemukan titik informasi yang bercahaya | <i class="fas fa-hand-pointer"></i> Klik pada informasi untuk membaca detail</p>
+
+        <div id="hero-overlay">
+            <div class="hero-card">
+                <div class="hero-profile">
+                    <div class="profile-avatar" aria-hidden="true">
+                        <span>YB</span>
+                        <div class="avatar-ring"></div>
+                    </div>
+                    <div class="hero-text">
+                        <p class="hero-badge"><i class="fas fa-globe-asia"></i> Digital Strategist</p>
+                        <h1>Yoyo Budianto</h1>
+                        <p class="hero-tagline">Ahli Manajemen Media Digital · Konsultan Strategi Pemerintahan</p>
+                    </div>
+                </div>
+
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-value">15+</span>
+                        <span class="stat-label">Tahun Pengalaman</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">7</span>
+                        <span class="stat-label">Posisi Strategis</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">4</span>
+                        <span class="stat-label">Jenjang Pendidikan</span>
+                    </div>
+                </div>
+
+                <div class="hero-actions">
+                    <a href="mailto:abah@abah.me" class="action-chip">
+                        <i class="fas fa-envelope"></i> Email
+                    </a>
+                    <a href="tel:+6281283373781" class="action-chip">
+                        <i class="fas fa-phone"></i> Telepon
+                    </a>
+                    <span class="action-chip location">
+                        <i class="fas fa-map-marker-alt"></i> Jakarta Selatan
+                    </span>
+                </div>
+            </div>
         </div>
-        
+
+        <div id="instructions">
+            <p>
+                <i class="fas fa-hand-pointer"></i> Putar bumi untuk menemukan titik informasi
+                <span class="divider">|</span>
+                <i class="fas fa-mouse-pointer"></i> Klik marker bercahaya untuk detail lengkap
+            </p>
+        </div>
+
         <main>
-            <header>
+            <header data-section="profile">
                 <h1>Yoyo Budianto</h1>
                 <h2>Digital Strategist | Ahli Manajemen Media Digital | Konsultan Strategi Pemerintahan</h2>
                 <div class="contact-info">
@@ -31,7 +84,7 @@
                 </div>
             </header>
 
-            <section id="about">
+            <section id="about" data-section="about">
                 <h3>Tentang Saya</h3>
                 <div class="content">
                     <p>Seorang profesional dengan pengalaman lebih dari 15 tahun di bidang strategi digital, media sosial, dan manajemen konten. Berpengalaman merancang dan mengimplementasikan strategi media digital untuk sektor publik dan pemerintahan.</p>
@@ -39,54 +92,54 @@
                 </div>
             </section>
 
-            <section id="experience">
+            <section id="experience" data-section="experience">
                 <h3>Pengalaman Kerja</h3>
                 <div class="content">
                     <div class="job">
                         <h4>Tenaga Ahli Menteri ATR/Kepala BPN Bidang Pengembangan IT</h4>
-                        <p class="company">Kementerian ATR/BPN (2024)</p>
+                        <p class="company">Kementerian ATR/BPN · 2024</p>
                         <p>Mengembangkan solusi IT inovatif untuk mendukung program sertifikat tanah elektronik.</p>
                     </div>
 
                     <div class="job">
                         <h4>Social Media Strategist</h4>
-                        <p class="company">Presiden Susilo Bambang Yudhoyono (2013 - 2014)</p>
+                        <p class="company">Presiden Susilo Bambang Yudhoyono · 2013 – 2014</p>
                         <p>Menyusun strategi komunikasi digital dan kampanye media sosial.</p>
                     </div>
 
                     <div class="job">
                         <h4>Deputi Media Sosial</h4>
-                        <p class="company">DPP Partai Demokrat (2020 - Sekarang)</p>
+                        <p class="company">DPP Partai Demokrat · 2020 – Sekarang</p>
                         <p>Memimpin strategi komunikasi media sosial dan meningkatkan keterlibatan publik.</p>
                     </div>
 
                     <div class="job">
                         <h4>Direktur Media Digital</h4>
-                        <p class="company">The Yudhoyono Institute (2017 - Sekarang)</p>
+                        <p class="company">The Yudhoyono Institute · 2017 – Sekarang</p>
                         <p>Mengelola manajemen konten digital dan strategi transformasi digital.</p>
                     </div>
 
                     <div class="job">
                         <h4>Digital Director</h4>
-                        <p class="company">Archipelago Strategic Solution (2012 - 2018)</p>
+                        <p class="company">Archipelago Strategic Solution · 2012 – 2018</p>
                         <p>Merancang strategi digital untuk klien lintas industri.</p>
                     </div>
 
                     <div class="job">
                         <h4>Kabid Lingkungan</h4>
-                        <p class="company">AHY Foundation (2017 - Sekarang)</p>
+                        <p class="company">AHY Foundation · 2017 – Sekarang</p>
                         <p>Mengembangkan kampanye digital untuk isu lingkungan.</p>
                     </div>
 
                     <div class="job">
                         <h4>Founder & Co-Founder</h4>
-                        <p class="company">Berbagai Usaha Digital (2008 - Sekarang)</p>
+                        <p class="company">Berbagai Usaha Digital · 2008 – Sekarang</p>
                         <p>Menginisiasi dan mengembangkan berbagai startup digital.</p>
                     </div>
                 </div>
             </section>
 
-            <section id="education">
+            <section id="education" data-section="education">
                 <h3>Pendidikan</h3>
                 <div class="content">
                     <div class="edu">
@@ -108,7 +161,7 @@
                 </div>
             </section>
 
-            <section id="skills">
+            <section id="skills" data-section="skills">
                 <h3>Keahlian Utama</h3>
                 <div class="content">
                     <ul class="skill-list">
@@ -122,7 +175,7 @@
                 </div>
             </section>
 
-            <section id="technical">
+            <section id="technical" data-section="technical">
                 <h3>Keahlian Teknis Tambahan</h3>
                 <div class="content">
                     <div class="tech-skill">
@@ -144,7 +197,7 @@
                 </div>
             </section>
 
-            <section id="interests">
+            <section id="interests" data-section="interests">
                 <h3>Minat & Aktivitas</h3>
                 <div class="content">
                     <ul>
@@ -156,12 +209,16 @@
             </section>
 
             <footer>
-                <p>&copy; 2024 Yoyo Budianto. All rights reserved.</p>
+                <p>&copy; 2026 Yoyo Budianto. All rights reserved.</p>
             </footer>
         </main>
+
+        <div id="site-footer">
+            <p>&copy; 2026 Yoyo Budianto · Digital Strategist</p>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="js/main.js"></script>
 </body>
-</html> 
+</html>

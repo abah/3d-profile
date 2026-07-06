@@ -32,11 +32,11 @@ document.addEventListener('DOMContentLoaded', () => {
     scene.add(directionalLight);
 
     // Add point lights with different colors
-    const pointLight1 = new THREE.PointLight(0x3498db, 2, 100); // Blue
+    const pointLight1 = new THREE.PointLight(0x38bdf8, 2, 100);
     pointLight1.position.set(10, 10, 10);
     scene.add(pointLight1);
 
-    const pointLight2 = new THREE.PointLight(0xe74c3c, 2, 100); // Red
+    const pointLight2 = new THREE.PointLight(0xf59e0b, 1.5, 100);
     pointLight2.position.set(-10, -10, 10);
     scene.add(pointLight2);
     
@@ -101,6 +101,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const fragmentsGroup = new THREE.Group();
     earth.add(fragmentsGroup);
 
+    const sectionMeta = {
+        profile: { icon: '👤', color: '#38bdf8', label: 'Profil' },
+        about: { icon: '✦', color: '#818cf8', label: 'Tentang' },
+        experience: { icon: '💼', color: '#f59e0b', label: 'Karier' },
+        education: { icon: '🎓', color: '#34d399', label: 'Pendidikan' },
+        skills: { icon: '⚡', color: '#38bdf8', label: 'Keahlian' },
+        technical: { icon: '⌨', color: '#a78bfa', label: 'Teknis' },
+        interests: { icon: '★', color: '#fb7185', label: 'Minat' }
+    };
+
+    function closeModal(modal) {
+        modal.classList.remove('active');
+        isPaused = false;
+    }
+
     // Create a modal for displaying detailed information
     function createInfoModal() {
         const modal = document.createElement('div');
@@ -110,23 +125,26 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="modal-content">
                 <div class="modal-header">
                     <h2 id="modal-title">Title</h2>
-                    <span class="close-button">&times;</span>
+                    <span class="close-button" role="button" aria-label="Tutup">&times;</span>
                 </div>
-                <div class="modal-body">
-                    <p id="modal-text">Content</p>
-                </div>
+                <div class="modal-body" id="modal-body"></div>
             </div>
         `;
         document.body.appendChild(modal);
-        
-        // Add close button functionality
+
         const closeButton = modal.querySelector('.close-button');
-        closeButton.addEventListener('click', () => {
-            modal.classList.remove('active');
-            // Resume auto-rotation when modal is closed
-            isPaused = false;
+        closeButton.addEventListener('click', () => closeModal(modal));
+
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) closeModal(modal);
         });
-        
+
+        window.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && modal.classList.contains('active')) {
+                closeModal(modal);
+            }
+        });
+
         return modal;
     }
 
@@ -146,24 +164,19 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Process each section to create 3D fragments
         sections.forEach((section, sectionIndex) => {
-            // Get the section title
             const sectionTitle = section.querySelector('h1, h2, h3, h4')?.textContent || 'Information';
-            
-            // Get content without the title to avoid repetition
+            const sectionKey = section.dataset.section || 'about';
+            const meta = sectionMeta[sectionKey] || sectionMeta.about;
+
             let sectionContent = section.textContent.trim();
-            
-            // Remove the title from the content to avoid repetition
             sectionContent = sectionContent.replace(sectionTitle, '').trim();
-            
-            // Replace education section content with the specified text
-            if (sectionTitle.toLowerCase().includes('education') || 
-                sectionTitle.toLowerCase().includes('pendidikan')) {
-                sectionContent = "Magister Manajemen Telkom University, Institut Teknologi Bandung, SMA Negeri Plus Cisarua - Bandung";
+
+            if (sectionKey === 'education') {
+                sectionContent = 'Magister Manajemen Telkom University, Institut Teknologi Bandung, SMA Negeri Plus Cisarua - Bandung';
             }
-            
-            // Create multiple fragments from each section
-            const numFragments = Math.min(3, Math.floor(sectionContent.length / 100) + 1); // Limit fragments per section
-            
+
+            const numFragments = Math.min(3, Math.floor(sectionContent.length / 100) + 1);
+
             for (let i = 0; i < numFragments; i++) {
                 // Calculate position on the globe using spherical distribution
                 // This distributes points more evenly on a sphere
@@ -179,37 +192,40 @@ document.addEventListener('DOMContentLoaded', () => {
                 const canvas = document.createElement('canvas');
                 const context = canvas.getContext('2d');
                 
-                // Set canvas size
                 canvas.width = 256;
                 canvas.height = 256;
-                
-                // Fill background with semi-transparent color
-                context.fillStyle = 'rgba(44, 62, 80, 0.9)';
+
+                const bgGradient = context.createLinearGradient(0, 0, canvas.width, canvas.height);
+                bgGradient.addColorStop(0, 'rgba(15, 23, 42, 0.95)');
+                bgGradient.addColorStop(1, 'rgba(30, 41, 59, 0.92)');
+                context.fillStyle = bgGradient;
                 context.fillRect(0, 0, canvas.width, canvas.height);
-                
-                // Add border
-                context.strokeStyle = '#3498db';
-                context.lineWidth = 4;
-                context.strokeRect(4, 4, canvas.width - 8, canvas.height - 8);
-                
-                // Configure text
-                context.fillStyle = '#ecf0f1';
-                context.font = 'bold 18px Poppins, sans-serif';
+
+                context.strokeStyle = meta.color;
+                context.lineWidth = 3;
+                context.strokeRect(6, 6, canvas.width - 12, canvas.height - 12);
+
+                context.fillStyle = meta.color;
+                context.font = 'bold 22px Inter, sans-serif';
                 context.textAlign = 'center';
                 context.textBaseline = 'middle';
-                
-                // Draw section title
-                context.fillText(sectionTitle, canvas.width / 2, 30);
-                
-                // Draw divider
-                context.strokeStyle = '#3498db';
+                context.fillText(meta.icon, canvas.width / 2, 36);
+
+                context.fillStyle = '#f1f5f9';
+                context.font = 'bold 15px Inter, sans-serif';
+                const displayTitle = meta.label || sectionTitle;
+                context.fillText(displayTitle.length > 18 ? displayTitle.substring(0, 16) + '…' : displayTitle, canvas.width / 2, 62);
+
+                context.strokeStyle = meta.color;
+                context.globalAlpha = 0.5;
                 context.beginPath();
-                context.moveTo(40, 50);
-                context.lineTo(canvas.width - 40, 50);
+                context.moveTo(36, 78);
+                context.lineTo(canvas.width - 36, 78);
                 context.stroke();
-                
-                // Configure text for content
-                context.font = '16px Poppins, sans-serif';
+                context.globalAlpha = 1;
+
+                context.fillStyle = '#cbd5e1';
+                context.font = '13px Inter, sans-serif';
                 
                 // Get a fragment of the text
                 const startIndex = Math.floor(i * (sectionContent.length / numFragments));
@@ -276,20 +292,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 fragment.renderOrder = 1000;
                 
                 // Create a glowing marker at the fragment position
-                createGlowingMarker(x, y, z, fragmentsGroup);
+                createGlowingMarker(x, y, z, fragmentsGroup, meta.color);
                 
                 // Add to fragments group
                 fragmentsGroup.add(fragment);
                 
-                // Store fragment data
                 fragments.push({
                     mesh: fragment,
                     originalPosition: new THREE.Vector3(x, y, z),
                     sectionIndex: sectionIndex,
                     fragmentIndex: i,
                     title: sectionTitle,
+                    sectionKey: sectionKey,
+                    sectionElement: section,
                     content: sectionContent,
-                    fragmentText: fragmentText
+                    fragmentText: fragmentText,
+                    meta: meta
                 });
             }
         });
@@ -298,34 +316,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Function to create a realistic glowing marker for information points
-    function createGlowingMarker(x, y, z, parent) {
-        // Create a small sphere for the marker core
+    function createGlowingMarker(x, y, z, parent, colorHex = '#38bdf8') {
+        const glowColor = parseInt(colorHex.replace('#', ''), 16);
+
         const coreGeometry = new THREE.SphereGeometry(0.15, 16, 16);
-        const coreMaterial = new THREE.MeshBasicMaterial({ 
-            color: 0xffffff,  // White core
+        const coreMaterial = new THREE.MeshBasicMaterial({
+            color: 0xffffff,
             transparent: true,
-            opacity: 0.9
+            opacity: 0.95
         });
         const core = new THREE.Mesh(coreGeometry, coreMaterial);
-        
-        // Position the core slightly above the Earth's surface
+
         const surfaceNormal = new THREE.Vector3(x, y, z).normalize();
         const corePosition = surfaceNormal.clone().multiplyScalar(earthRadius + 0.05);
         core.position.copy(corePosition);
-        
-        // Create the outer glow using a larger transparent sphere
+
         const glowGeometry = new THREE.SphereGeometry(0.4, 16, 16);
         const glowMaterial = new THREE.MeshBasicMaterial({
-            color: 0x3498db,  // Blue glow
+            color: glowColor,
             transparent: true,
-            opacity: 0.3,
-            side: THREE.BackSide  // Render the inside of the sphere
+            opacity: 0.35,
+            side: THREE.BackSide
         });
         const glow = new THREE.Mesh(glowGeometry, glowMaterial);
         glow.position.copy(corePosition);
-        
-        // Create a subtle pulsing light
-        const pulseLight = new THREE.PointLight(0x3498db, 0.8, 2);
+
+        const pulseLight = new THREE.PointLight(glowColor, 0.8, 2);
         pulseLight.position.copy(corePosition);
         
         // Group all elements together
@@ -696,25 +712,73 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Function to show the info modal with fragment content
+    function buildModalContent(sectionKey, sectionElement) {
+        const contentEl = sectionElement.querySelector('.content') || sectionElement;
+
+        switch (sectionKey) {
+            case 'experience':
+                return Array.from(contentEl.querySelectorAll('.job')).map(job => {
+                    const desc = Array.from(job.querySelectorAll('p'))
+                        .filter(p => !p.classList.contains('company'))
+                        .map(p => p.textContent)
+                        .join(' ');
+                    return `
+                    <div class="modal-item">
+                        <h4>${job.querySelector('h4')?.textContent || ''}</h4>
+                        <p class="meta">${job.querySelector('.company')?.textContent || ''}</p>
+                        <p>${desc}</p>
+                    </div>`;
+                }).join('');
+
+            case 'education':
+                return Array.from(contentEl.querySelectorAll('.edu')).map(edu => `
+                    <div class="modal-item">
+                        <h4>${edu.querySelector('h4')?.textContent || ''}</h4>
+                        <p class="meta">${edu.querySelector('p')?.textContent || ''}</p>
+                    </div>
+                `).join('');
+
+            case 'skills':
+                return `<div class="skill-tags">${Array.from(contentEl.querySelectorAll('.skill-list li')).map(
+                    skill => `<span class="skill-tag">${skill.textContent}</span>`
+                ).join('')}</div>`;
+
+            case 'technical':
+                return Array.from(contentEl.querySelectorAll('.tech-skill')).map(skill => `
+                    <div class="modal-item">
+                        <h4>${skill.querySelector('h4')?.textContent || ''}</h4>
+                        <p>${skill.querySelector('p')?.textContent || ''}</p>
+                    </div>
+                `).join('');
+
+            case 'interests':
+                return `<ul class="interest-list">${Array.from(contentEl.querySelectorAll('li')).map(
+                    item => `<li>${item.textContent}</li>`
+                ).join('')}</ul>`;
+
+            case 'profile':
+                return Array.from(sectionElement.querySelectorAll('.contact-info p')).map(item => `
+                    <div class="modal-item">
+                        <p>${item.innerHTML}</p>
+                    </div>
+                `).join('');
+
+            default:
+                return Array.from(contentEl.querySelectorAll('p')).map(p =>
+                    `<p>${p.textContent}</p>`
+                ).join('');
+        }
+    }
+
     function showInfoModal(modal, fragment) {
-        // Pause auto-rotation when modal is open
         isPaused = true;
-        
-        // Set modal content
+
         const modalTitle = modal.querySelector('#modal-title');
-        const modalText = modal.querySelector('#modal-text');
-        
-        modalTitle.textContent = fragment.title;
-        
-        // Format the content - get the full section content
-        const formattedContent = fragment.content
-            .replace(/\s+/g, ' ') // Replace multiple spaces with a single space
-            .trim();
-        
-        modalText.textContent = formattedContent;
-        
-        // Show the modal
+        const modalBody = modal.querySelector('#modal-body');
+        const meta = fragment.meta || sectionMeta.about;
+
+        modalTitle.textContent = `${meta.icon}  ${fragment.title}`;
+        modalBody.innerHTML = buildModalContent(fragment.sectionKey, fragment.sectionElement);
         modal.classList.add('active');
     }
 
