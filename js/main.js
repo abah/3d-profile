@@ -22,23 +22,27 @@ document.addEventListener('DOMContentLoaded', () => {
     camera.position.setZ(40);
 
     // Add ambient light
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    const ambientLight = new THREE.AmbientLight(0x334466, 0.6);
     scene.add(ambientLight);
 
-    // Add directional light
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(5, 5, 5);
+    // Add directional light (sun)
+    const directionalLight = new THREE.DirectionalLight(0xffeedd, 1.2);
+    directionalLight.position.set(5, 3, 5);
     directionalLight.castShadow = true;
     scene.add(directionalLight);
 
-    // Add point lights with different colors
-    const pointLight1 = new THREE.PointLight(0x3498db, 2, 100); // Blue
-    pointLight1.position.set(10, 10, 10);
+    // Dynamic point lights with different colors
+    const pointLight1 = new THREE.PointLight(0x00d4ff, 3, 150);
+    pointLight1.position.set(30, 20, 30);
     scene.add(pointLight1);
 
-    const pointLight2 = new THREE.PointLight(0xe74c3c, 2, 100); // Red
-    pointLight2.position.set(-10, -10, 10);
+    const pointLight2 = new THREE.PointLight(0xff6b9d, 2.5, 150);
+    pointLight2.position.set(-30, -15, 20);
     scene.add(pointLight2);
+
+    const pointLight3 = new THREE.PointLight(0x9b59ff, 2, 120);
+    pointLight3.position.set(0, 40, -20);
+    scene.add(pointLight3);
     
     // Variables to store references (keeping these for compatibility with the rest of the code)
     let goldenTextMesh = null;
@@ -80,22 +84,150 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     const clouds = new THREE.Mesh(cloudGeometry, cloudMaterial);
-    earth.add(clouds); // Add clouds as a child of earth so they rotate together
+    earth.add(clouds);
 
-    // Create stars
+    // Atmospheric glow around Earth
+    const atmosphereGeometry = new THREE.SphereGeometry(earthRadius + 1.5, 64, 64);
+    const atmosphereMaterial = new THREE.ShaderMaterial({
+        vertexShader: `
+            varying vec3 vNormal;
+            void main() {
+                vNormal = normalize(normalMatrix * normal);
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `,
+        fragmentShader: `
+            varying vec3 vNormal;
+            void main() {
+                float intensity = pow(0.65 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.0);
+                gl_FragColor = vec4(0.0, 0.83, 1.0, 1.0) * intensity;
+            }
+        `,
+        blending: THREE.AdditiveBlending,
+        side: THREE.BackSide,
+        transparent: true
+    });
+    const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
+    earth.add(atmosphere);
+
+    // Orbital ring
+    const ringGeometry = new THREE.TorusGeometry(earthRadius + 4, 0.05, 8, 128);
+    const ringMaterial = new THREE.MeshBasicMaterial({
+        color: 0x00d4ff,
+        transparent: true,
+        opacity: 0.3
+    });
+    const orbitRing = new THREE.Mesh(ringGeometry, ringMaterial);
+    orbitRing.rotation.x = Math.PI / 2.5;
+    scene.add(orbitRing);
+
+    const ringGeometry2 = new THREE.TorusGeometry(earthRadius + 6, 0.03, 8, 128);
+    const ringMaterial2 = new THREE.MeshBasicMaterial({
+        color: 0xff6b9d,
+        transparent: true,
+        opacity: 0.2
+    });
+    const orbitRing2 = new THREE.Mesh(ringGeometry2, ringMaterial2);
+    orbitRing2.rotation.x = Math.PI / 3;
+    orbitRing2.rotation.z = 0.5;
+    scene.add(orbitRing2);
+
+    // Create stars with varied sizes and colors
+    const starColors = [0xffffff, 0x00d4ff, 0xff6b9d, 0xffdd57, 0x9b59ff];
     function addStar() {
-        const geometry = new THREE.SphereGeometry(0.25, 24, 24);
-        const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
+        const size = Math.random() * 0.3 + 0.05;
+        const geometry = new THREE.SphereGeometry(size, 8, 8);
+        const color = starColors[Math.floor(Math.random() * starColors.length)];
+        const material = new THREE.MeshBasicMaterial({
+            color: color,
+            transparent: true,
+            opacity: Math.random() * 0.5 + 0.5
+        });
         const star = new THREE.Mesh(geometry, material);
 
-        const [x, y, z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(200));
+        const [x, y, z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(300));
         star.position.set(x, y, z);
+        star.userData = {
+            twinkleSpeed: Math.random() * 3 + 1,
+            twinklePhase: Math.random() * Math.PI * 2,
+            baseOpacity: material.opacity
+        };
         scene.add(star);
         return star;
     }
 
-    // Add multiple stars
-    const stars = Array(200).fill().map(addStar);
+    const stars = Array(400).fill().map(addStar);
+
+    // Shooting stars
+    const shootingStars = [];
+    function spawnShootingStar() {
+        const geometry = new THREE.SphereGeometry(0.15, 4, 4);
+        const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+        const star = new THREE.Mesh(geometry, material);
+
+        const startX = THREE.MathUtils.randFloatSpread(200);
+        const startY = THREE.MathUtils.randFloatSpread(100) + 50;
+        const startZ = THREE.MathUtils.randFloatSpread(100) - 50;
+        star.position.set(startX, startY, startZ);
+
+        const trailGeometry = new THREE.BufferGeometry();
+        const trailPositions = new Float32Array(6);
+        trailGeometry.setAttribute('position', new THREE.BufferAttribute(trailPositions, 3));
+        const trailMaterial = new THREE.LineBasicMaterial({
+            color: 0x00d4ff,
+            transparent: true,
+            opacity: 0.6
+        });
+        const trail = new THREE.Line(trailGeometry, trailMaterial);
+        star.add(trail);
+
+        scene.add(star);
+        shootingStars.push({
+            mesh: star,
+            velocity: new THREE.Vector3(
+                (Math.random() - 0.5) * 3 - 1,
+                -Math.random() * 2 - 1,
+                (Math.random() - 0.5) * 2
+            ),
+            life: 1.0
+        });
+    }
+
+    // Nebula particles (background dust)
+    const nebulaParticles = [];
+    for (let i = 0; i < 60; i++) {
+        const size = Math.random() * 2 + 0.5;
+        const geometry = new THREE.SphereGeometry(size, 8, 8);
+        const nebulaColors = [0x1a0a3e, 0x0a1a3e, 0x3e0a2a, 0x0a3e2a];
+        const material = new THREE.MeshBasicMaterial({
+            color: nebulaColors[Math.floor(Math.random() * nebulaColors.length)],
+            transparent: true,
+            opacity: Math.random() * 0.08 + 0.02
+        });
+        const particle = new THREE.Mesh(geometry, material);
+        particle.position.set(
+            THREE.MathUtils.randFloatSpread(400),
+            THREE.MathUtils.randFloatSpread(400),
+            THREE.MathUtils.randFloatSpread(400) - 100
+        );
+        scene.add(particle);
+        nebulaParticles.push({
+            mesh: particle,
+            driftSpeed: Math.random() * 0.02 + 0.005,
+            driftPhase: Math.random() * Math.PI * 2
+        });
+    }
+
+    // Section-specific marker colors
+    const sectionColors = [
+        0x00d4ff, // header - cyan
+        0xff6b9d, // about - pink
+        0xffdd57, // experience - gold
+        0x2ecc71, // education - green
+        0x9b59ff, // skills - purple
+        0xe67e22, // technical - orange
+        0x1abc9c  // interests - teal
+    ];
 
     // Create a group for all content fragments
     const fragmentsGroup = new THREE.Group();
@@ -276,7 +408,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 fragment.renderOrder = 1000;
                 
                 // Create a glowing marker at the fragment position
-                createGlowingMarker(x, y, z, fragmentsGroup);
+                const markerColor = sectionColors[sectionIndex % sectionColors.length];
+                createGlowingMarker(x, y, z, fragmentsGroup, markerColor);
                 
                 // Add to fragments group
                 fragmentsGroup.add(fragment);
@@ -298,50 +431,44 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Function to create a realistic glowing marker for information points
-    function createGlowingMarker(x, y, z, parent) {
-        // Create a small sphere for the marker core
+    function createGlowingMarker(x, y, z, parent, color = 0x00d4ff) {
         const coreGeometry = new THREE.SphereGeometry(0.15, 16, 16);
         const coreMaterial = new THREE.MeshBasicMaterial({ 
-            color: 0xffffff,  // White core
+            color: 0xffffff,
             transparent: true,
             opacity: 0.9
         });
         const core = new THREE.Mesh(coreGeometry, coreMaterial);
         
-        // Position the core slightly above the Earth's surface
         const surfaceNormal = new THREE.Vector3(x, y, z).normalize();
         const corePosition = surfaceNormal.clone().multiplyScalar(earthRadius + 0.05);
         core.position.copy(corePosition);
         
-        // Create the outer glow using a larger transparent sphere
-        const glowGeometry = new THREE.SphereGeometry(0.4, 16, 16);
+        const glowGeometry = new THREE.SphereGeometry(0.5, 16, 16);
         const glowMaterial = new THREE.MeshBasicMaterial({
-            color: 0x3498db,  // Blue glow
+            color: color,
             transparent: true,
-            opacity: 0.3,
-            side: THREE.BackSide  // Render the inside of the sphere
+            opacity: 0.35,
+            side: THREE.BackSide
         });
         const glow = new THREE.Mesh(glowGeometry, glowMaterial);
         glow.position.copy(corePosition);
         
-        // Create a subtle pulsing light
-        const pulseLight = new THREE.PointLight(0x3498db, 0.8, 2);
+        const pulseLight = new THREE.PointLight(color, 1.2, 3);
         pulseLight.position.copy(corePosition);
         
-        // Group all elements together
         const markerGroup = new THREE.Group();
         markerGroup.add(core);
         markerGroup.add(glow);
         markerGroup.add(pulseLight);
         
-        // Add animation data to the marker
         markerGroup.userData = {
             initialScale: 1.0,
-            pulseSpeed: 0.5 + Math.random() * 0.5,  // Random speed for each marker
-            pulsePhase: Math.random() * Math.PI * 2  // Random phase for each marker
+            pulseSpeed: 0.8 + Math.random() * 1.2,
+            pulsePhase: Math.random() * Math.PI * 2,
+            color: color
         };
         
-        // Add the marker to the parent group
         parent.add(markerGroup);
         
         return markerGroup;
@@ -453,8 +580,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentRotation = { x: 0, y: 0 };
     const rotationSpeed = 0.01;
     const dampingFactor = 0.05;
-    const autoRotationSpeed = 0.0005;
-    let isPaused = false; // Flag to pause auto-rotation when modal is open
+    const autoRotationSpeed = 0.001;
+    let isPaused = false;
+    let shootingStarTimer = 0;
+    let hoveredFragment = null;
 
     // Add event listeners for Earth rotation
     function addEarthControls() {
@@ -567,28 +696,28 @@ document.addEventListener('DOMContentLoaded', () => {
                     fragment.mesh.scale.set(1, 1, 1);
                 }
             });
+            hoveredFragment = null;
             
             // Handle intersected objects
             if (intersects.length > 0 && !isDragging) {
                 const intersectedObject = intersects[0].object;
-                
-                // Find the fragment this mesh belongs to
                 const fragment = fragments.find(f => f.mesh === intersectedObject);
                 
                 if (fragment) {
                     fragment.mesh.userData.hovered = true;
-                    fragment.mesh.scale.set(1.2, 1.2, 1.2);
+                    fragment.mesh.scale.set(1.3, 1.3, 1.3);
+                    hoveredFragment = fragment;
+                    document.body.style.cursor = 'pointer';
                     
-                    // Get world position for the explosion
-                    const worldPosition = new THREE.Vector3();
-                    fragment.mesh.getWorldPosition(worldPosition);
-                    
-                    // Trigger small explosion on hover - reduced effect since we have glowing markers
-                    // Only trigger occasionally to avoid constant explosions
-                    if (Math.random() > 0.95) {
-                        triggerExplosion(worldPosition, 0x3498db, 10, 0.5); // Smaller, less intense explosion
+                    if (Math.random() > 0.92) {
+                        const worldPosition = new THREE.Vector3();
+                        fragment.mesh.getWorldPosition(worldPosition);
+                        const color = sectionColors[fragment.sectionIndex % sectionColors.length];
+                        triggerExplosion(worldPosition, color, 12, 0.6);
                     }
                 }
+            } else if (!isDragging) {
+                document.body.style.cursor = 'grab';
             }
         });
         
@@ -620,8 +749,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     const worldPosition = new THREE.Vector3();
                     fragment.mesh.getWorldPosition(worldPosition);
                     
-                    // Trigger larger explosion on click - still balanced with glowing markers
-                    triggerExplosion(worldPosition, 0xe74c3c, 20, 0.8);
+                    const color = sectionColors[fragment.sectionIndex % sectionColors.length];
+                    triggerExplosion(worldPosition, color, 30, 1.0);
                     
                     // Rotate Earth to center this fragment
                     const direction = fragment.originalPosition.clone().normalize();
@@ -672,8 +801,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     const worldPosition = new THREE.Vector3();
                     fragment.mesh.getWorldPosition(worldPosition);
                     
-                    // Trigger larger explosion on touch - still balanced with glowing markers
-                    triggerExplosion(worldPosition, 0xe74c3c, 20, 0.8);
+                    const color = sectionColors[fragment.sectionIndex % sectionColors.length];
+                    triggerExplosion(worldPosition, color, 30, 1.0);
                     
                     // Rotate Earth to center this fragment
                     const direction = fragment.originalPosition.clone().normalize();
@@ -723,58 +852,97 @@ document.addEventListener('DOMContentLoaded', () => {
     function animate(currentTime, fragments) {
         requestAnimationFrame((time) => animate(time, fragments));
         
-        // Calculate delta time in seconds
-        const deltaTime = (currentTime - lastTime) / 1000;
+        const deltaTime = Math.min((currentTime - lastTime) / 1000, 0.05);
         lastTime = currentTime;
+        const timeSec = currentTime / 1000;
         
-        // Smooth rotation with damping
         if (!isDragging && !isPaused) {
-            // Auto-rotation when not dragging and not paused
             targetRotation.y += autoRotationSpeed;
         }
         
-        // Apply damping to rotation
         currentRotation.x += (targetRotation.x - currentRotation.x) * dampingFactor;
         currentRotation.y += (targetRotation.y - currentRotation.y) * dampingFactor;
         
-        // Apply rotation to Earth
         earth.rotation.x = currentRotation.x;
         earth.rotation.y = currentRotation.y;
         
+        // Independent cloud rotation
+        clouds.rotation.y += 0.0003;
+        
+        // Orbit rings animation
+        orbitRing.rotation.z += 0.002;
+        orbitRing2.rotation.z -= 0.001;
+        
+        // Dynamic lights orbit
+        pointLight1.position.x = Math.sin(timeSec * 0.3) * 40;
+        pointLight1.position.z = Math.cos(timeSec * 0.3) * 40;
+        pointLight2.position.x = Math.cos(timeSec * 0.2) * 35;
+        pointLight2.position.y = Math.sin(timeSec * 0.4) * 25;
+        pointLight3.position.x = Math.sin(timeSec * 0.15) * 30;
+        pointLight3.position.z = Math.cos(timeSec * 0.25) * 30;
+        
+        // Camera subtle float
+        camera.position.x = Math.sin(timeSec * 0.1) * 2;
+        camera.position.y = Math.cos(timeSec * 0.15) * 1.5;
+        camera.lookAt(0, 0, 0);
+        
         // Twinkle stars
         stars.forEach(star => {
-            star.scale.setScalar(0.8 + Math.sin(currentTime / 1000 + star.position.x) * 0.2);
+            const twinkle = star.userData.baseOpacity * (0.5 + 0.5 * Math.sin(timeSec * star.userData.twinkleSpeed + star.userData.twinklePhase));
+            star.material.opacity = twinkle;
+            const scale = 0.8 + Math.sin(timeSec * star.userData.twinkleSpeed + star.userData.twinklePhase) * 0.3;
+            star.scale.setScalar(scale);
         });
+        
+        // Nebula drift
+        nebulaParticles.forEach(p => {
+            p.mesh.position.y += Math.sin(timeSec * p.driftSpeed + p.driftPhase) * 0.01;
+            p.mesh.material.opacity = 0.02 + Math.sin(timeSec * 0.5 + p.driftPhase) * 0.03;
+        });
+        
+        // Shooting stars
+        shootingStarTimer += deltaTime;
+        if (shootingStarTimer > 2 + Math.random() * 3) {
+            spawnShootingStar();
+            shootingStarTimer = 0;
+        }
+        for (let i = shootingStars.length - 1; i >= 0; i--) {
+            const ss = shootingStars[i];
+            ss.mesh.position.add(ss.velocity.clone().multiplyScalar(deltaTime * 60));
+            ss.life -= deltaTime * 0.8;
+            ss.mesh.material.opacity = ss.life;
+            if (ss.life <= 0) {
+                scene.remove(ss.mesh);
+                shootingStars.splice(i, 1);
+            }
+        }
         
         // Animate glowing markers
         fragmentsGroup.children.forEach(child => {
-            // Check if this is a marker group (has userData with pulseSpeed)
             if (child.userData && child.userData.pulseSpeed) {
-                // Calculate pulse value (0.7 to 1.3 range)
-                const pulseValue = 0.7 + 0.6 * Math.sin(currentTime / 1000 * child.userData.pulseSpeed + child.userData.pulsePhase);
-                
-                // Apply pulse to scale
+                const pulseValue = 0.6 + 0.8 * Math.sin(timeSec * child.userData.pulseSpeed + child.userData.pulsePhase);
                 child.scale.set(pulseValue, pulseValue, pulseValue);
                 
-                // Apply pulse to light intensity if it has a point light
                 child.children.forEach(element => {
                     if (element instanceof THREE.PointLight) {
-                        element.intensity = 0.5 + pulseValue * 0.3;
+                        element.intensity = 0.8 + pulseValue * 0.6;
                     }
-                    // Pulse the glow opacity if it's the glow sphere (second child)
                     if (element instanceof THREE.Mesh && element.material.opacity < 0.5) {
-                        element.material.opacity = 0.2 + pulseValue * 0.1;
+                        element.material.opacity = 0.15 + pulseValue * 0.2;
                     }
                 });
             }
         });
         
-        // Update explosions
-        if (deltaTime < 0.2) { // Avoid large delta times
+        // Hovered fragment extra glow
+        if (hoveredFragment) {
+            hoveredFragment.mesh.material.opacity = 0.9 + Math.sin(timeSec * 5) * 0.1;
+        }
+        
+        if (deltaTime < 0.2) {
             updateExplosions(deltaTime);
         }
         
-        // Render scene
         renderer.render(scene, camera);
     }
 

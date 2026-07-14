@@ -9,15 +9,30 @@
 </head>
 <body>
     <div id="loading">
-        <div class="spinner"></div>
-        <p>Loading...</p>
+        <div class="loading-earth">
+            <div class="loading-orbit"></div>
+            <div class="loading-core"></div>
+        </div>
+        <p class="loading-text">Memuat dunia digital<span class="loading-dots"></span></p>
+        <div class="loading-bar"><div class="loading-bar-fill"></div></div>
     </div>
 
     <div id="container" class="fragments-active">
         <canvas id="bg"></canvas>
+
+        <div id="hud">
+            <div class="hud-glow"></div>
+            <h1 class="hud-name">Yoyo Budianto</h1>
+            <p class="hud-title">Digital Strategist</p>
+            <div class="hud-tags">
+                <span><i class="fas fa-bolt"></i> AI & Data</span>
+                <span><i class="fas fa-share-alt"></i> Media Digital</span>
+                <span><i class="fas fa-landmark"></i> Strategi Pemerintahan</span>
+            </div>
+        </div>
         
         <div id="instructions">
-            <p><i class="fas fa-globe"></i> Putar bumi untuk menemukan titik informasi yang bercahaya | <i class="fas fa-hand-pointer"></i> Klik pada informasi untuk membaca detail</p>
+            <p><i class="fas fa-globe fa-spin-pulse"></i> Putar bumi untuk menemukan titik informasi yang bercahaya | <i class="fas fa-hand-pointer"></i> Klik pada informasi untuk membaca detail</p>
         </div>
         
         <main>
