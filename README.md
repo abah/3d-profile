@@ -71,7 +71,30 @@ This website works best in modern browsers that support WebGL:
 
 ## Deployment
 
-This website is deployed using GitHub Pages. Any changes pushed to the master branch will be automatically deployed to the live site.
+Website ini di-host di **GitHub Pages**: https://abah.github.io/3d-profile
+
+### Aktifkan GitHub Pages (wajib — sekali saja)
+
+Jika muncul **Error 404**, GitHub Pages belum diaktifkan. Ikuti langkah berikut:
+
+1. Buka **https://github.com/abah/3d-profile/settings/pages**
+2. Di **Build and deployment** → **Source**, pilih salah satu:
+
+   **Opsi A — Paling mudah (disarankan)**
+   - Source: **Deploy from a branch**
+   - Branch: **`master`** → folder **`/ (root)`**
+   - Klik **Save**
+
+   **Opsi B — GitHub Actions**
+   - Source: **GitHub Actions**
+   - Setelah disimpan, buka tab **Actions** → jalankan workflow **Deploy to GitHub Pages**
+
+3. Tunggu 1–3 menit, lalu buka https://abah.github.io/3d-profile
+4. Hard refresh: `Ctrl+Shift+R` (Windows/Linux) atau `Cmd+Shift+R` (Mac)
+
+### Update otomatis
+
+Setelah Pages aktif, setiap push ke branch **`master`** akan otomatis ter-deploy (via GitHub Actions workflow).
 
 ## Credits
 
