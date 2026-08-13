@@ -128,7 +128,8 @@ html, body {
 
 .top-actions {
     display: flex;
-    gap: 10px;
+    gap: 8px;
+    flex-shrink: 0;
 }
 
 .ghost {
@@ -137,12 +138,13 @@ html, body {
     background: var(--panel);
     color: var(--text);
     border-radius: 999px;
-    padding: 8px 14px;
+    padding: 8px 12px;
     font: inherit;
-    font-size: 0.78rem;
+    font-size: 0.75rem;
     text-decoration: none;
     cursor: pointer;
     backdrop-filter: blur(12px);
+    white-space: nowrap;
 }
 
 .ghost:hover {

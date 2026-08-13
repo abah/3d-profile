@@ -50,7 +50,7 @@ scene.add(hemi);
 const key = new THREE.SpotLight(0xffffff, 80, 30, Math.PI / 5, 0.35, 1);
 key.position.set(6, 8, 4);
 key.castShadow = true;
-key.shadow.mapSize.set(2048, 2048);
+key.shadow.mapSize.set(1024, 1024);
 key.shadow.bias = -0.0002;
 scene.add(key);
 
@@ -89,7 +89,7 @@ ring2.material = new THREE.MeshBasicMaterial({ color: 0xff6b9d, transparent: tru
 ring2.position.y = 0.012;
 scene.add(ring2);
 
-const grid = new THREE.PolarGridHelper(8, 16, 8, 64, 0x1d2433, 0x141821);
+const grid = new THREE.PolarGridHelper(8, 12, 6, 48, 0x1d2433, 0x141821);
 grid.position.y = 0.002;
 scene.add(grid);
 
@@ -99,7 +99,7 @@ function makeBackdrop() {
         roughness: 0.9,
         metalness: 0.05
     });
-    const wall = new THREE.Mesh(new THREE.CylinderGeometry(10.5, 10.5, 5.2, 48, 1, true), wallMat);
+    const wall = new THREE.Mesh(new THREE.CylinderGeometry(10.5, 10.5, 5.2, 32, 1, true), wallMat);
     wall.position.y = 2.4;
     wall.receiveShadow = true;
     scene.add(wall);

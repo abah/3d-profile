@@ -42,7 +42,7 @@ export const CAR_MODELS = [
         width: 2.02,
         height: 1.18,
         wheelbase: 2.62,
-        track: 1.68,
+        track: 1.88,
         wheelRadius: 0.37,
         wheelWidth: 0.32,
         ground: 0.12,
@@ -59,7 +59,7 @@ export const CAR_MODELS = [
         width: 1.86,
         height: 1.28,
         wheelbase: 2.55,
-        track: 1.56,
+        track: 1.72,
         wheelRadius: 0.34,
         wheelWidth: 0.26,
         ground: 0.14,
@@ -76,7 +76,7 @@ export const CAR_MODELS = [
         width: 1.84,
         height: 1.42,
         wheelbase: 2.88,
-        track: 1.54,
+        track: 1.7,
         wheelRadius: 0.33,
         wheelWidth: 0.24,
         ground: 0.15,
@@ -93,7 +93,7 @@ export const CAR_MODELS = [
         width: 1.92,
         height: 1.68,
         wheelbase: 2.7,
-        track: 1.6,
+        track: 1.78,
         wheelRadius: 0.36,
         wheelWidth: 0.26,
         ground: 0.22,
@@ -110,7 +110,7 @@ export const CAR_MODELS = [
         width: 1.76,
         height: 1.44,
         wheelbase: 2.48,
-        track: 1.48,
+        track: 1.62,
         wheelRadius: 0.31,
         wheelWidth: 0.22,
         ground: 0.15,
@@ -127,7 +127,7 @@ export const CAR_MODELS = [
         width: 1.94,
         height: 1.24,
         wheelbase: 2.78,
-        track: 1.62,
+        track: 1.8,
         wheelRadius: 0.35,
         wheelWidth: 0.28,
         ground: 0.13,
@@ -212,7 +212,7 @@ function silhouette(spec) {
     const pts = {
         rearX: -half,
         frontX: half,
-        rocker: spec.wheelRadius * 0.62,
+        rocker: spec.wheelRadius * 0.42,
         rearBumper: g + H * 0.24,
         frontBumper: g + H * 0.22,
         deck: g + H * 0.5,
@@ -249,7 +249,7 @@ function silhouette(spec) {
         pts.cabinFront = half - L * 0.28;
         pts.hoodEnd = half - L * 0.14;
         pts.trunk = -half + L * 0.1;
-        pts.rocker = spec.wheelRadius * 0.85;
+        pts.rocker = spec.wheelRadius * 0.55;
     } else if (spec.style === 'hatch') {
         pts.deck = g + H * 0.72;
         pts.hood = g + H * 0.5;
@@ -285,42 +285,43 @@ function extrude(shape, width, material) {
 
 function createBody(spec, paintMat) {
     const p = silhouette(spec);
+    const belt = Math.max(p.hood, p.deck * 0.92);
     const s = new THREE.Shape();
     s.moveTo(p.rearX, p.rocker);
     s.lineTo(p.frontX, p.rocker);
     s.lineTo(p.frontX, p.frontBumper);
     s.lineTo(p.hoodEnd, p.hood);
-    s.lineTo(p.cabinFront, (p.hood + p.roof) * 0.5);
-    s.lineTo(p.cabinFront - 0.08, p.roof);
-    s.lineTo(p.cabinRear + 0.1, p.roof);
-    s.lineTo(p.cabinRear, spec.style === 'hatch' ? p.deck : (p.deck + p.roof) * 0.5);
+    s.lineTo(p.cabinFront, belt);
+    s.lineTo(p.cabinRear, belt);
     s.lineTo(p.trunk, p.deck);
     s.lineTo(p.rearX, p.rearBumper);
     s.closePath();
-    return extrude(s, spec.width * 0.9, paintMat);
+    return extrude(s, spec.width * 0.7, paintMat);
 }
 
 function createCabin(spec, paintMat) {
     const p = silhouette(spec);
+    const belt = Math.max(p.hood, p.deck * 0.92);
+    const rearTop = spec.style === 'hatch' ? p.cabinRear - 0.05 : p.cabinRear + 0.18;
     const s = new THREE.Shape();
-    s.moveTo(p.cabinRear + 0.12, p.deck);
-    s.lineTo(p.cabinFront - 0.12, p.deck);
-    s.lineTo(p.cabinFront - 0.22, p.roof * 0.96);
-    s.lineTo(p.cabinRear + 0.2, p.roof * 0.96);
+    s.moveTo(p.cabinRear + 0.06, belt);
+    s.lineTo(p.cabinFront - 0.05, belt);
+    s.lineTo(p.cabinFront - 0.32, p.roof);
+    s.lineTo(rearTop, spec.style === 'hatch' ? p.roof * 0.9 : p.roof);
     s.closePath();
-    return extrude(s, spec.width * 0.74, paintMat);
+    return extrude(s, spec.width * 0.56, paintMat);
 }
 
 function createFenders(spec, paintMat) {
     const group = new THREE.Group();
-    const radius = spec.wheelRadius * 1.08;
-    const tube = 0.09;
+    const radius = spec.wheelRadius * 1.12;
+    const tube = 0.11;
     const xs = [spec.wheelbase / 2, -spec.wheelbase / 2];
 
     xs.forEach((x) => {
         [-1, 1].forEach((side) => {
             const arch = new THREE.Mesh(
-                new THREE.TorusGeometry(radius, tube, 10, 22, Math.PI),
+                new THREE.TorusGeometry(radius, tube, 8, 18, Math.PI),
                 paintMat
             );
             arch.position.set(x, spec.wheelRadius, side * (spec.track / 2));
