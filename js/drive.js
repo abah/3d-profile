@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { REAL_MODELS, loadRealCar, disposeLoadedCar } from './real-cars.js';
 import { CAR_MODELS, createCar, disposeCar } from './cars.js';
 
@@ -13,7 +14,8 @@ const state = {
     z: 0,
     heading: 0,
     speed: 0,
-    car: null
+    car: null,
+    camReady: false
 };
 
 const stage = document.getElementById('stage');
@@ -48,8 +50,8 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x7eb6d9);
 scene.fog = new THREE.Fog(0x8ebfe0, 140, 620);
 
-const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 900);
-camera.position.set(0, 4.2, 10);
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.4, 900);
+camera.position.set(0, 7.2, -13);
 
 scene.add(new THREE.HemisphereLight(0xc8e4ff, 0x3d2a1a, 0.95));
 const sun = new THREE.DirectionalLight(0xfff3dd, 1.35);
@@ -153,6 +155,20 @@ function addBuildings(elements) {
         const geom = way.geometry;
         if (!geom || geom.length < 4) return;
         const pts = geom.map((node) => toLocal(node.lon, node.lat));
+        let minX = Infinity;
+        let maxX = -Infinity;
+        let minZ = Infinity;
+        let maxZ = -Infinity;
+        pts.forEach((p) => {
+            minX = Math.min(minX, p.x);
+            maxX = Math.max(maxX, p.x);
+            minZ = Math.min(minZ, p.z);
+            maxZ = Math.max(maxZ, p.z);
+        });
+        const span = Math.max(maxX - minX, maxZ - minZ);
+        if (span < 4 || span > 160) return;
+        if (minX <= 8 && maxX >= -8 && minZ <= 8 && maxZ >= -8) return;
+
         const shape = new THREE.Shape();
         shape.moveTo(pts[0].x, -pts[0].z);
         for (let i = 1; i < pts.length; i += 1) shape.lineTo(pts[i].x, -pts[i].z);
@@ -163,7 +179,6 @@ function addBuildings(elements) {
         );
         mesh.rotation.x = -Math.PI / 2;
         mesh.position.y = 0.02;
-        mesh.castShadow = true;
         group.add(mesh);
     });
     scene.add(group);
@@ -191,12 +206,28 @@ async function loadBuildings() {
 }
 
 const blob = new THREE.Mesh(
-    new THREE.CircleGeometry(1.4, 24),
-    new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.32, depthWrite: false })
+    new THREE.CircleGeometry(2.2, 32),
+    new THREE.MeshBasicMaterial({ color: 0x00d4ff, transparent: true, opacity: 0.55, depthWrite: false })
 );
 blob.rotation.x = -Math.PI / 2;
-blob.position.y = 0.03;
+blob.position.y = 0.06;
 scene.add(blob);
+
+const ring = new THREE.Mesh(
+    new THREE.RingGeometry(2.3, 2.7, 40),
+    new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide, depthWrite: false })
+);
+ring.rotation.x = -Math.PI / 2;
+ring.position.y = 0.07;
+scene.add(ring);
+
+function sitOnGround(root) {
+    root.updateMatrixWorld(true);
+    const box = new THREE.Box3().setFromObject(root);
+    const lift = Number.isFinite(box.min.y) ? (root.position.y - box.min.y) : 0;
+    root.userData.groundY = lift + 0.08;
+    root.position.y = root.userData.groundY;
+}
 
 async function spawnCar(id) {
     const spec = catalog.find((item) => item.id === id) || catalog[0];
@@ -211,26 +242,35 @@ async function spawnCar(id) {
         else disposeCar(state.car);
     }
     state.car = next;
+    scene.add(next.root);
     next.root.position.set(state.x, 0, state.z);
     next.root.rotation.y = state.heading;
-    scene.add(next.root);
+    sitOnGround(next.root);
+    placeCar();
 }
 
 function placeCar() {
     if (!state.car) return;
-    state.car.root.position.set(state.x, 0, state.z);
+    const y = state.car.root.userData.groundY || 0.08;
+    state.car.root.position.set(state.x, y, state.z);
     state.car.root.rotation.y = state.heading;
-    blob.position.x = state.x;
-    blob.position.z = state.z;
+    blob.position.set(state.x, 0.06, state.z);
+    ring.position.set(state.x, 0.07, state.z);
 }
 
 function chaseCamera() {
-    const back = 8.6;
-    const height = 3.4;
-    const look = 1.05;
+    const back = 13;
+    const height = 7.2;
+    const look = 0.7;
     const camX = state.x - Math.sin(state.heading) * back;
     const camZ = state.z - Math.cos(state.heading) * back;
-    camera.position.lerp(new THREE.Vector3(camX, height, camZ), 0.12);
+    const target = new THREE.Vector3(camX, height, camZ);
+    if (!state.camReady) {
+        camera.position.copy(target);
+        state.camReady = true;
+    } else {
+        camera.position.lerp(target, 0.16);
+    }
     camera.lookAt(state.x, look, state.z);
 }
 
