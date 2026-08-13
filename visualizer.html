@@ -61,32 +61,43 @@
     </header>
 
     <aside id="panel">
-        <h2>Mode</h2>
-        <div class="segment">
-            <button type="button" id="mode-real" class="active">Real</button>
-            <button type="button" id="mode-stylized">Stylized</button>
-        </div>
+        <button type="button" id="panel-toggle" class="panel-toggle" aria-expanded="true" aria-controls="panel-body">
+            <span class="panel-handle" aria-hidden="true"></span>
+            <span class="panel-toggle-text">Kontrol</span>
+            <span class="panel-chevron" aria-hidden="true"></span>
+        </button>
+        <div id="panel-body" class="panel-body">
+            <h2>Mode</h2>
+            <div class="segment">
+                <button type="button" id="mode-real" class="active">Real</button>
+                <button type="button" id="mode-stylized">Stylized</button>
+            </div>
 
-        <h2>Pilih model</h2>
-        <div class="model-list" id="model-list"></div>
+            <h2>Pilih model</h2>
+            <div class="model-list" id="model-list"></div>
 
-        <h2>Warna bodi</h2>
-        <div class="swatches" id="paint-swatches"></div>
+            <h2>Warna bodi</h2>
+            <div class="swatches" id="paint-swatches"></div>
 
-        <div id="rim-style-block">
-            <h2>Gaya velg</h2>
-            <div class="rim-styles" id="rim-styles"></div>
-        </div>
+            <div id="rim-style-block">
+                <h2>Gaya velg</h2>
+                <div class="rim-styles" id="rim-styles"></div>
+            </div>
 
-        <div id="rim-color-block">
-            <h2>Warna velg</h2>
-            <div class="swatches" id="rim-swatches"></div>
-        </div>
+            <div id="rim-color-block">
+                <h2>Warna velg</h2>
+                <div class="swatches" id="rim-swatches"></div>
+            </div>
 
-        <h2>Kamera</h2>
-        <div class="segment">
-            <button type="button" id="cam-auto" class="active">Auto</button>
-            <button type="button" id="cam-free">Free</button>
+            <h2>Kamera</h2>
+            <div class="segment">
+                <button type="button" id="cam-auto" class="active">Auto</button>
+                <button type="button" id="cam-free">Free</button>
+            </div>
+
+            <div class="panel-extra">
+                <a class="ghost link-profile" href="index.html">Profil 3D</a>
+            </div>
         </div>
     </aside>
 

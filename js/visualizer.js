@@ -150,6 +150,8 @@ function currentCatalog() {
 function updateChrome(spec) {
     titleEl.textContent = spec.name;
     taglineEl.textContent = spec.tagline;
+    const toggleText = document.querySelector('.panel-toggle-text');
+    if (toggleText) toggleText.textContent = spec.name;
     creditEl.innerHTML = spec.credit && spec.creditUrl
         ? `<a href="${spec.creditUrl}" target="_blank" rel="noopener">${spec.credit}</a>`
         : (spec.credit || '');
@@ -325,6 +327,26 @@ document.getElementById('btn-fullscreen').addEventListener('click', async () => 
     } else {
         await document.exitFullscreen();
     }
+});
+
+const panel = document.getElementById('panel');
+const panelToggle = document.getElementById('panel-toggle');
+
+function setPanelOpen(open) {
+    panel.classList.toggle('collapsed', !open);
+    panelToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+
+function isPhoneLayout() {
+    return window.matchMedia('(max-width: 820px)').matches;
+}
+
+setPanelOpen(!isPhoneLayout());
+panelToggle.addEventListener('click', () => {
+    setPanelOpen(panel.classList.contains('collapsed'));
+});
+renderer.domElement.addEventListener('pointerdown', () => {
+    if (isPhoneLayout()) setPanelOpen(false);
 });
 
 function resizeRenderer() {
