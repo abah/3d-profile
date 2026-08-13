@@ -2,12 +2,13 @@ import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { REAL_MODELS, loadRealCar, disposeLoadedCar } from './real-cars.js';
 import { CAR_MODELS, createCar, disposeCar } from './cars.js';
-import { createCircuit } from './circuit.js';
+import { loadTrack } from './circuit.js';
 import './pwa.js';
 
 const keys = { up: false, down: false, left: false, right: false };
 const state = {
     x: 0,
+    y: 0.75,
     z: 0,
     heading: 0,
     speed: 0,
@@ -41,27 +42,33 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.12;
+renderer.toneMappingExposure = 1.05;
 stage.appendChild(renderer.domElement);
 
 const envMap = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x070b14);
-scene.fog = new THREE.Fog(0x070b14, 55, 240);
+scene.background = new THREE.Color(0x8ec4e8);
+scene.fog = new THREE.Fog(0xc5dceb, 140, 640);
 scene.environment = envMap;
 
-const camera = new THREE.PerspectiveCamera(58, window.innerWidth / window.innerHeight, 0.3, 480);
-scene.add(new THREE.HemisphereLight(0x7ad7ff, 0x1a1018, 0.62));
-const key = new THREE.DirectionalLight(0xffffff, 1.2);
-key.position.set(18, 42, 10);
-scene.add(key);
-scene.add(new THREE.AmbientLight(0xffffff, 0.22));
+const camera = new THREE.PerspectiveCamera(58, window.innerWidth / window.innerHeight, 0.3, 900);
+scene.add(new THREE.HemisphereLight(0xfff1d2, 0x6a5344, 0.85));
+const sun = new THREE.DirectionalLight(0xfff3dc, 1.55);
+sun.position.set(60, 90, 28);
+scene.add(sun);
+scene.add(new THREE.AmbientLight(0xffffff, 0.28));
 
-const circuit = createCircuit(scene);
+let circuit = {
+    start: { x: -110, z: 220, heading: Math.PI / 2 + 0.35 },
+    sampleHeight: (_x, _z, fallback) => fallback,
+    keepOnTrack(pos) { return { x: pos.x, z: pos.z, hit: false }; },
+    update() {}
+};
+
 state.x = circuit.start.x;
 state.z = circuit.start.z;
 state.heading = circuit.start.heading;
-camera.position.set(state.x - 12, 6, state.z);
+camera.position.set(state.x - 12, 8, state.z);
 
 function sitOnGround(root) {
     root.updateMatrixWorld(true);
@@ -92,6 +99,15 @@ function inferNoseYaw(root) {
     return Math.PI / 2;
 }
 
+function resetToStart() {
+    state.x = circuit.start.x;
+    state.z = circuit.start.z;
+    state.heading = circuit.start.heading;
+    state.speed = 0;
+    state.y = circuit.sampleHeight(state.x, state.z, 0.75);
+    state.camReady = false;
+}
+
 async function spawnCar(id) {
     const spec = catalog.find((item) => item.id === id) || catalog[0];
     carNameEl.textContent = spec.name;
@@ -114,8 +130,8 @@ async function spawnCar(id) {
 
 function placeCar() {
     if (!state.car) return;
-    const y = state.car.root.userData.groundY || 0.04;
-    state.car.root.position.set(state.x, y, state.z);
+    const lift = state.car.root.userData.groundY || 0.04;
+    state.car.root.position.set(state.x, state.y + lift, state.z);
     state.car.root.rotation.y = state.heading - state.yawOffset;
 }
 
@@ -124,14 +140,14 @@ function chaseCamera() {
     const height = 4.8;
     const camX = state.x - Math.sin(state.heading) * back;
     const camZ = state.z - Math.cos(state.heading) * back;
-    const target = new THREE.Vector3(camX, height, camZ);
+    const target = new THREE.Vector3(camX, state.y + height, camZ);
     if (!state.camReady) {
         camera.position.copy(target);
         state.camReady = true;
     } else {
         camera.position.lerp(target, 0.14);
     }
-    camera.lookAt(state.x, 1.15, state.z);
+    camera.lookAt(state.x, state.y + 1.15, state.z);
     const nextFov = 56 + Math.min(12, state.speed * 0.32);
     if (Math.abs(camera.fov - nextFov) > 0.05) {
         camera.fov = nextFov;
@@ -164,6 +180,7 @@ window.addEventListener('keydown', (event) => {
     if (['ArrowDown', 'KeyS'].includes(event.code)) keys.down = true;
     if (['ArrowLeft', 'KeyA'].includes(event.code)) keys.left = true;
     if (['ArrowRight', 'KeyD'].includes(event.code)) keys.right = true;
+    if (event.code === 'KeyR') resetToStart();
 });
 window.addEventListener('keyup', (event) => {
     if (['ArrowUp', 'KeyW'].includes(event.code)) keys.up = false;
@@ -198,10 +215,8 @@ function animate(now) {
     state.heading += steer * grip * 1.35 * dt;
     state.x += Math.sin(state.heading) * state.speed * dt;
     state.z += Math.cos(state.heading) * state.speed * dt;
-    const held = circuit.keepOnTrack(state);
-    state.x = held.x;
-    state.z = held.z;
-    if (held.hit) state.speed *= 0.82;
+    state.y = circuit.sampleHeight(state.x, state.z, state.y);
+    if (state.y < -8) resetToStart();
     placeCar();
 
     if (state.car) {
@@ -219,12 +234,15 @@ function animate(now) {
 
 (async () => {
     try {
+        circuit = await loadTrack(scene);
+        resetToStart();
         await spawnCar(CAR_MODELS[0].id);
         loadingEl.classList.add('hide');
         spawnCar('ferrari-458').catch(() => {});
     } catch (err) {
         console.error(err);
-        loadingEl.classList.add('hide');
+        const copy = loadingEl.querySelector('p');
+        if (copy) copy.textContent = 'Gagal memuat peta gurun. Refresh halaman.';
     }
 })();
 

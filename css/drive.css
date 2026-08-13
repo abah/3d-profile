@@ -15,7 +15,7 @@ html, body, #stage {
     height: 100%;
     height: 100dvh;
     overflow: hidden;
-    background: #05070c;
+    background: #8ec4e8;
     font-family: 'Poppins', sans-serif;
     color: var(--text);
     overscroll-behavior: none;
@@ -163,6 +163,11 @@ html, body, #stage {
 .credit {
     bottom: calc(10px + env(safe-area-inset-bottom, 0px));
     font-size: 0.62rem;
+    pointer-events: auto;
+}
+
+.credit a {
+    color: #d9f8ff;
 }
 
 #touch {
@@ -204,5 +209,4 @@ html, body, #stage {
     #touch { display: none !important; }
     #speedo { bottom: calc(48px + env(safe-area-inset-bottom, 0px)); }
     .hint { bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
-    .credit { display: none; }
 }
