@@ -1,7 +1,18 @@
 name = "3d-profile"
+main = "worker.js"
 compatibility_date = "2026-08-13"
+workers_dev = true
 
 [assets]
 directory = "."
+binding = "ASSETS"
 html_handling = "auto-trailing-slash"
 not_found_handling = "404-page"
+run_worker_first = ["/"]
+
+[env.production]
+name = "3d-profile"
+
+[[env.production.routes]]
+pattern = "cars.abah.me"
+custom_domain = true

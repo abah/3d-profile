@@ -75,7 +75,8 @@ This website works best in modern browsers that support WebGL:
 ## Project Structure
 
 ```
-├── wrangler.toml           # Cloudflare Workers static assets
+├── wrangler.toml           # Cloudflare Workers + cars.abah.me
+├── worker.js               # Serve visualizer at cars.abah.me/
 ├── 404.html                # Cloudflare not-found page
 ├── index.html              # 3D profile (Earth)
 ├── visualizer.html         # 3D car showroom
@@ -92,28 +93,35 @@ This website works best in modern browsers that support WebGL:
 
 ## Deployment
 
-### Cloudflare (disarankan)
+### Cloudflare — `cars.abah.me`
 
-Situs ini bisa di-deploy ke **Cloudflare Workers** (static assets).
+Domain `abah.me` sudah di Cloudflare. Subdomain visualizer: **https://cars.abah.me**
 
-**Opsi A — Klaim deploy preview**
+Worker harus di-deploy ke **akun Cloudflare yang sama** dengan zona `abah.me` (bukan preview `*.workers.dev` akun sementara).
 
-Agent bisa men-deploy preview sementara. Buka **Claim URL** yang dicetak Wrangler, login ke Cloudflare, lalu akun preview jadi permanen di `*.workers.dev`.
-
-**Opsi B — GitHub Actions (otomatis dari `master`)**
-
-1. Buat token di [Cloudflare API tokens](https://dash.cloudflare.com/profile/api-tokens) dengan template **Edit Cloudflare Workers**
-2. Di repo GitHub: **Settings → Secrets and variables → Actions**, tambahkan:
+1. Di [Cloudflare API tokens](https://dash.cloudflare.com/profile/api-tokens) buat token:
+   - template **Edit Cloudflare Workers**
+   - tambah permission **Zone → DNS → Edit** untuk zona `abah.me`
+2. GitHub repo → **Settings → Secrets and variables → Actions**:
    - `CLOUDFLARE_API_TOKEN`
-   - `CLOUDFLARE_ACCOUNT_ID` (dari sidebar kanan di dashboard Cloudflare)
-3. Push ke `master`, atau jalankan workflow **Deploy to Cloudflare**
-4. URL produksi: `https://3d-profile.<subdomain-akun>.workers.dev`
+   - `CLOUDFLARE_ACCOUNT_ID` (akun yang memegang `abah.me`)
+3. Merge/push ke `master`, atau jalankan workflow **Deploy to Cloudflare**
+4. Wrangler memasang custom domain `cars.abah.me` dan record DNS-nya
 
-Deploy lokal:
+Atau lewat dashboard, setelah Worker `3d-profile` ada di akun itu:
+
+1. [Workers & Pages](https://dash.cloudflare.com) → `3d-profile` → **Settings** → **Domains & Routes**
+2. **Add** → **Custom Domain** → `cars.abah.me`
+
+`https://cars.abah.me` membuka showroom. `https://cars.abah.me/index.html` tetap ke profil 3D.
+
+### Preview sementara (`*.workers.dev`)
 
 ```
-npx wrangler@latest deploy
+npx wrangler@latest deploy --temporary
 ```
+
+URL preview tidak bisa dipasang ke `cars.abah.me` karena beda akun Cloudflare.
 
 ### GitHub Pages
 
