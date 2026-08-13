@@ -2,9 +2,35 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+    <meta name="theme-color" content="#05070c">
+    <meta name="color-scheme" content="dark">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Showroom">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="description" content="3D car visualizer — orbit, paint, and rims.">
     <title>Car Visualizer — Yoyo Budianto</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <link rel="apple-touch-startup-image" href="icons/splash-1290x2796.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="icons/splash-1179x2556.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="icons/splash-1284x2778.png" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="icons/splash-1170x2532.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="icons/splash-1125x2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="icons/splash-1242x2688.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="icons/splash-828x1792.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="icons/splash-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="icons/splash-1080x1920.png" media="(device-width: 360px) and (device-height: 640px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
     <link rel="stylesheet" href="css/visualizer.css">
+    <script>
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+            document.documentElement.classList.add('standalone');
+        }
+    </script>
     <script type="importmap">
     {
         "imports": {
@@ -29,7 +55,7 @@
             <p id="car-tagline">Sports car · sample three.js</p>
         </div>
         <div class="top-actions">
-            <a class="ghost" href="index.html">Profil 3D</a>
+            <a class="ghost link-profile" href="index.html">Profil 3D</a>
             <button class="ghost" id="btn-fullscreen" type="button">Penuh</button>
         </div>
     </header>
@@ -68,6 +94,25 @@
     <p id="asset-credit"></p>
     <div id="stats">FPS —</div>
     <div id="model-loading">Memuat model…</div>
+
+    <div id="install-sheet" class="install-sheet" hidden>
+        <div class="install-handle"></div>
+        <img class="install-icon" src="icons/icon-192.png" alt="">
+        <div class="install-copy">
+            <strong>Pasang Car Showroom</strong>
+            <p id="android-install-hint">Buka seperti aplikasi, tanpa bilah browser.</p>
+            <p id="ios-install-hint" hidden>Ketuk
+                <svg class="ios-share" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fill="currentColor" d="M12 2.5l4.2 4.2-1.4 1.4-1.8-1.8V15h-2V6.3L9.2 8.1 7.8 6.7 12 2.5zM6 10h2v10h8V10h2v12H6V10z"/>
+                </svg>
+                lalu <strong>Add to Home Screen</strong>.
+            </p>
+        </div>
+        <div class="install-actions">
+            <button type="button" id="btn-install-app">Pasang</button>
+            <button type="button" id="btn-install-dismiss" class="ghost">Nanti</button>
+        </div>
+    </div>
 
     <script type="module" src="js/visualizer.js"></script>
 </body>

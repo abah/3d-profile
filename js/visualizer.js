@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { CAR_MODELS, PAINT_COLORS, RIM_COLORS, RIM_STYLES, createCar, disposeCar } from './cars.js';
 import { REAL_MODELS, loadRealCar, disposeLoadedCar } from './real-cars.js';
+import './pwa.js';
 
 const stage = document.getElementById('stage');
 const loading = document.getElementById('loading');
@@ -48,6 +49,11 @@ controls.maxPolarAngle = Math.PI * 0.49;
 controls.target.set(0, 0.7, 0);
 controls.autoRotate = true;
 controls.autoRotateSpeed = 0.7;
+if (window.matchMedia('(pointer: coarse)').matches) {
+    controls.enablePan = false;
+    controls.rotateSpeed = 0.68;
+}
+renderer.domElement.style.touchAction = 'none';
 
 const hemi = new THREE.HemisphereLight(0xb9d4ff, 0x1a120c, 0.55);
 scene.add(hemi);
@@ -321,11 +327,19 @@ document.getElementById('btn-fullscreen').addEventListener('click', async () => 
     }
 });
 
-window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
+function resizeRenderer() {
+    const view = window.visualViewport;
+    const width = Math.round(view ? view.width : window.innerWidth);
+    const height = Math.round(view ? view.height : window.innerHeight);
+    camera.aspect = width / height;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-});
+    renderer.setSize(width, height);
+}
+
+window.addEventListener('resize', resizeRenderer);
+if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', resizeRenderer);
+}
 
 let frames = 0;
 let lastFps = performance.now();
