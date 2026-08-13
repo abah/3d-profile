@@ -157,20 +157,147 @@ function hubSpinner(wheel, hubWorld, axleWorld) {
     return spinner;
 }
 
+function sampleWorldPoints(mesh, maxSamples = 256) {
+    const pos = mesh.geometry && mesh.geometry.attributes && mesh.geometry.attributes.position;
+    if (!pos || !pos.count) return [];
+    mesh.updateWorldMatrix(true, false);
+    const step = Math.max(1, Math.floor(pos.count / maxSamples));
+    const points = [];
+    const v = new THREE.Vector3();
+    for (let i = 0; i < pos.count; i += step) {
+        points.push(v.fromBufferAttribute(pos, i).applyMatrix4(mesh.matrixWorld).clone());
+    }
+    return points;
+}
+
+function covarianceThinAxis(points) {
+    const n = points.length;
+    const c = new THREE.Vector3();
+    for (let i = 0; i < n; i += 1) c.add(points[i]);
+    c.multiplyScalar(1 / n);
+
+    let cxx = 0;
+    let cxy = 0;
+    let cxz = 0;
+    let cyy = 0;
+    let cyz = 0;
+    let czz = 0;
+    for (let i = 0; i < n; i += 1) {
+        const dx = points[i].x - c.x;
+        const dy = points[i].y - c.y;
+        const dz = points[i].z - c.z;
+        cxx += dx * dx;
+        cxy += dx * dy;
+        cxz += dx * dz;
+        cyy += dy * dy;
+        cyz += dy * dz;
+        czz += dz * dz;
+    }
+
+    const a = [
+        [cxx / n, cxy / n, cxz / n],
+        [cxy / n, cyy / n, cyz / n],
+        [cxz / n, cyz / n, czz / n]
+    ];
+    const v = [
+        [1, 0, 0],
+        [0, 1, 0],
+        [0, 0, 1]
+    ];
+
+    for (let iter = 0; iter < 24; iter += 1) {
+        let p = 0;
+        let q = 1;
+        let max = Math.abs(a[0][1]);
+        if (Math.abs(a[0][2]) > max) {
+            p = 0;
+            q = 2;
+            max = Math.abs(a[0][2]);
+        }
+        if (Math.abs(a[1][2]) > max) {
+            p = 1;
+            q = 2;
+            max = Math.abs(a[1][2]);
+        }
+        if (max < 1e-12) break;
+
+        const app = a[p][p];
+        const aqq = a[q][q];
+        const apq = a[p][q];
+        const theta = 0.5 * Math.atan2(2 * apq, aqq - app);
+        const co = Math.cos(theta);
+        const si = Math.sin(theta);
+
+        for (let i = 0; i < 3; i += 1) {
+            if (i === p || i === q) continue;
+            const aip = a[i][p];
+            const aiq = a[i][q];
+            a[i][p] = a[p][i] = co * aip - si * aiq;
+            a[i][q] = a[q][i] = si * aip + co * aiq;
+        }
+        a[p][p] = co * co * app - 2 * si * co * apq + si * si * aqq;
+        a[q][q] = si * si * app + 2 * si * co * apq + co * co * aqq;
+        a[p][q] = a[q][p] = 0;
+
+        for (let i = 0; i < 3; i += 1) {
+            const vip = v[i][p];
+            const viq = v[i][q];
+            v[i][p] = co * vip - si * viq;
+            v[i][q] = si * vip + co * viq;
+        }
+    }
+
+    let minI = 0;
+    if (a[1][1] < a[minI][minI]) minI = 1;
+    if (a[2][2] < a[minI][minI]) minI = 2;
+    return {
+        center: c,
+        axis: new THREE.Vector3(v[0][minI], v[1][minI], v[2][minI]).normalize()
+    };
+}
+
+function namedChild(wheel, pattern) {
+    let found = null;
+    wheel.traverse((obj) => {
+        if (obj.isMesh && pattern.test(obj.name || '')) found = obj;
+    });
+    return found;
+}
+
 function setupConceptWheels(root) {
     const names = ['WheelFrontL', 'WheelFrontR', 'WheelRearL', 'WheelRearR'];
-    const hubs = {};
-    names.forEach((name) => {
-        const wheel = root.getObjectByName(name);
-        if (!wheel) return;
-        wheel.updateWorldMatrix(true, true);
-        hubs[name] = new THREE.Box3().setFromObject(wheel).getCenter(new THREE.Vector3());
-    });
-    if (!hubs.WheelFrontL || !hubs.WheelFrontR) return [];
-    const axleWorld = hubs.WheelFrontR.clone().sub(hubs.WheelFrontL).normalize();
     return names.map((name) => {
         const wheel = root.getObjectByName(name);
-        return wheel ? hubSpinner(wheel, hubs[name], axleWorld) : null;
+        if (!wheel) return null;
+
+        const pad = namedChild(wheel, /BrakePad/i);
+        if (pad && pad.parent) {
+            wheel.parent.attach(pad);
+        }
+
+        const rim = namedChild(wheel, /Rim/i);
+        const disc = namedChild(wheel, /BrakeDisc/i);
+        const axisMesh = disc || rim;
+        const hubMesh = rim || disc;
+        const fallbackHub = () => new THREE.Box3().setFromObject(wheel).getCenter(new THREE.Vector3());
+        const fallbackAxle = () => {
+            const local = inferLocalAxle(wheel);
+            return local.transformDirection(wheel.matrixWorld).normalize();
+        };
+        if (!axisMesh || !hubMesh) return hubSpinner(wheel, fallbackHub(), fallbackAxle());
+
+        const axisPts = sampleWorldPoints(axisMesh);
+        const hubPts = hubMesh === axisMesh ? axisPts : sampleWorldPoints(hubMesh);
+        if (axisPts.length < 8 || hubPts.length < 8) {
+            return hubSpinner(wheel, fallbackHub(), fallbackAxle());
+        }
+
+        const { axis } = covarianceThinAxis(axisPts);
+        const { center } = covarianceThinAxis(hubPts);
+        if (axis.x < 0 || (Math.abs(axis.x) < 0.08 && axis.z < 0)) {
+            axis.negate();
+        }
+        return hubSpinner(wheel, center, axis);
     }).filter(Boolean);
 }
 
