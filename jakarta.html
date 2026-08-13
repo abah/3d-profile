@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+    <meta name="theme-color" content="#05070c">
+    <meta name="color-scheme" content="dark">
+    <title>Jakarta 3D — Yoyo Budianto</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+    <link rel="stylesheet" href="css/jakarta.css">
+</head>
+<body>
+    <div id="map"></div>
+    <iframe
+        id="massing"
+        title="Jakarta massing — Jack M Simmons"
+        src="about:blank"
+        allow="autoplay; fullscreen; xr-spatial-tracking"
+        allowfullscreen
+        hidden
+    ></iframe>
+
+    <header class="hud">
+        <div class="brand">
+            <div class="kicker">Jakarta · Java</div>
+            <h1>Kota dengan kulit satelit</h1>
+        </div>
+        <div class="actions">
+            <a class="ghost" href="index.html">Profil</a>
+            <a class="ghost" href="visualizer.html">Showroom</a>
+        </div>
+    </header>
+
+    <div class="mode-bar">
+        <button type="button" id="mode-satelit" class="active">Satelit</button>
+        <button type="button" id="mode-massing">Massing Sketchfab</button>
+    </div>
+
+    <p id="credit-satelit" class="credit">
+        Citra udara Esri / Maxar · bangunan 3D OpenStreetMap via OpenFreeMap.
+        Model Sketchfab asli adalah massing GIS tanpa tekstur fasad.
+    </p>
+    <p id="credit-massing" class="credit" hidden>
+        Massing oleh
+        <a href="https://sketchfab.com/3d-models/jakarta-java-indonesia-54772817abe74df2a75672329db18146" target="_blank" rel="noopener">Jack M Simmons</a>
+        (CC BY 4.0) — kerangka kota, bukan fotoreal.
+    </p>
+
+    <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+    <script src="js/jakarta.js"></script>
+</body>
+</html>
