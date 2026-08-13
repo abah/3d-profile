@@ -100,14 +100,24 @@ function fitToGround(root, targetLength) {
     root.position.y -= fitted.min.y;
 }
 
+function pruneDisplayProps(root) {
+    const drop = [];
+    root.traverse((obj) => {
+        const name = obj.name || '';
+        if (obj.isCamera || /^Camera\d*/.test(name) || name === 'Fabric') {
+            drop.push(obj);
+        }
+    });
+    drop.forEach((obj) => {
+        if (obj.parent) obj.parent.remove(obj);
+    });
+}
+
 function enableShadows(root) {
     root.traverse((obj) => {
         if (obj.isMesh) {
             obj.castShadow = true;
             obj.receiveShadow = true;
-        }
-        if (obj.isCamera || /^Camera\d*/.test(obj.name || '')) {
-            obj.visible = false;
         }
     });
 }
@@ -130,6 +140,7 @@ export function loadRealCar(spec, options = {}) {
                 const root = new THREE.Group();
                 root.name = spec.id;
                 root.add(gltf.scene);
+                pruneDisplayProps(root);
                 enableShadows(root);
                 fitToGround(root, spec.targetLength);
 
@@ -200,7 +211,7 @@ export function loadRealCar(spec, options = {}) {
             },
             (event) => {
                 if (event.total) {
-                    onProgress(Math.round((event.loaded / event.total) * 100));
+                    onProgress(Math.min(100, Math.round((event.loaded / event.total) * 100)));
                 }
             },
             reject
