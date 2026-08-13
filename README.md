@@ -72,6 +72,8 @@ This website works best in modern browsers that support WebGL:
 ## Project Structure
 
 ```
+├── wrangler.toml           # Cloudflare Workers static assets
+├── 404.html                # Cloudflare not-found page
 ├── index.html              # 3D profile (Earth)
 ├── visualizer.html         # 3D car showroom
 ├── css/
@@ -86,30 +88,38 @@ This website works best in modern browsers that support WebGL:
 
 ## Deployment
 
-Website ini di-host di **GitHub Pages**: https://abah.github.io/3d-profile
+### Cloudflare (disarankan)
 
-### Aktifkan GitHub Pages (wajib — sekali saja)
+Situs ini bisa di-deploy ke **Cloudflare Workers** (static assets).
 
-Jika muncul **Error 404**, GitHub Pages belum diaktifkan. Ikuti langkah berikut:
+**Opsi A — Klaim deploy preview**
+
+Agent bisa men-deploy preview sementara. Buka **Claim URL** yang dicetak Wrangler, login ke Cloudflare, lalu akun preview jadi permanen di `*.workers.dev`.
+
+**Opsi B — GitHub Actions (otomatis dari `master`)**
+
+1. Buat token di [Cloudflare API tokens](https://dash.cloudflare.com/profile/api-tokens) dengan template **Edit Cloudflare Workers**
+2. Di repo GitHub: **Settings → Secrets and variables → Actions**, tambahkan:
+   - `CLOUDFLARE_API_TOKEN`
+   - `CLOUDFLARE_ACCOUNT_ID` (dari sidebar kanan di dashboard Cloudflare)
+3. Push ke `master`, atau jalankan workflow **Deploy to Cloudflare**
+4. URL produksi: `https://3d-profile.<subdomain-akun>.workers.dev`
+
+Deploy lokal:
+
+```
+npx wrangler@latest deploy
+```
+
+### GitHub Pages
+
+Masih tersedia di **https://abah.github.io/3d-profile**
+
+Jika muncul **Error 404**, GitHub Pages belum diaktifkan:
 
 1. Buka **https://github.com/abah/3d-profile/settings/pages**
-2. Di **Build and deployment** → **Source**, pilih salah satu:
-
-   **Opsi A — Paling mudah (disarankan)**
-   - Source: **Deploy from a branch**
-   - Branch: **`master`** → folder **`/ (root)`**
-   - Klik **Save**
-
-   **Opsi B — GitHub Actions**
-   - Source: **GitHub Actions**
-   - Setelah disimpan, buka tab **Actions** → jalankan workflow **Deploy to GitHub Pages**
-
-3. Tunggu 1–3 menit, lalu buka https://abah.github.io/3d-profile
-4. Hard refresh: `Ctrl+Shift+R` (Windows/Linux) atau `Cmd+Shift+R` (Mac)
-
-### Update otomatis
-
-Setelah Pages aktif, setiap push ke branch **`master`** akan otomatis ter-deploy (via GitHub Actions workflow).
+2. Di **Build and deployment** → **Source**, pilih **GitHub Actions** (atau branch `master` / root)
+3. Tunggu 1–3 menit, lalu hard refresh: `Ctrl+Shift+R` / `Cmd+Shift+R`
 
 ## Credits
 
