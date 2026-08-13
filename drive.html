@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+    <meta name="theme-color" content="#05070c">
+    <meta name="color-scheme" content="dark">
+    <title>Nyetir Jakarta — Yoyo Budianto</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+    <link rel="stylesheet" href="css/drive.css">
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div id="map"></div>
+
+    <div id="loading">
+        <div class="loader-car"></div>
+        <p>Menyiapkan Sudirman…</p>
+    </div>
+
+    <header class="hud-top">
+        <div>
+            <div class="kicker">Jakarta Drive</div>
+            <h1 id="car-name">458 ITALIA</h1>
+        </div>
+        <div class="hud-links">
+            <a class="ghost" href="jakarta.html">Peta</a>
+            <a class="ghost" href="visualizer.html">Showroom</a>
+        </div>
+    </header>
+
+    <label class="car-pick">
+        <span>Mobil</span>
+        <select id="car-select"></select>
+    </label>
+
+    <div id="speedo"><span id="speed-num">0</span> km/h</div>
+
+    <p class="hint" id="hint">W A S D atau panah · HP: gas &amp; kemudi di bawah</p>
+
+    <div id="touch" hidden>
+        <button type="button" id="btn-left" aria-label="Kiri">◀</button>
+        <button type="button" id="btn-brake" aria-label="Rem">REM</button>
+        <button type="button" id="btn-gas" aria-label="Gas">GAS</button>
+        <button type="button" id="btn-right" aria-label="Kanan">▶</button>
+    </div>
+
+    <p class="credit">
+        Citra satelit Esri / Maxar · gedung 3D OpenStreetMap. Bukan kerangka Sketchfab.
+    </p>
+
+    <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+    <script type="module" src="js/drive.js"></script>
+</body>
+</html>
