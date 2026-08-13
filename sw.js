@@ -1,13 +1,18 @@
-const CACHE = 'car-showroom-v9';
+const CACHE = 'car-showroom-v10';
 
 const SHELL = [
     './visualizer.html',
     './drive.html',
+    './jakarta.html',
     './css/visualizer.css',
     './css/drive.css',
+    './css/jakarta.css',
     './js/visualizer.js',
     './js/drive.js',
     './js/circuit.js',
+    './js/jakarta.js',
+    './js/jakarta-tiles.js',
+    './js/global6000.js',
     './js/cars.js',
     './js/real-cars.js',
     './js/pwa.js',

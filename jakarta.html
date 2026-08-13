@@ -3,52 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
-    <meta name="theme-color" content="#05070c">
+    <meta name="theme-color" content="#8ec4e8">
     <meta name="color-scheme" content="dark">
-    <title>Jakarta 3D — Yoyo Budianto</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+    <title>Global 6000 — Jakarta</title>
+    <link rel="stylesheet" href="css/drive.css">
     <link rel="stylesheet" href="css/jakarta.css">
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/"
+        }
+    }
+    </script>
 </head>
 <body>
-    <div id="map"></div>
-    <iframe
-        id="massing"
-        title="Jakarta massing — Jack M Simmons"
-        src="about:blank"
-        allow="autoplay; fullscreen; xr-spatial-tracking"
-        allowfullscreen
-        hidden
-    ></iframe>
+    <div id="stage"></div>
 
-    <header class="hud">
-        <div class="brand">
-            <div class="kicker">Jakarta · Java</div>
-            <h1>Kota dengan kulit satelit</h1>
+    <div id="loading">
+        <div class="loader-car"></div>
+        <p>Memuat Jakarta…</p>
+    </div>
+
+    <header class="hud-top">
+        <div>
+            <div class="kicker">Jakarta · dari udara</div>
+            <h1>GLOBAL 6000</h1>
         </div>
-        <div class="actions">
-            <a class="ghost" href="drive.html">Sirkuit</a>
+        <div class="hud-links">
+            <a class="ghost" href="drive.html">Gurun</a>
             <a class="ghost" href="visualizer.html">Showroom</a>
             <a class="ghost" href="index.html">Profil</a>
         </div>
     </header>
 
-    <div class="mode-bar">
-        <a class="ghost drive-cta" href="drive.html">Main gurun</a>
-        <button type="button" id="mode-satelit" class="active">Satelit</button>
-        <button type="button" id="mode-massing">Massing Sketchfab</button>
+    <div id="speedo">
+        <span id="speed-num">0</span> km/h
+        · <span id="alt-num">0</span> m
     </div>
 
-    <p id="credit-satelit" class="credit">
-        Citra udara Esri / Maxar · bangunan 3D OpenStreetMap via OpenFreeMap.
-        Model Sketchfab asli adalah massing GIS tanpa tekstur fasad.
-    </p>
-    <p id="credit-massing" class="credit" hidden>
-        Massing oleh
-        <a href="https://sketchfab.com/3d-models/jakarta-java-indonesia-54772817abe74df2a75672329db18146" target="_blank" rel="noopener">Jack M Simmons</a>
-        (CC BY 4.0) — kerangka kota, bukan fotoreal.
+    <p class="hint" id="hint">W gas · A D belok · R naik · F turun — tidak bisa mundur</p>
+
+    <div id="touch" class="fly-touch" hidden>
+        <button type="button" id="btn-left" aria-label="Kiri">◀</button>
+        <button type="button" id="btn-right" aria-label="Kanan">▶</button>
+        <button type="button" id="btn-climb" aria-label="Naik">NAIK</button>
+        <button type="button" id="btn-dive" aria-label="Turun">TURUN</button>
+        <button type="button" id="btn-brake" aria-label="Rem">REM</button>
+        <button type="button" id="btn-gas" aria-label="Gas">GAS</button>
+    </div>
+
+    <p class="credit">
+        Bombardier Global 6000 · livery mengikuti
+        <a href="https://sketchfab.com/3d-models/boombardier-global-6000-ed782511437e48cea570e6173133cb2e" target="_blank" rel="noopener">model JLeCoultre</a>
+        (Sketchfab, tidak bisa diunduh) · citra Esri / Maxar
     </p>
 
-    <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
-    <script src="js/jakarta.js"></script>
+    <script type="module" src="js/jakarta.js"></script>
 </body>
 </html>
