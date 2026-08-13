@@ -339,8 +339,10 @@ function animate(now) {
     if (state.car) {
         const spin = dt * 6;
         state.car.wheels.forEach((wheel) => {
-            const axis = wheel.userData.spinAxis || 'z';
-            wheel.rotation[axis] += axis === 'z' ? -spin : spin;
+            const axle = wheel.userData.axle;
+            if (axle) {
+                wheel.rotateOnAxis(axle, spin);
+            }
         });
     }
 

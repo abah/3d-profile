@@ -122,6 +122,28 @@ function enableShadows(root) {
     });
 }
 
+function inferLocalAxle(obj) {
+    obj.updateWorldMatrix(true, true);
+    const box = new THREE.Box3();
+    const inv = new THREE.Matrix4().copy(obj.matrixWorld).invert();
+    const local = new THREE.Matrix4();
+    const v = new THREE.Vector3();
+    obj.traverse((child) => {
+        const pos = child.isMesh && child.geometry && child.geometry.attributes.position;
+        if (!pos) return;
+        local.copy(child.matrixWorld).premultiply(inv);
+        const step = Math.max(1, Math.floor(pos.count / 64));
+        for (let i = 0; i < pos.count; i += step) {
+            v.fromBufferAttribute(pos, i).applyMatrix4(local);
+            box.expandByPoint(v);
+        }
+    });
+    const size = box.getSize(new THREE.Vector3());
+    if (size.x <= size.y && size.x <= size.z) return new THREE.Vector3(1, 0, 0);
+    if (size.z <= size.x && size.z <= size.y) return new THREE.Vector3(0, 0, 1);
+    return new THREE.Vector3(0, 1, 0);
+}
+
 function collectNamed(root, names) {
     return names.map((name) => root.getObjectByName(name)).filter(Boolean);
 }
@@ -164,7 +186,7 @@ export function loadRealCar(spec, options = {}) {
                         }
                     });
                     collectNamed(root, ['wheel_fl', 'wheel_fr', 'wheel_rl', 'wheel_rr']).forEach((wheel) => {
-                        wheel.userData.spinAxis = 'x';
+                        wheel.userData.axle = inferLocalAxle(wheel);
                         wheels.push(wheel);
                     });
                 } else if (spec.kind === 'concept') {
@@ -175,7 +197,7 @@ export function loadRealCar(spec, options = {}) {
                     ['WheelFrontL', 'WheelFrontR', 'WheelRearL', 'WheelRearR'].forEach((name) => {
                         const wheel = root.getObjectByName(name);
                         if (wheel) {
-                            wheel.userData.spinAxis = 'x';
+                            wheel.userData.axle = inferLocalAxle(wheel);
                             wheels.push(wheel);
                         }
                     });

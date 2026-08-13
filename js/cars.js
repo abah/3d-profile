@@ -498,18 +498,20 @@ function createSpokeRim(radius, width, style, rimMat, hubMat) {
 
 function createWheel(spec, rimStyle, rimMat, rubberMat, hubMat) {
     const group = new THREE.Group();
+    const spinner = new THREE.Group();
+    spinner.userData.axle = new THREE.Vector3(0, 0, 1);
     const R = spec.wheelRadius;
     const W = spec.wheelWidth;
 
     const tire = new THREE.Mesh(new THREE.TorusGeometry(R * 0.72, R * 0.28, 12, 36), rubberMat);
-    group.add(shadow(tire));
+    spinner.add(shadow(tire));
 
     const disc = new THREE.Mesh(
         new THREE.CylinderGeometry(R * 0.46, R * 0.46, 0.028, 24),
         new THREE.MeshStandardMaterial({ color: 0x6e6e6e, metalness: 0.85, roughness: 0.32 })
     );
     disc.rotation.x = 90 * DEG;
-    group.add(disc);
+    spinner.add(disc);
 
     const caliper = new THREE.Mesh(
         new THREE.BoxGeometry(0.12, 0.08, 0.06),
@@ -519,7 +521,10 @@ function createWheel(spec, rimStyle, rimMat, rubberMat, hubMat) {
     group.add(caliper);
 
     const rim = createSpokeRim(R, W, rimStyle, rimMat, hubMat);
-    group.add(rim);
+    spinner.add(rim);
+    spinner.userData.rim = rim;
+    group.add(spinner);
+    group.userData.spinner = spinner;
     group.userData.rim = rim;
     return group;
 }
@@ -540,7 +545,7 @@ function placeWheels(spec, rimStyle, rimMat, rubberMat, hubMat) {
         wheel.position.set(pos.x, spec.wheelRadius, pos.z);
         if (pos.z < 0) wheel.rotation.y = Math.PI;
         group.add(wheel);
-        wheels.push(wheel);
+        wheels.push(wheel.userData.spinner);
     });
 
     return { group, wheels };
