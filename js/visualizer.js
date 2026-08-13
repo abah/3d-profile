@@ -2,9 +2,11 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { CAR_MODELS, PAINT_COLORS, RIM_COLORS, RIM_STYLES, createCar, disposeCar } from './cars.js';
+import { REAL_MODELS, loadRealCar, disposeLoadedCar } from './real-cars.js';
 
 const stage = document.getElementById('stage');
 const loading = document.getElementById('loading');
+const modelLoading = document.getElementById('model-loading');
 const modelList = document.getElementById('model-list');
 const paintSwatches = document.getElementById('paint-swatches');
 const rimSwatches = document.getElementById('rim-swatches');
@@ -12,6 +14,9 @@ const rimStylesEl = document.getElementById('rim-styles');
 const statsEl = document.getElementById('stats');
 const titleEl = document.getElementById('car-title');
 const taglineEl = document.getElementById('car-tagline');
+const creditEl = document.getElementById('asset-credit');
+const rimStyleBlock = document.getElementById('rim-style-block');
+const rimColorBlock = document.getElementById('rim-color-block');
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -122,31 +127,88 @@ function makeBackdrop() {
 makeBackdrop();
 
 const state = {
-    modelId: CAR_MODELS[0].id,
-    paint: CAR_MODELS[0].defaultPaint,
+    mode: 'real',
+    modelId: REAL_MODELS[0].id,
+    paint: REAL_MODELS[0].defaultPaint,
     rimColor: RIM_COLORS[0].hex,
     rimStyle: RIM_STYLES[0],
     car: null
 };
 
-function spawnCar() {
-    const spec = CAR_MODELS.find((m) => m.id === state.modelId);
-    if (state.car) {
-        scene.remove(state.car.root);
-        disposeCar(state.car);
-    }
-    state.car = createCar(spec, {
-        envMap,
-        paint: state.paint,
-        rimColor: state.rimColor,
-        rimStyle: state.rimStyle
-    });
-    scene.add(state.car.root);
+let loadToken = 0;
+
+function currentCatalog() {
+    return state.mode === 'real' ? REAL_MODELS : CAR_MODELS;
+}
+
+function updateChrome(spec) {
     titleEl.textContent = spec.name;
     taglineEl.textContent = spec.tagline;
-    key.target = state.car.root;
-    fill.target = state.car.root;
-    rimLight.target = state.car.root;
+    creditEl.innerHTML = spec.credit && spec.creditUrl
+        ? `<a href="${spec.creditUrl}" target="_blank" rel="noopener">${spec.credit}</a>`
+        : (spec.credit || '');
+    const real = state.mode === 'real';
+    rimStyleBlock.hidden = real;
+    rimColorBlock.hidden = real && spec.canRecolorRims === false;
+}
+
+async function spawnCar() {
+    const token = ++loadToken;
+    const spec = currentCatalog().find((m) => m.id === state.modelId) || currentCatalog()[0];
+    state.modelId = spec.id;
+    updateChrome(spec);
+    modelLoading.textContent = state.mode === 'real' ? `Memuat ${spec.name}…` : 'Menyusun model…';
+    modelLoading.classList.add('show');
+
+    try {
+        let nextCar;
+        if (state.mode === 'real') {
+            nextCar = await loadRealCar(spec, {
+                envMap,
+                paint: state.paint,
+                rimColor: state.rimColor,
+                onProgress(pct) {
+                    if (token === loadToken) {
+                        modelLoading.textContent = `Memuat ${spec.name}… ${pct}%`;
+                    }
+                }
+            });
+        } else {
+            nextCar = createCar(spec, {
+                envMap,
+                paint: state.paint,
+                rimColor: state.rimColor,
+                rimStyle: state.rimStyle
+            });
+        }
+
+        if (token !== loadToken) {
+            if (nextCar.spec.url) disposeLoadedCar(nextCar);
+            else disposeCar(nextCar);
+            return;
+        }
+
+        if (state.car) {
+            scene.remove(state.car.root);
+            if (state.car.spec.url) disposeLoadedCar(state.car);
+            else disposeCar(state.car);
+        }
+
+        state.car = nextCar;
+        scene.add(state.car.root);
+        key.target = state.car.root;
+        fill.target = state.car.root;
+        rimLight.target = state.car.root;
+    } catch (err) {
+        console.error(err);
+        if (token === loadToken) {
+            modelLoading.textContent = 'Gagal memuat model. Coba lagi.';
+            return;
+        }
+    }
+
+    modelLoading.classList.remove('show');
+    loading.classList.add('hide');
 }
 
 function setActive(container, selector, el) {
@@ -154,23 +216,42 @@ function setActive(container, selector, el) {
     el.classList.add('active');
 }
 
-function buildUI() {
-    CAR_MODELS.forEach((model, index) => {
+function renderModelList() {
+    modelList.innerHTML = '';
+    currentCatalog().forEach((model) => {
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = 'model-btn' + (index === 0 ? ' active' : '');
+        btn.className = 'model-btn' + (model.id === state.modelId ? ' active' : '');
         btn.innerHTML = `${model.name}<small>${model.tagline}</small>`;
         btn.addEventListener('click', () => {
             state.modelId = model.id;
             state.paint = model.defaultPaint;
-            spawnCar();
-            setActive(modelList, '.model-btn', btn);
+            renderModelList();
             paintSwatches.querySelectorAll('.swatch').forEach((sw) => {
                 sw.classList.toggle('active', Number(sw.dataset.hex) === state.paint);
             });
+            spawnCar();
         });
         modelList.appendChild(btn);
     });
+}
+
+function setMode(mode) {
+    state.mode = mode;
+    document.getElementById('mode-real').classList.toggle('active', mode === 'real');
+    document.getElementById('mode-stylized').classList.toggle('active', mode === 'stylized');
+    const catalog = currentCatalog();
+    state.modelId = catalog[0].id;
+    state.paint = catalog[0].defaultPaint;
+    renderModelList();
+    paintSwatches.querySelectorAll('.swatch').forEach((sw) => {
+        sw.classList.toggle('active', Number(sw.dataset.hex) === state.paint);
+    });
+    spawnCar();
+}
+
+function buildUI() {
+    renderModelList();
 
     PAINT_COLORS.forEach((color) => {
         const sw = document.createElement('button');
@@ -181,7 +262,7 @@ function buildUI() {
         sw.style.background = `#${color.hex.toString(16).padStart(6, '0')}`;
         sw.addEventListener('click', () => {
             state.paint = color.hex;
-            state.car.setPaint(color.hex);
+            if (state.car) state.car.setPaint(color.hex);
             setActive(paintSwatches, '.swatch', sw);
         });
         paintSwatches.appendChild(sw);
@@ -194,7 +275,9 @@ function buildUI() {
         btn.textContent = style.name;
         btn.addEventListener('click', () => {
             state.rimStyle = style;
-            state.car.rebuildRims(style, state.rimColor);
+            if (state.car && state.car.rebuildRims) {
+                state.car.rebuildRims(style, state.rimColor);
+            }
             setActive(rimStylesEl, '.rim-btn', btn);
         });
         rimStylesEl.appendChild(btn);
@@ -208,11 +291,14 @@ function buildUI() {
         sw.style.background = `#${color.hex.toString(16).padStart(6, '0')}`;
         sw.addEventListener('click', () => {
             state.rimColor = color.hex;
-            state.car.setRimColor(color.hex);
+            if (state.car) state.car.setRimColor(color.hex);
             setActive(rimSwatches, '.swatch', sw);
         });
         rimSwatches.appendChild(sw);
     });
+
+    document.getElementById('mode-real').addEventListener('click', () => setMode('real'));
+    document.getElementById('mode-stylized').addEventListener('click', () => setMode('stylized'));
 }
 
 document.getElementById('cam-auto').addEventListener('click', (e) => {
@@ -253,7 +339,8 @@ function animate(now) {
     if (state.car) {
         const spin = dt * 6;
         state.car.wheels.forEach((wheel) => {
-            wheel.rotateZ(-spin);
+            const axis = wheel.userData.spinAxis || 'z';
+            wheel.rotation[axis] += axis === 'z' ? -spin : spin;
         });
     }
 
@@ -273,4 +360,3 @@ function animate(now) {
 buildUI();
 spawnCar();
 animate(performance.now());
-setTimeout(() => loading.classList.add('hide'), 500);

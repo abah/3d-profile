@@ -20,13 +20,16 @@ Visit the live website: [https://abah.github.io/3d-profile](https://abah.github.
 
 ## Car Visualizer
 
-Open `visualizer.html` (or from the profile, use **Car Visualizer**). This is an original showroom, not a copy of commercial car brands:
+Open `visualizer.html` (or from the profile, use **Car Visualizer**).
 
-- Six original models (Aero GT, Veloce, Strada, Cima, Pulsar, Nocturne)
+- **Real** — photoreal GLB assets: Ferrari 458 Italia (three.js / CC-BY), Khronos Car Concept (CC-BY 4.0), Khronos ToyCar (CC0)
+- **Stylized** — original procedural models (Aero GT, Veloce, Strada, Cima, Pulsar, Nocturne)
 - Metallic paint and rim color picker
-- Five rim styles
+- Rim styles on stylized models
 - Auto / free orbit camera, drag to rotate, scroll to zoom
 - Studio lighting with reflective floor
+
+Brand models are demo assets only and are not affiliated with the manufacturers.
 
 ## Technologies Used
 
@@ -82,7 +85,8 @@ This website works best in modern browsers that support WebGL:
 ├── js/
 │   ├── main.js             # Earth scene
 │   ├── visualizer.js       # Showroom scene, lighting, controls
-│   └── cars.js             # Procedural original car models
+│   ├── cars.js             # Procedural original car models
+│   └── real-cars.js        # GLB loaders for real sample cars
 └── README.md
 ```
 
