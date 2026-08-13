@@ -144,9 +144,7 @@ function inferLocalAxle(obj) {
     return new THREE.Vector3(0, 1, 0);
 }
 
-function hubSpinner(wheel) {
-    wheel.updateWorldMatrix(true, true);
-    const hubWorld = new THREE.Box3().setFromObject(wheel).getCenter(new THREE.Vector3());
+function hubSpinner(wheel, hubWorld, axleWorld) {
     const parent = wheel.parent;
     const spinner = new THREE.Group();
     spinner.name = `${wheel.name || 'wheel'}Spin`;
@@ -154,8 +152,30 @@ function hubSpinner(wheel) {
     spinner.position.copy(hubWorld);
     parent.worldToLocal(spinner.position);
     spinner.attach(wheel);
-    spinner.userData.axle = inferLocalAxle(spinner);
+    const inv = new THREE.Matrix4().copy(spinner.matrixWorld).invert();
+    spinner.userData.axle = axleWorld.clone().transformDirection(inv).normalize();
     return spinner;
+}
+
+function setupConceptWheels(root) {
+    const names = ['WheelFrontL', 'WheelFrontR', 'WheelRearL', 'WheelRearR'];
+    const hubs = {};
+    names.forEach((name) => {
+        const wheel = root.getObjectByName(name);
+        if (!wheel) return;
+        wheel.updateWorldMatrix(true, true);
+        hubs[name] = new THREE.Box3().setFromObject(wheel).getCenter(new THREE.Vector3());
+    });
+    if (!hubs.WheelFrontL || !hubs.WheelFrontR) return [];
+    const axleWorld = hubs.WheelFrontR.clone().sub(hubs.WheelFrontL).normalize();
+    return names.map((name) => {
+        const wheel = root.getObjectByName(name);
+        return wheel ? hubSpinner(wheel, hubs[name], axleWorld) : null;
+    }).filter(Boolean);
+}
+
+function collectNamed(root, names) {
+    return names.map((name) => root.getObjectByName(name)).filter(Boolean);
 }
 
 export function loadRealCar(spec, options = {}) {
@@ -204,12 +224,7 @@ export function loadRealCar(spec, options = {}) {
                     paintTargets.forEach((mat) => mat.color.setHex(paintHex));
                     rimTargets = uniqueMaterials(root, (m) => /^rim/i.test(m.name || ''));
                     rimTargets.forEach((mat) => mat.color.setHex(rimHex));
-                    ['WheelFrontL', 'WheelFrontR', 'WheelRearL', 'WheelRearR'].forEach((name) => {
-                        const wheel = root.getObjectByName(name);
-                        if (wheel) {
-                            wheels.push(hubSpinner(wheel));
-                        }
-                    });
+                    wheels.push(...setupConceptWheels(root));
                 } else {
                     paintTargets = uniqueMaterials(root, (m) => /toycar|paint|body/i.test(m.name || ''));
                     if (!paintTargets.length) {
