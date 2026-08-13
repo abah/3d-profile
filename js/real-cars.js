@@ -144,8 +144,18 @@ function inferLocalAxle(obj) {
     return new THREE.Vector3(0, 1, 0);
 }
 
-function collectNamed(root, names) {
-    return names.map((name) => root.getObjectByName(name)).filter(Boolean);
+function hubSpinner(wheel) {
+    wheel.updateWorldMatrix(true, true);
+    const hubWorld = new THREE.Box3().setFromObject(wheel).getCenter(new THREE.Vector3());
+    const parent = wheel.parent;
+    const spinner = new THREE.Group();
+    spinner.name = `${wheel.name || 'wheel'}Spin`;
+    parent.add(spinner);
+    spinner.position.copy(hubWorld);
+    parent.worldToLocal(spinner.position);
+    spinner.attach(wheel);
+    spinner.userData.axle = inferLocalAxle(spinner);
+    return spinner;
 }
 
 export function loadRealCar(spec, options = {}) {
@@ -197,8 +207,7 @@ export function loadRealCar(spec, options = {}) {
                     ['WheelFrontL', 'WheelFrontR', 'WheelRearL', 'WheelRearR'].forEach((name) => {
                         const wheel = root.getObjectByName(name);
                         if (wheel) {
-                            wheel.userData.axle = inferLocalAxle(wheel);
-                            wheels.push(wheel);
+                            wheels.push(hubSpinner(wheel));
                         }
                     });
                 } else {
