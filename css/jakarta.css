@@ -125,11 +125,6 @@ html, body {
     color: var(--cyan);
 }
 
-.mode-bar button.active {
-    background: rgba(0, 212, 255, 0.2);
-    color: var(--cyan);
-}
-
 .credit {
     position: fixed;
     left: calc(12px + env(safe-area-inset-left, 0px));

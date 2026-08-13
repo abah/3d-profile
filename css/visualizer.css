@@ -471,6 +471,31 @@ body {
     }
 }
 
+.drive-cta {
+    position: fixed;
+    top: calc(12px + env(safe-area-inset-top, 0px));
+    right: calc(12px + env(safe-area-inset-right, 0px));
+    z-index: 16;
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 212, 255, 0.45);
+    background: rgba(0, 212, 255, 0.18);
+    color: #d9f8ff;
+    text-decoration: none;
+    font-size: 0.78rem;
+    font-weight: 600;
+    backdrop-filter: blur(12px);
+}
+
+@media (min-width: 821px) {
+    .drive-cta {
+        display: none;
+    }
+}
+
 html.standalone .link-profile,
 html.standalone #btn-fullscreen,
 html.standalone .install-sheet {
