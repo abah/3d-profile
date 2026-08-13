@@ -152,6 +152,30 @@ canvas {
     z-index: -1;
 }
 
+.nav-visualizer {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 80;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 212, 255, 0.35);
+    background: rgba(26, 26, 46, 0.75);
+    color: var(--secondary-color);
+    text-decoration: none;
+    font-size: 0.82rem;
+    backdrop-filter: blur(12px);
+    pointer-events: auto;
+}
+
+.nav-visualizer:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
 /* HUD overlay */
 #hud {
     position: fixed;

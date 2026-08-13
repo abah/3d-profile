@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Visualizer — Yoyo Budianto</title>
+    <link rel="stylesheet" href="css/visualizer.css">
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div id="loading">
+        <div class="loader-car"></div>
+        <p class="loading-text">Memuat showroom</p>
+    </div>
+
+    <div id="stage"></div>
+
+    <header id="topbar">
+        <div class="brand">
+            <div class="brand-kicker">Three.js Showroom</div>
+            <h1 id="car-title">AERO GT</h1>
+            <p id="car-tagline">Supercar wedge</p>
+        </div>
+        <div class="top-actions">
+            <a class="ghost" href="index.html">Profil 3D</a>
+            <button class="ghost" id="btn-fullscreen" type="button">Fullscreen</button>
+        </div>
+    </header>
+
+    <aside id="panel">
+        <h2>Pilih model</h2>
+        <div class="model-list" id="model-list"></div>
+
+        <h2>Warna bodi</h2>
+        <div class="swatches" id="paint-swatches"></div>
+
+        <h2>Gaya velg</h2>
+        <div class="rim-styles" id="rim-styles"></div>
+
+        <h2>Warna velg</h2>
+        <div class="swatches" id="rim-swatches"></div>
+
+        <h2>Kamera</h2>
+        <div class="segment">
+            <button type="button" id="cam-auto" class="active">Auto</button>
+            <button type="button" id="cam-free">Free</button>
+        </div>
+    </aside>
+
+    <p id="hint">Seret untuk memutar · Scroll untuk zoom · Klik model, warna, dan velg</p>
+    <div id="stats">FPS —</div>
+
+    <script type="module" src="js/visualizer.js"></script>
+</body>
+</html>

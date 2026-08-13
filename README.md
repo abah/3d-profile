@@ -8,6 +8,7 @@ Visit the live website: [https://abah.github.io/3d-profile](https://abah.github.
 
 ## Features
 
+- **3D Car Visualizer** (`visualizer.html`) — interactive showroom inspired by classic Three.js car configurators: orbit the car, switch original models, change paint, and swap rims
 - Interactive 3D Earth that users can rotate to discover information
 - Glowing markers that highlight information points
 - Profile content fragments placed on the surface of the Earth
@@ -16,6 +17,16 @@ Visit the live website: [https://abah.github.io/3d-profile](https://abah.github.
 - Automatic rotation to center selected information when clicked
 - Responsive design that works on desktop and mobile devices
 - Modern UI with smooth animations and transitions
+
+## Car Visualizer
+
+Open `visualizer.html` (or from the profile, use **Car Visualizer**). This is an original showroom, not a copy of commercial car brands:
+
+- Six original models (Aero GT, Veloce, Strada, Cima, Pulsar, Nocturne)
+- Metallic paint and rim color picker
+- Five rim styles
+- Auto / free orbit camera, drag to rotate, scroll to zoom
+- Studio lighting with reflective floor
 
 ## Technologies Used
 
@@ -61,12 +72,16 @@ This website works best in modern browsers that support WebGL:
 ## Project Structure
 
 ```
-├── index.html          # Main HTML file
+├── index.html              # 3D profile (Earth)
+├── visualizer.html         # 3D car showroom
 ├── css/
-│   └── style.css       # CSS styles
+│   ├── style.css           # Profile styles
+│   └── visualizer.css      # Showroom UI
 ├── js/
-│   └── main.js         # JavaScript with Three.js implementation
-└── README.md           # This file
+│   ├── main.js             # Earth scene
+│   ├── visualizer.js       # Showroom scene, lighting, controls
+│   └── cars.js             # Procedural original car models
+└── README.md
 ```
 
 ## Deployment
