@@ -1,9 +1,13 @@
-const CACHE = 'car-showroom-v7';
+const CACHE = 'car-showroom-v8';
 
 const SHELL = [
     './visualizer.html',
+    './drive.html',
     './css/visualizer.css',
+    './css/drive.css',
     './js/visualizer.js',
+    './js/drive.js',
+    './js/circuit.js',
     './js/cars.js',
     './js/real-cars.js',
     './js/pwa.js',
@@ -59,10 +63,10 @@ self.addEventListener('fetch', (event) => {
             try {
                 const fresh = await fetch(request);
                 const cache = await caches.open(CACHE);
-                cache.put('./visualizer.html', fresh.clone());
+                cache.put(request, fresh.clone());
                 return fresh;
             } catch {
-                return (await caches.match('./visualizer.html')) || (await caches.match(request));
+                return (await caches.match(request)) || (await caches.match('./visualizer.html'));
             }
         })());
         return;
