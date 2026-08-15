@@ -1,0 +1,40 @@
+{
+  "id": "https://cars.abah.me/",
+  "name": "Car Showroom",
+  "short_name": "Showroom",
+  "description": "3D car visualizer in the browser — orbit, paint, and rims.",
+  "start_url": "./visualizer.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#05070c",
+  "theme_color": "#05070c",
+  "lang": "id",
+  "dir": "ltr",
+  "categories": ["entertainment", "utilities"],
+  "prefer_related_applications": false,
+  "launch_handler": {
+    "client_mode": ["focus-existing", "auto"]
+  },
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

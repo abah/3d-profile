@@ -152,6 +152,39 @@ canvas {
     z-index: -1;
 }
 
+.nav-links {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 80;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    pointer-events: auto;
+}
+
+.nav-visualizer {
+    position: static;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 212, 255, 0.35);
+    background: rgba(26, 26, 46, 0.75);
+    color: var(--secondary-color);
+    text-decoration: none;
+    font-size: 0.82rem;
+    backdrop-filter: blur(12px);
+    pointer-events: auto;
+}
+
+.nav-visualizer:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
 /* HUD overlay */
 #hud {
     position: fixed;
@@ -543,6 +576,16 @@ footer {
         font-size: 12px;
         padding: 10px 16px;
         width: 90%;
+    }
+
+    .nav-links {
+        top: 12px;
+        right: 12px;
+    }
+
+    .nav-visualizer {
+        font-size: 0.72rem;
+        padding: 6px 12px;
     }
 
     main {

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+    <meta name="theme-color" content="#8ec4e8">
+    <meta name="color-scheme" content="dark">
+    <title>Global 6000 — Jakarta</title>
+    <link rel="stylesheet" href="css/drive.css">
+    <link rel="stylesheet" href="css/jakarta.css">
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div id="stage"></div>
+
+    <div id="loading">
+        <div class="loader-car"></div>
+        <p>Memuat Jakarta…</p>
+    </div>
+
+    <header class="hud-top">
+        <div>
+            <div class="kicker">Jakarta · dari udara</div>
+            <h1>GLOBAL 6000</h1>
+        </div>
+        <div class="hud-links">
+            <a class="ghost" href="drive.html">Gurun</a>
+            <a class="ghost" href="visualizer.html">Showroom</a>
+            <a class="ghost" href="index.html">Profil</a>
+        </div>
+    </header>
+
+    <div id="speedo">
+        <span id="speed-num">0</span> km/h
+        · <span id="alt-num">0</span> m
+    </div>
+
+    <p class="hint" id="hint">W gas · A D belok · R naik · F turun — tidak bisa mundur</p>
+
+    <div id="touch" hidden>
+        <div class="stick" id="stick-left" aria-label="Kemudi">
+            <div class="stick-base"></div>
+            <div class="stick-knob"></div>
+        </div>
+        <div class="stick" id="stick-right" aria-label="Gas">
+            <div class="stick-base"></div>
+            <div class="stick-knob"></div>
+        </div>
+    </div>
+
+    <p class="credit">
+        Bombardier Global 6000 · livery mengikuti
+        <a href="https://sketchfab.com/3d-models/boombardier-global-6000-ed782511437e48cea570e6173133cb2e" target="_blank" rel="noopener">model JLeCoultre</a>
+        (Sketchfab, tidak bisa diunduh) · citra Esri / Maxar
+    </p>
+
+    <script type="module" src="js/jakarta.js"></script>
+</body>
+</html>
