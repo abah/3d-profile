@@ -3,6 +3,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { REAL_MODELS, loadRealCar, disposeLoadedCar } from './real-cars.js';
 import { CAR_MODELS, createCar, disposeCar } from './cars.js';
 import { loadTrack } from './circuit.js';
+import { attachJoystick, isTouchUi } from './joystick.js';
 import './pwa.js';
 
 const keys = { up: false, down: false, left: false, right: false };
@@ -23,10 +24,15 @@ const speedNum = document.getElementById('speed-num');
 const carNameEl = document.getElementById('car-name');
 const carSelect = document.getElementById('car-select');
 const touchEl = document.getElementById('touch');
+const idleStick = () => ({ x: 0, y: 0, active: false });
+let stickL = idleStick();
+let stickR = idleStick();
 
-if (window.matchMedia('(pointer: coarse)').matches) {
+if (isTouchUi() && touchEl) {
     touchEl.hidden = false;
-    document.getElementById('hint').textContent = 'GAS maju · ◀ ▶ belok · REM ngerem — tidak bisa mundur';
+    document.getElementById('hint').hidden = true;
+    stickL = attachJoystick(document.getElementById('stick-left'), { axes: 'x' });
+    stickR = attachJoystick(document.getElementById('stick-right'), { axes: 'y' });
 }
 
 const catalog = [...REAL_MODELS, ...CAR_MODELS.slice(0, 3)];
@@ -155,24 +161,6 @@ function chaseCamera() {
     }
 }
 
-function bindHold(id, key) {
-    const el = document.getElementById(id);
-    const on = () => { keys[key] = true; };
-    const off = () => { keys[key] = false; };
-    el.addEventListener('pointerdown', (event) => {
-        event.preventDefault();
-        el.setPointerCapture(event.pointerId);
-        on();
-    });
-    el.addEventListener('pointerup', off);
-    el.addEventListener('pointercancel', off);
-}
-
-bindHold('btn-gas', 'up');
-bindHold('btn-brake', 'down');
-bindHold('btn-left', 'left');
-bindHold('btn-right', 'right');
-
 const driveKeys = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'KeyW', 'KeyA', 'KeyS', 'KeyD']);
 window.addEventListener('keydown', (event) => {
     if (driveKeys.has(event.code)) event.preventDefault();
@@ -205,12 +193,16 @@ function animate(now) {
     const dt = Math.min(0.05, (now - last) / 1000);
     last = now;
 
-    if (keys.up) state.speed += 18 * dt;
-    if (keys.down) state.speed -= 32 * dt;
-    else if (!keys.up) state.speed -= 7.5 * dt;
+    const gas = stickR.active ? Math.max(0, stickR.y) : Number(keys.up);
+    const brake = stickR.active ? Math.max(0, -stickR.y) : Number(keys.down);
+    if (gas > 0.12) state.speed += 18 * dt * gas;
+    if (brake > 0.12) state.speed -= 32 * dt * brake;
+    else if (gas <= 0.12) state.speed -= 7.5 * dt;
     state.speed = Math.max(0, Math.min(38, state.speed));
 
-    const steer = Number(keys.left) - Number(keys.right);
+    const steer = stickL.active
+        ? -stickL.x
+        : Number(keys.left) - Number(keys.right);
     const grip = Math.min(1, state.speed / 4.5);
     state.heading += steer * grip * 1.35 * dt;
     state.x += Math.sin(state.heading) * state.speed * dt;

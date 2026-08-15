@@ -44,13 +44,15 @@
 
     <p class="hint" id="hint">W gas · A D belok · R naik · F turun — tidak bisa mundur</p>
 
-    <div id="touch" class="fly-touch" hidden>
-        <button type="button" id="btn-left" aria-label="Kiri">◀</button>
-        <button type="button" id="btn-right" aria-label="Kanan">▶</button>
-        <button type="button" id="btn-climb" aria-label="Naik">NAIK</button>
-        <button type="button" id="btn-dive" aria-label="Turun">TURUN</button>
-        <button type="button" id="btn-brake" aria-label="Rem">REM</button>
-        <button type="button" id="btn-gas" aria-label="Gas">GAS</button>
+    <div id="touch" hidden>
+        <div class="stick" id="stick-left" aria-label="Kemudi">
+            <div class="stick-base"></div>
+            <div class="stick-knob"></div>
+        </div>
+        <div class="stick" id="stick-right" aria-label="Gas">
+            <div class="stick-base"></div>
+            <div class="stick-knob"></div>
+        </div>
     </div>
 
     <p class="credit">

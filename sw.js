@@ -1,4 +1,4 @@
-const CACHE = 'car-showroom-v10';
+const CACHE = 'car-showroom-v11';
 
 const SHELL = [
     './visualizer.html',
@@ -13,6 +13,7 @@ const SHELL = [
     './js/jakarta.js',
     './js/jakarta-tiles.js',
     './js/global6000.js',
+    './js/joystick.js',
     './js/cars.js',
     './js/real-cars.js',
     './js/pwa.js',

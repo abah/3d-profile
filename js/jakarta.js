@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { createGlobal6000 } from './global6000.js';
 import { createJakartaGround } from './jakarta-tiles.js';
+import { attachJoystick, isTouchUi } from './joystick.js';
 import './pwa.js';
 
 const keys = { up: false, down: false, left: false, right: false, climb: false, dive: false };
@@ -22,10 +23,15 @@ const speedNum = document.getElementById('speed-num');
 const altNum = document.getElementById('alt-num');
 const hint = document.getElementById('hint');
 const touchEl = document.getElementById('touch');
+const idleStick = () => ({ x: 0, y: 0, active: false });
+let stickL = idleStick();
+let stickR = idleStick();
 
-if (window.matchMedia('(pointer: coarse)').matches) {
+if (isTouchUi() && touchEl) {
     touchEl.hidden = false;
-    hint.textContent = 'GAS maju · ◀ ▶ belok · NAIK / TURUN · tidak bisa mundur';
+    hint.hidden = true;
+    stickL = attachJoystick(document.getElementById('stick-left'), { axes: 'xy' });
+    stickR = attachJoystick(document.getElementById('stick-right'), { axes: 'y' });
 }
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
@@ -60,27 +66,6 @@ const shadow = new THREE.Mesh(
 shadow.rotation.x = -Math.PI / 2;
 shadow.position.y = 0.8;
 scene.add(shadow);
-
-function bindHold(id, key) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const on = () => { keys[key] = true; };
-    const off = () => { keys[key] = false; };
-    el.addEventListener('pointerdown', (event) => {
-        event.preventDefault();
-        el.setPointerCapture(event.pointerId);
-        on();
-    });
-    el.addEventListener('pointerup', off);
-    el.addEventListener('pointercancel', off);
-}
-
-bindHold('btn-gas', 'up');
-bindHold('btn-brake', 'down');
-bindHold('btn-left', 'left');
-bindHold('btn-right', 'right');
-bindHold('btn-climb', 'climb');
-bindHold('btn-dive', 'dive');
 
 const flyKeys = new Set([
     'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
@@ -147,19 +132,25 @@ function animate(now) {
     const dt = Math.min(0.05, (now - last) / 1000);
     last = now;
 
-    if (keys.up) state.speed += 22 * dt;
-    if (keys.down) state.speed -= 28 * dt;
-    else if (!keys.up) state.speed -= 4 * dt;
+    const gas = stickR.active ? Math.max(0, stickR.y) : Number(keys.up);
+    const brake = stickR.active ? Math.max(0, -stickR.y) : Number(keys.down);
+    if (gas > 0.12) state.speed += 22 * dt * gas;
+    if (brake > 0.12) state.speed -= 28 * dt * brake;
+    else if (gas <= 0.12) state.speed -= 4 * dt;
     state.speed = Math.max(18, Math.min(92, state.speed));
 
-    const steer = Number(keys.left) - Number(keys.right);
+    const steer = stickL.active
+        ? -stickL.x
+        : Number(keys.left) - Number(keys.right);
     state.heading += steer * 0.72 * dt;
     const wantBank = -steer * 0.42;
     state.bank += (wantBank - state.bank) * Math.min(1, dt * 3.2);
 
-    if (keys.climb) state.pitch += 0.38 * dt;
-    if (keys.dive) state.pitch -= 0.38 * dt;
-    if (!keys.climb && !keys.dive) state.pitch += (0.02 - state.pitch) * dt * 0.7;
+    const climb = stickL.active ? Math.max(0, stickL.y) : Number(keys.climb);
+    const dive = stickL.active ? Math.max(0, -stickL.y) : Number(keys.dive);
+    if (climb > 0.12) state.pitch += 0.38 * dt * climb;
+    if (dive > 0.12) state.pitch -= 0.38 * dt * dive;
+    if (climb <= 0.12 && dive <= 0.12) state.pitch += (0.02 - state.pitch) * dt * 0.7;
     state.pitch = Math.max(-0.32, Math.min(0.28, state.pitch));
 
     const horiz = Math.cos(state.pitch) * state.speed;
