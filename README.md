@@ -8,7 +8,7 @@ Visit the live website: [https://abah.github.io/3d-profile](https://abah.github.
 
 ### HUT RI ke-81 — Indonesia 81: Perjalanan Nusantara
 
-Proyek khusus perayaan HUT RI ke-81: [https://abah.github.io/3d-profile/hutri81.html](https://abah.github.io/3d-profile/hutri81.html)
+**Buka di sini:** [https://abah.github.io/3d-profile/hutri81](https://abah.github.io/3d-profile/hutri81)
 
 Fitur Tier 1:
 - **3D Timeline Nusantara** — 81 milestone kemerdekaan (1945–2025) di peta bumi interaktif
