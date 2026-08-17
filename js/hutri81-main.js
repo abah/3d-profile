@@ -14,7 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showMilestoneModal(milestone) {
         document.getElementById('modal-year').textContent = milestone.year;
-        document.getElementById('modal-tahun-ke').textContent = `HUT ke-${milestone.tahunKe}`;
+        document.getElementById('modal-tahun-ke').textContent =
+            milestone.year === 1945 ? 'Tahun Proklamasi' : `HUT ke-${milestone.tahunKe}`;
         document.getElementById('modal-title').textContent = milestone.title;
         document.getElementById('modal-place').textContent = milestone.place;
         document.getElementById('modal-category').textContent =
@@ -75,6 +76,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('btn-open-chat')?.addEventListener('click', () => {
         window.merdekaTalk?.toggle(true);
+    });
+
+    document.addEventListener('hutri:milestone-flash', (e) => {
+        timelineYear?.classList.remove('flash');
+        void timelineYear?.offsetWidth;
+        timelineYear?.classList.add('flash');
     });
 
     // Init modules

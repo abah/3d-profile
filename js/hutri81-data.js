@@ -46,152 +46,170 @@ const HUTRI81_KEY_EVENTS = {
     1945: {
         title: 'Proklamasi Kemerdekaan',
         category: 'sejarah',
-        location: { lat: -6.1751, lon: 106.8272, place: 'Jakarta' },
-        description: 'Soekarno-Hatta memproklamasikan kemerdekaan Indonesia di Jalan Pegangsaan Timur 56, Jakarta.'
+        location: { lat: -6.2088, lon: 106.8456, place: 'Jakarta (Jl. Proklamasi)' },
+        description: '17 Agustus 1945: Ir. Soekarno dan Drs. Mohammad Hatta memproklamasikan kemerdekaan Indonesia di Jalan Pegangsaan Timur 56 (kini Jl. Proklamasi), Jakarta.'
     },
     1946: {
-        title: 'Sidang BPUPKI Pertama',
+        title: 'Perang Kemerdekaan',
         category: 'sejarah',
-        location: { lat: -6.1751, lon: 106.8272, place: 'Jakarta' },
-        description: 'Pembentukan fondasi konstitusi dan ideologi bangsa melalui sidang-sidang BPUPKI.'
+        location: { lat: -7.5, lon: 110.0, place: 'Jawa' },
+        description: 'Agresi militer Belanda I (1946–1947) dan perang rakyat semesta mempertahankan kemerdekaan yang baru diproklamasikan.'
+    },
+    1948: {
+        title: 'Agresi Militer Belanda II & PDRI',
+        category: 'sejarah',
+        location: { lat: -6.95, lon: 107.65, place: 'Yogyakarta' },
+        description: 'Belanda melancarkan Agresi Militer II (19 Desember 1948). Soekarno-Hatta ditahan, Pemerintahan Darurat Republik Indonesia (PDRI) dipimpin Sjafruddin Prawiranegara di Sumatra.'
     },
     1949: {
         title: 'Konferensi Meja Bundar',
-        category: 'sejarah',
-        location: { lat: -6.1751, lon: 106.8272, place: 'Jakarta' },
-        description: 'Pengakuan kedaulatan RI oleh Belanda melalui Konferensi Meja Bundar di Den Haag.'
+        category: 'diplomasi',
+        location: { lat: 52.0705, lon: 4.3007, place: 'Den Haag, Belanda' },
+        description: '23 Agustus–2 November 1949: Delegasi RI dan Belanda berunding di Den Haag. Belanda mengakui kedaulatan RI per 27 Desember 1949.'
     },
     1950: {
-        title: 'Republik Indonesia Serikat',
+        title: 'Kembali ke NKRI',
         category: 'politik',
-        location: { lat: -6.1751, lon: 106.8272, place: 'Jakarta' },
-        description: 'Indonesia resmi menjadi Republik Indonesia Serikat (RIS) sebelum kembali ke NKRI.'
+        location: { lat: -6.2088, lon: 106.8456, place: 'Jakarta' },
+        description: '17 Agustus 1950: Republik Indonesia Serikat (RIS) dibubarkan. Indonesia kembali ke bentuk Negara Kesatuan Republik Indonesia (NKRI).'
     },
     1955: {
         title: 'Konferensi Asia-Afrika',
         category: 'diplomasi',
-        location: { lat: -6.9, lon: 107.6, place: 'Bandung' },
-        description: 'Bandung menjadi pusat diplomasi dunia dengan Konferensi Asia-Afrika yang legendaris.'
+        location: { lat: -6.9175, lon: 107.6191, place: 'Bandung' },
+        description: '18–24 April 1955: Bandung menjadi tuan rumah Konferensi Asia-Afrika. Dasasila Bandung melahirkan solidaritas negara berkembang dan gerakan Non-Blok.'
+    },
+    1957: {
+        title: 'Deklarasi Djuanda',
+        category: 'maritim',
+        location: { lat: -6.2088, lon: 106.8456, place: 'Jakarta' },
+        description: '1 Desember 1957: PM Djuanda Kartawidjaja menegaskan kedaulatan RI atas perairan di sekitar kepulauan — cikal bakal Wawasan Nusantara dan konsep archipelagic state.'
     },
     1962: {
         title: 'Asian Games I di Jakarta',
         category: 'olahraga',
-        location: { lat: -6.2, lon: 106.8, place: 'Jakarta' },
-        description: 'Indonesia pertama kali menjadi tuan rumah Asian Games, memperkenalkan Indonesia di panggung regional.'
+        location: { lat: -6.2185, lon: 106.8028, place: 'Jakarta' },
+        description: '24 Agustus–4 September 1962: Indonesia menjadi tuan rumah Asian Games perdana di Asia Tenggara, memperkenalkan bangsa di panggung olahraga regional.'
     },
     1963: {
-        title: 'Deklarasi Djuanda',
-        category: 'maritim',
-        location: { lat: -6.2, lon: 106.8, place: 'Jakarta' },
-        description: 'Indonesia menegaskan kedaulatan atas perairan sekitar kepulauan — cikal bakal konsep Wawasan Nusantara.'
+        title: 'Penyerahan Irian Barat ke RI',
+        category: 'persatuan',
+        location: { lat: -2.5489, lon: 140.7181, place: 'Jayapura' },
+        description: '1 Mei 1963: Otonom Wilayah Irian Barat diserahkan UNTEA kepada Indonesia. Irian Barat resmi menjadi bagian NKRI setelah Penentuan Pendapat Rakyat (Pepera) 1969.'
     },
     1965: {
-        title: 'Supersemar & Transisi Orde Baru',
+        title: 'G30S/PKI',
         category: 'politik',
-        location: { lat: -6.2, lon: 106.8, place: 'Jakarta' },
-        description: 'Titik balik politik nasional yang mengarah pada Orde Baru.'
+        location: { lat: -6.2088, lon: 106.8456, place: 'Jakarta' },
+        description: '30 September–1 Oktober 1965: Gerakan 30 September mengguncang politik nasional dan menjadi titik balik sejarah Indonesia pasca-kemerdekaan.'
+    },
+    1966: {
+        title: 'Supersemar & Orde Baru',
+        category: 'politik',
+        location: { lat: -6.2088, lon: 106.8456, place: 'Jakarta' },
+        description: '11 Maret 1966: Soekarno menerbitkan Surat Perintah Sebelas Maret (Supersemar) kepada Soeharto, membuka bab transisi menuju Orde Baru.'
+    },
+    1968: {
+        title: 'Proklamasi Orde Baru',
+        category: 'politik',
+        location: { lat: -6.2088, lon: 106.8456, place: 'Jakarta' },
+        description: '28 Maret 1968: MPRS mengukuhan Soeharto sebagai presiden. Orde Baru resmi dimulai dengan fokus stabilitas dan pembangunan ekonomi.'
     },
     1971: {
         title: 'Pelita I Dimulai',
         category: 'ekonomi',
-        location: { lat: -6.2, lon: 106.8, place: 'Jakarta' },
-        description: 'Program Pembangunan Lima Tahun (Pelita) I meluncurkan era industrialisasi terencana.'
+        location: { lat: -6.2088, lon: 106.8456, place: 'Jakarta' },
+        description: '1969–1974: Rencana Pembangunan Lima Tahun (Repelita) I meluncur era industrialisasi dan pertumbuhan ekonomi terencana di Indonesia.'
     },
     1975: {
-        title: 'Pertamina & Migas Nasional',
-        category: 'energi',
-        location: { lat: -6.2, lon: 106.8, place: 'Jakarta' },
-        description: 'Penguatan sektor energi nasional melalui Pertamina sebagai BUMN strategis.'
-    },
-    1978: {
-        title: 'Operasi Jayawijaya',
+        title: 'Integrasi Timor Timur',
         category: 'persatuan',
-        location: { lat: -4.3, lon: 138.0, place: 'Papua' },
-        description: 'Integrasi Irian Jaya ke dalam NKRI, melengkapi cita-cita nusantara.'
+        location: { lat: -8.5569, lon: 125.5603, place: 'Dili' },
+        description: '7 Desember 1975: Operasi militer Indonesia di Timor Timur. Wilayah ini kemudian menjadi provinsi ke-27 (1976) hingga hasil referendum 1999.'
     },
     1984: {
         title: 'Swasembada Pangan',
         category: 'pertanian',
-        location: { lat: -6.9, lon: 107.6, place: 'Jawa Barat' },
-        description: 'Indonesia mencapai swasembada beras — prestasi pertanian yang diakui dunia.'
-    },
-    1990: {
-        title: 'Era Globalisasi Ekonomi',
-        category: 'ekonomi',
-        location: { lat: -6.2, lon: 106.8, place: 'Jakarta' },
-        description: 'Indonesia terbuka terhadap investasi asing dan integrasi pasar global.'
+        location: { lat: -6.2088, lon: 106.8456, place: 'Nasional' },
+        description: 'Indonesia mencapai swasembada beras — prestasi pertanian yang diakui dunia, berkat program intensifikasi dan insentif pertanian Orde Baru.'
     },
     1998: {
         title: 'Reformasi Demokrasi',
         category: 'politik',
-        location: { lat: -6.2, lon: 106.8, place: 'Jakarta' },
-        description: 'Transisi ke era reformasi: demokratisasi, kebebasan pers, dan desentralisasi.'
+        location: { lat: -6.2088, lon: 106.8456, place: 'Jakarta' },
+        description: 'Mei 1998: Soeharto mundur setelah gelombang demonstrasi mahasiswa. Indonesia memasuki era reformasi: demokratisasi, kebebasan pers, dan desentralisasi.'
+    },
+    1999: {
+        title: 'Pemilu Bebas Pertama',
+        category: 'demokrasi',
+        location: { lat: -6.2088, lon: 106.8456, place: 'Jakarta' },
+        description: '7 Juni 1999: Pemilu legislatif multi-partai pertama pasca-reformasi. Partai Demokrasi Indonesia Perjuangan (PDI-P) meraih suara terbanyak.'
     },
     2000: {
         title: 'Otonomi Daerah',
         category: 'pemerintahan',
-        location: { lat: -6.2, lon: 106.8, place: 'Jakarta' },
-        description: 'Undang-Undang Otonomi Daerah memberi ruang lebih besar bagi pemerintahan provinsi dan kabupaten.'
+        location: { lat: -6.2088, lon: 106.8456, place: 'Jakarta' },
+        description: 'UU No. 22/1999 dan UU No. 25/1999 memberi otonomi luas, keuangan, dan desentralisasi kepada pemerintah provinsi dan kabupaten/kota.'
     },
     2004: {
         title: 'Pemilu Langsung Presiden',
         category: 'demokrasi',
-        location: { lat: -6.2, lon: 106.8, place: 'Jakarta' },
-        description: 'Presiden pertama terpilih langsung oleh rakyat — tonggak demokrasi modern Indonesia.'
+        location: { lat: -6.2088, lon: 106.8456, place: 'Jakarta' },
+        description: '20 September & 20 Oktober 2004: Susilo Bambang Yudhoyono terpilih sebagai presiden pertama hasil pemilu langsung oleh rakyat Indonesia.'
     },
     2008: {
         title: 'UU Informasi & Transaksi Elektronik',
         category: 'teknologi',
-        location: { lat: -6.2, lon: 106.8, place: 'Jakarta' },
-        description: 'Landsan hukum digital commerce dan tanda tangan elektronik di Indonesia.'
+        location: { lat: -6.2088, lon: 106.8456, place: 'Jakarta' },
+        description: 'UU No. 11 Tahun 2008 tentang ITE menjadi landasan hukum transaksi elektronik, tanda tangan digital, dan keamanan siber di Indonesia.'
     },
     2010: {
-        title: 'Boom Startup Digital',
+        title: 'Era Startup Digital',
         category: 'teknologi',
-        location: { lat: -6.2, lon: 106.8, place: 'Jakarta' },
-        description: 'Ekosistem startup Indonesia mulai berkembang pesat — Go-Jek, Tokopedia, dan lainnya.'
+        location: { lat: -6.2088, lon: 106.8456, place: 'Jakarta' },
+        description: 'Go-Jek (2010) dan Tokopedia (2009) melambungkan gelombang startup Indonesia — awal ekosistem digital terbesar di Asia Tenggara.'
     },
     2014: {
         title: 'Program Nawa Cita',
         category: 'pemerintahan',
-        location: { lat: -6.2, lon: 106.8, place: 'Jakarta' },
-        description: 'Agenda prioritas nasional untuk pembangunan dan reformasi birokrasi.'
+        location: { lat: -6.2088, lon: 106.8456, place: 'Jakarta' },
+        description: 'Agenda prioritas nasional Jokowi-JK: 9 program (Nawa Cita) untuk reformasi birokrasi, infrastruktur, dan kesejahteraan rakyat.'
     },
     2016: {
         title: 'Palapa Ring Dimulai',
         category: 'infrastruktur',
         location: { lat: -2.5, lon: 118.0, place: 'Nusantara' },
-        description: 'Proyek kabel optik bawah laut menghubungkan seluruh pelosok Indonesia ke internet cepat.'
+        description: 'Proyek kabel optik bawah laut Palapa Ring menghubungkan 514 kabupaten/kota ke internet cepat — jaringan tulang punggung digital Nusantara.'
     },
     2019: {
         title: 'IKN Diumumkan',
         category: 'infrastruktur',
-        location: { lat: -0.5, lon: 117.0, place: 'Kalimantan Timur' },
-        description: 'Ibu Kota Nusantara (IKN) di Kalimantan Timur diumumkan sebagai visi Indonesia maju.'
+        location: { lat: -0.9383, lon: 116.7278, place: 'Penajam Paser Utara, Kaltim' },
+        description: '26 Agustus 2019: Presiden Jokowi mengumumkan rencana Ibu Kota Negara (IKN) Nusantara di Penajam Paser Utara, Kalimantan Timur.'
     },
     2020: {
         title: 'Transformasi Digital Massal',
         category: 'teknologi',
-        location: { lat: -6.2, lon: 106.8, place: 'Jakarta' },
-        description: 'Pandemi mempercepat adopsi digital: e-commerce, telemedicine, dan belajar online.'
+        location: { lat: -6.2088, lon: 106.8456, place: 'Jakarta' },
+        description: 'Pandemi COVID-19 mempercepat adopsi digital: e-commerce, telemedicine, belajar online, dan layanan pemerintah elektronik (SPBE).'
     },
     2022: {
         title: 'Presidensi G20 Indonesia',
         category: 'diplomasi',
-        location: { lat: -8.5, lon: 115.3, place: 'Bali' },
-        description: 'Indonesia memimpin G20 — Bali menjadi panggung diplomasi global.'
+        location: { lat: -8.5069, lon: 115.2625, place: 'Bali' },
+        description: '15–16 November 2022: Indonesia memimpin G20. KTT di Bali menghasilkan Deklarasi Bali Leaders\' Declaration.'
     },
     2024: {
         title: 'Pemilu Serentak Terbesar',
         category: 'demokrasi',
-        location: { lat: -6.2, lon: 106.8, place: 'Jakarta' },
-        description: 'Pemilu serentak presiden, DPR, DPD, dan DPRD — demokrasi skala masif.'
+        location: { lat: -6.2088, lon: 106.8456, place: 'Nasional' },
+        description: '14 Februari 2024: Pemilu serentak presiden, DPR, DPD, dan DPRD — demokrasi skala masif di 204.807 TPS se-Indonesia.'
     },
     2025: {
         title: 'Menuju Indonesia Emas 2045',
         category: 'visi',
-        location: { lat: -6.2, lon: 106.8, place: 'Jakarta' },
-        description: 'Persiapan menuju 100 tahun kemerdekaan dengan fokus ekonomi digital dan SDM unggul.'
+        location: { lat: -6.2088, lon: 106.8456, place: 'Nasional' },
+        description: 'Indonesia memasuki dekade menuju 100 tahun kemerdekaan (2045) dengan fokus ekonomi digital, SDM unggul, dan transisi energi hijau.'
     }
 };
 
@@ -234,7 +252,7 @@ const HUTRI81_CATEGORY_LABELS = {
 function generateHutri81Milestones() {
     const milestones = [];
     for (let year = 1945; year <= 2025; year++) {
-        const tahunKe = year - 1944;
+        const tahunKe = year - 1945;
         const keyEvent = HUTRI81_KEY_EVENTS[year];
         if (keyEvent) {
             milestones.push({
@@ -270,7 +288,23 @@ const HUTRI81_MILESTONES = generateHutri81Milestones();
 const MERDEKA_TALK_KB = [
     {
         keywords: ['proklamasi', '17 agustus', '1945', 'soekarno', 'hatta'],
-        answer: 'Proklamasi Kemerdekaan Indonesia dibaca pada 17 Agustus 1945 oleh Ir. Soekarno dan Drs. Mohammad Hatta di Jalan Pegangsaan Timur 56, Jakarta. Inilah momen kelahiran Republik Indonesia.'
+        answer: 'Proklamasi Kemerdekaan Indonesia dibaca pada 17 Agustus 1945 oleh Ir. Soekarno dan Drs. Mohammad Hatta di Jalan Pegangsaan Timur 56 (kini Jl. Proklamasi), Jakarta. Inilah momen kelahiran Republik Indonesia.'
+    },
+    {
+        keywords: ['bpupki', 'ppki', 'sidang persiapan'],
+        answer: 'BPUPKI bersidang 29 Mei–1 Juni dan 10–17 Juli 1945. PPKI bersidang 18 Agustus 1945, mengesahkan UUD 1945 dan melantik Soekarno-Hatta sebagai presiden dan wakil presiden.'
+    },
+    {
+        keywords: ['meja bundar', 'kmb', 'den haag', '1949'],
+        answer: 'Konferensi Meja Bundar di Den Haag, Belanda (23 Agustus–2 November 1949). Belanda mengakui kedaulatan RI per 27 Desember 1949. Indonesia menjadi RIS hingga kembali ke NKRI, 17 Agustus 1950.'
+    },
+    {
+        keywords: ['bandung', 'asia afrika', '1955', 'non blok'],
+        answer: 'Konferensi Asia-Afrika di Bandung, 18–24 April 1955, dihadiri 29 negara. Dasasila Bandung melahirkan gerakan Non-Blok dan solidaritas negara berkembang.'
+    },
+    {
+        keywords: ['djuanda', 'wawasan nusantara', 'laut'],
+        answer: 'Deklarasi Djuanda (1 Desember 1957) menegaskan RI sebagai negara kepulauan dengan kedaulatan penuh atas perairan Nusantara — cikal bakal Wawasan Nusantara.'
     },
     {
         keywords: ['pancasila', 'sila'],
@@ -286,7 +320,7 @@ const MERDEKA_TALK_KB = [
     },
     {
         keywords: ['bhinneka', 'tunggal ika', 'keberagaman', 'nusantara'],
-        answer: '"Bhinneka Tunggal Ika" berarti berbeda-beda tetapi tetap satu. Indonesia terdiri dari 17.000+ pulau, 700+ bahasa daerah, dan 1.300+ suku bangsa — keberagaman ini adalah kekuatan kita.'
+        answer: '"Bhinneka Tunggal Ika" berarti berbeda-beda tetapi tetap satu. Indonesia terdiri dari 17.000+ pulau, 700+ bahasa daerah, dan 1.300+ suku bangsa — serta 38 provinsi (2022). Keberagaman ini adalah kekuatan kita.'
     },
     {
         keywords: ['ibu kota', 'jakarta', 'ikn', 'nusantara'],
@@ -306,6 +340,6 @@ const MERDEKA_TALK_KB = [
     },
     {
         keywords: ['trivia', 'quiz', 'pertanyaan'],
-        answer: 'Trivia: Presiden pertama RI adalah Soekarno (1945–1967). Indonesia merdeka di usia Soekarno 44 tahun. Hari Kemerdekaan diperingati setiap 17 Agustus sejak 1945. Tahun 2026 = HUT ke-81.'
+        answer: 'Trivia: Presiden pertama RI adalah Soekarno (1945–1967). Proklamasi dibaca 17 Agustus 1945. HUT RI ke-80 = 17 Agustus 2025. HUT RI ke-81 = 17 Agustus 2026. Lagu "Indonesia Raya" pertama kali diperdengarkan 28 Oktober 1928.'
     }
 ];
