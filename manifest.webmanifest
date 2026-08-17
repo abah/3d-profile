@@ -1,0 +1,20 @@
+{
+  "name": "Indonesia 81 — Perjalanan Nusantara",
+  "short_name": "Indonesia 81",
+  "description": "Rayakan HUT RI ke-81 dengan timeline 3D, Merdeka Talk, dan Dashboard Patriotisme",
+  "start_url": "/hutri81.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0a0508",
+  "theme_color": "#ce1126",
+  "lang": "id",
+  "icons": [
+    {
+      "src": "icons/hutri81-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -2,15 +2,29 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="description" content="Indonesia 81 — Perjalanan Nusantara. Rayakan HUT RI ke-81 dengan timeline 3D interaktif, AI Merdeka Talk, dan Dashboard Patriotisme.">
+    <meta name="theme-color" content="#ce1126">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Indonesia 81">
+    <meta name="format-detection" content="telephone=no">
     <meta property="og:title" content="Indonesia 81 — Perjalanan Nusantara | HUT RI ke-81">
     <meta property="og:description" content="Jelajahi 81 tahun kemerdekaan Indonesia dalam pengalaman 3D interaktif.">
     <title>Indonesia 81 — Perjalanan Nusantara | HUT RI ke-81</title>
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="icon" href="/icons/hutri81-icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icons/hutri81-icon.svg">
     <link rel="stylesheet" href="/css/hutri81.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <div id="install-banner" class="install-banner" hidden>
+        <span><i class="fas fa-mobile-alt"></i> Pasang seperti app — Share → Add to Home Screen</span>
+        <button type="button" class="install-dismiss" aria-label="Tutup">&times;</button>
+    </div>
+
     <div id="loading">
         <div class="loading-flag">
             <div class="flag-red"></div>
@@ -160,11 +174,27 @@
         <i class="fas fa-comments"></i>
     </button>
 
+    <nav id="mobile-nav" class="mobile-nav" aria-label="Navigasi utama">
+        <button type="button" class="mobile-nav-btn active" data-tab="explore">
+            <i class="fas fa-globe-asia"></i><span>Jelajah</span>
+        </button>
+        <button type="button" class="mobile-nav-btn" data-tab="timeline">
+            <i class="fas fa-sliders-h"></i><span>Timeline</span>
+        </button>
+        <button type="button" class="mobile-nav-btn" data-tab="chat">
+            <i class="fas fa-comments"></i><span>Talk</span>
+        </button>
+        <button type="button" class="mobile-nav-btn" data-tab="dashboard">
+            <i class="fas fa-chart-line"></i><span>Stats</span>
+        </button>
+    </nav>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="/js/hutri81-data.js?v=20260817"></script>
-    <script src="/js/hutri81-scene.js?v=20260817"></script>
-    <script src="/js/hutri81-dashboard.js?v=20260817"></script>
-    <script src="/js/hutri81-chat.js?v=20260817"></script>
-    <script src="/js/hutri81-main.js?v=20260817"></script>
+    <script src="/js/hutri81-data.js?v=20260817b"></script>
+    <script src="/js/hutri81-scene.js?v=20260817b"></script>
+    <script src="/js/hutri81-dashboard.js?v=20260817b"></script>
+    <script src="/js/hutri81-chat.js?v=20260817b"></script>
+    <script src="/js/hutri81-mobile.js?v=20260817b"></script>
+    <script src="/js/hutri81-main.js?v=20260817b"></script>
 </body>
 </html>

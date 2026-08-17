@@ -26,6 +26,8 @@ class Hutri81Scene {
         this.travelArc = null;
         this.travelArcProgress = 1;
         this.lastMilestonePos = null;
+        this.dragDistance = 0;
+        this.touchTapThreshold = 12;
 
         this.init();
     }
@@ -320,12 +322,14 @@ class Hutri81Scene {
     setupControls() {
         const onDown = (x, y) => {
             this.isDragging = true;
+            this.dragDistance = 0;
             this.previousMouse = { x, y };
         };
         const onMove = (x, y) => {
             if (!this.isDragging) return;
             const dx = x - this.previousMouse.x;
             const dy = y - this.previousMouse.y;
+            this.dragDistance += Math.abs(dx) + Math.abs(dy);
             this.targetRotation.y += dx * this.rotationSpeed;
             this.targetRotation.x += dy * this.rotationSpeed;
             this.targetRotation.x = Math.max(-Math.PI / 3, Math.min(Math.PI / 3, this.targetRotation.x));
@@ -376,7 +380,7 @@ class Hutri81Scene {
         window.addEventListener('mousemove', (e) => updateHover(e.clientX, e.clientY));
 
         const handleSelect = (clientX, clientY) => {
-            if (this.isDragging) return;
+            if (this.dragDistance > this.touchTapThreshold) return;
             this.mouse.x = (clientX / window.innerWidth) * 2 - 1;
             this.mouse.y = -(clientY / window.innerHeight) * 2 + 1;
             this.raycaster.setFromCamera(this.mouse, this.camera);
@@ -397,7 +401,7 @@ class Hutri81Scene {
         });
 
         window.addEventListener('touchend', (e) => {
-            if (e.target.closest('.hutri-panel, .hutri-modal, .hutri-chat')) return;
+            if (e.target.closest('.hutri-panel, .hutri-modal, .hutri-chat, .mobile-nav')) return;
             const t = e.changedTouches[0];
             handleSelect(t.clientX, t.clientY);
         });

@@ -27,6 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         modal?.classList.add('active');
         scene?.setPaused(true);
+        window.hutri81Mobile?.haptic(12);
+        window.hutri81Mobile?.setMobileNavTab('explore');
     }
 
     function hideModal() {
