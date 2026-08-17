@@ -382,10 +382,31 @@ class Hutri81Scene {
         );
     }
 
+    getMarkerLatLon(milestone, stackIndex) {
+        if (!stackIndex) {
+            return { lat: milestone.lat, lon: milestone.lon };
+        }
+        const angle = stackIndex * 1.05;
+        const spread = 0.55;
+        return {
+            lat: milestone.lat + Math.sin(angle) * spread,
+            lon: milestone.lon + Math.cos(angle) * spread
+        };
+    }
+
     createMilestoneMarkers() {
+        const locationCounts = {};
         this.milestones.forEach((milestone) => {
+            const locKey = `${milestone.lat.toFixed(4)},${milestone.lon.toFixed(4)}`;
+            const stackIndex = locationCounts[locKey] || 0;
+            locationCounts[locKey] = stackIndex + 1;
+
+            const { lat, lon } = this.getMarkerLatLon(milestone, stackIndex);
+            milestone.displayLat = lat;
+            milestone.displayLon = lon;
+
             const color = HUTRI81_CATEGORY_COLORS[milestone.category] || HUTRI81_CATEGORY_COLORS.default;
-            const pos = this.latLonToVector3(milestone.lat, milestone.lon, this.earthRadius);
+            const pos = this.latLonToVector3(lat, lon, this.earthRadius);
             const normal = pos.clone().normalize();
             const surfacePos = normal.clone().multiplyScalar(this.earthRadius + 0.08);
 
@@ -549,9 +570,13 @@ class Hutri81Scene {
         this.selectedYear = milestone.year;
         this.isPaused = true;
         this.cameraTargetZ = 32;
-        this.focusOnLatLon(milestone.lat, milestone.lon);
+        this.focusOnLatLon(milestone.displayLat ?? milestone.lat, milestone.displayLon ?? milestone.lon);
 
-        const localPos = this.latLonToVector3(milestone.lat, milestone.lon, this.earthRadius + 1);
+        const localPos = this.latLonToVector3(
+            milestone.displayLat ?? milestone.lat,
+            milestone.displayLon ?? milestone.lon,
+            this.earthRadius + 1
+        );
         const worldPos = localPos.clone();
         this.earth.localToWorld(worldPos);
 
