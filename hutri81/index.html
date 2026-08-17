@@ -17,14 +17,12 @@
     <link rel="icon" href="/icons/hutri81-icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icons/hutri81-icon.svg">
     <link rel="stylesheet" href="/css/hutri81.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div id="install-banner" class="install-banner" hidden>
-        <span><i class="fas fa-mobile-alt"></i> Pasang seperti app — Share → Add to Home Screen</span>
-        <button type="button" class="install-dismiss" aria-label="Tutup">&times;</button>
-    </div>
-
     <div id="loading">
         <div class="loading-flag">
             <div class="flag-red"></div>
@@ -35,6 +33,13 @@
     </div>
 
     <canvas id="hutri-canvas"></canvas>
+
+    <div id="floating-motto" class="floating-motto" aria-hidden="true">
+        <div class="motto-ornament" aria-hidden="true"></div>
+        <p class="motto-line">Indonesia Berdaulat</p>
+        <p class="motto-line motto-line-accent">Adil dan Makmur</p>
+        <div class="motto-ornament motto-ornament-bottom" aria-hidden="true"></div>
+    </div>
 
     <!-- HUD -->
     <header id="hutri-hud" class="hutri-panel">
@@ -140,6 +145,8 @@
     </button>
 
     <canvas id="confetti-canvas" aria-hidden="true"></canvas>
+    <div id="celebration-flash" class="celebration-flash" aria-hidden="true"></div>
+    <div id="celebration-toast" class="celebration-toast" aria-live="polite"></div>
 
     <aside id="celebrate-panel" class="side-panel side-panel-left hutri-panel celebrate-panel">
         <div class="panel-header">
@@ -193,11 +200,11 @@
     </nav>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="/js/hutri81-data.js?v=20260817c"></script>
-    <script src="/js/hutri81-scene.js?v=20260817c"></script>
-    <script src="/js/hutri81-dashboard.js?v=20260817c"></script>
-    <script src="/js/hutri81-celebrate.js?v=20260817c"></script>
-    <script src="/js/hutri81-mobile.js?v=20260817c"></script>
-    <script src="/js/hutri81-main.js?v=20260817c"></script>
+    <script src="/js/hutri81-data.js?v=20260817h"></script>
+    <script src="/js/hutri81-scene.js?v=20260817h"></script>
+    <script src="/js/hutri81-dashboard.js?v=20260817h"></script>
+    <script src="/js/hutri81-celebrate.js?v=20260817h"></script>
+    <script src="/js/hutri81-mobile.js?v=20260817h"></script>
+    <script src="/js/hutri81-main.js?v=20260817h"></script>
 </body>
 </html>

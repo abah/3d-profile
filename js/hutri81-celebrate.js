@@ -1,13 +1,16 @@
 /**
- * Kembang Merdeka — interaksi rayakan: kembang api 3D, nyala provinsi, kartu momen
+ * Kembang Merdeka — kembang api fullscreen, nyala provinsi, kartu momen
  */
-class ConfettiBurst {
+class FireworksShow {
     constructor(canvas) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
+        this.rockets = [];
         this.particles = [];
+        this.sparks = [];
         this.active = false;
         this.raf = null;
+        this.intensity = 'normal';
         this.resize();
         window.addEventListener('resize', () => this.resize());
     }
@@ -17,53 +20,185 @@ class ConfettiBurst {
         this.canvas.height = window.innerHeight;
     }
 
-    burst(count = 120) {
-        const colors = ['#ce1126', '#ffffff', '#ff4455', '#ffd700', '#ff6666'];
+    start(intensity = 'normal') {
+        this.intensity = intensity;
+        this.rockets = [];
+        this.particles = [];
+        this.sparks = [];
+        this.active = true;
+        this.canvas.classList.add('active');
+
+        const bursts = intensity === 'mega' ? 14 : 8;
+        const gap = intensity === 'mega' ? 220 : 340;
+
+        for (let i = 0; i < bursts; i++) {
+            setTimeout(() => this.launchRocket(), i * gap);
+        }
+
+        if (intensity === 'mega') {
+            setTimeout(() => this.confettiRain(160), bursts * gap * 0.6);
+        }
+
+        if (!this.raf) this.tick();
+    }
+
+    launchRocket() {
+        const w = this.canvas.width;
+        const h = this.canvas.height;
+        this.rockets.push({
+            x: w * (0.15 + Math.random() * 0.7),
+            y: h + 10,
+            vx: (Math.random() - 0.5) * 1.2,
+            vy: -(7 + Math.random() * 4),
+            targetY: h * (0.12 + Math.random() * 0.28),
+            hue: Math.random() > 0.45 ? '#ce1126' : '#ffffff',
+            trail: []
+        });
+        window.hutri81Mobile?.haptic(6);
+    }
+
+    explode(x, y, hue) {
+        const count = this.intensity === 'mega' ? 90 : 60;
+        const colors = [hue, '#ffffff', '#ffd700', '#ff4455', '#ffaaaa'];
+
+        for (let i = 0; i < count; i++) {
+            const angle = (Math.PI * 2 * i) / count + Math.random() * 0.2;
+            const speed = 2 + Math.random() * 5;
+            this.particles.push({
+                x,
+                y,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                life: 1,
+                decay: 0.012 + Math.random() * 0.01,
+                size: 2 + Math.random() * 2.5,
+                color: colors[i % colors.length]
+            });
+        }
+
+        for (let i = 0; i < 12; i++) {
+            this.sparks.push({
+                x,
+                y,
+                vx: (Math.random() - 0.5) * 8,
+                vy: (Math.random() - 0.5) * 8,
+                life: 1,
+                decay: 0.04,
+                size: 1 + Math.random() * 2,
+                color: '#ffd700'
+            });
+        }
+    }
+
+    confettiRain(count) {
+        const colors = ['#ce1126', '#ffffff', '#ffd700', '#ff6666'];
         for (let i = 0; i < count; i++) {
             this.particles.push({
                 x: Math.random() * this.canvas.width,
-                y: -20 - Math.random() * 100,
-                vx: (Math.random() - 0.5) * 6,
-                vy: Math.random() * 4 + 2,
-                size: Math.random() * 8 + 4,
+                y: -20 - Math.random() * 200,
+                vx: (Math.random() - 0.5) * 3,
+                vy: 2 + Math.random() * 4,
+                life: 1,
+                decay: 0.004,
+                size: 4 + Math.random() * 5,
                 color: colors[Math.floor(Math.random() * colors.length)],
-                rot: Math.random() * Math.PI * 2,
-                spin: (Math.random() - 0.5) * 0.2,
-                life: 1
+                gravity: 0.05,
+                isConfetti: true
             });
-        }
-        if (!this.active) {
-            this.active = true;
-            this.tick();
         }
     }
 
     tick() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        let alive = 0;
-        this.particles.forEach((p) => {
+        const { ctx, canvas } = this;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Rockets
+        this.rockets = this.rockets.filter((r) => {
+            r.trail.push({ x: r.x, y: r.y });
+            if (r.trail.length > 12) r.trail.shift();
+            r.x += r.vx;
+            r.y += r.vy;
+            r.vy += 0.08;
+
+            r.trail.forEach((t, i) => {
+                ctx.globalAlpha = (i / r.trail.length) * 0.7;
+                ctx.fillStyle = r.hue;
+                ctx.beginPath();
+                ctx.arc(t.x, t.y, 2, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            if (r.y <= r.targetY || r.vy >= 0) {
+                this.explode(r.x, r.y, r.hue);
+                return false;
+            }
+
+            ctx.globalAlpha = 1;
+            ctx.fillStyle = '#ffd700';
+            ctx.beginPath();
+            ctx.arc(r.x, r.y, 3, 0, Math.PI * 2);
+            ctx.fill();
+            return true;
+        });
+
+        // Particles
+        let alive = this.rockets.length;
+        this.particles = this.particles.filter((p) => {
             p.x += p.vx;
             p.y += p.vy;
-            p.vy += 0.06;
-            p.rot += p.spin;
-            p.life -= 0.006;
-            if (p.life <= 0) return;
+            if (p.isConfetti) {
+                p.vy += p.gravity || 0.05;
+            } else {
+                p.vy += 0.04;
+                p.vx *= 0.98;
+            }
+            p.life -= p.decay;
+            if (p.life <= 0) return false;
             alive++;
-            this.ctx.save();
-            this.ctx.translate(p.x, p.y);
-            this.ctx.rotate(p.rot);
-            this.ctx.globalAlpha = p.life;
-            this.ctx.fillStyle = p.color;
-            this.ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
-            this.ctx.restore();
+
+            ctx.globalAlpha = p.life;
+            ctx.fillStyle = p.color;
+            if (p.isConfetti) {
+                ctx.fillRect(p.x - p.size / 2, p.y - p.size / 4, p.size, p.size / 2);
+            } else {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            return true;
         });
-        this.particles = this.particles.filter((p) => p.life > 0);
-        if (alive > 0) {
+
+        // Sparks
+        this.sparks = this.sparks.filter((s) => {
+            s.x += s.vx;
+            s.y += s.vy;
+            s.life -= s.decay;
+            if (s.life <= 0) return false;
+            alive++;
+            ctx.globalAlpha = s.life;
+            ctx.fillStyle = s.color;
+            ctx.fillRect(s.x, s.y, s.size, s.size);
+            return true;
+        });
+
+        ctx.globalAlpha = 1;
+
+        if (alive > 0 || this.active) {
             this.raf = requestAnimationFrame(() => this.tick());
         } else {
-            this.active = false;
-            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.raf = null;
+            this.canvas.classList.remove('active');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
+    }
+
+    stop() {
+        this.active = false;
+        setTimeout(() => {
+            if (this.rockets.length === 0 && this.particles.length === 0) {
+                this.canvas.classList.remove('active');
+            }
+        }, 5000);
     }
 }
 
@@ -89,11 +224,13 @@ class CelebrateMerdeka {
             momentTitle: document.getElementById('moment-title'),
             momentFact: document.getElementById('moment-fact'),
             momentPrev: document.getElementById('moment-prev'),
-            momentNext: document.getElementById('moment-next')
+            momentNext: document.getElementById('moment-next'),
+            flash: document.getElementById('celebration-flash'),
+            toast: document.getElementById('celebration-toast')
         };
 
-        const confettiCanvas = document.getElementById('confetti-canvas');
-        this.confetti = confettiCanvas ? new ConfettiBurst(confettiCanvas) : null;
+        const canvas = document.getElementById('confetti-canvas');
+        this.fireworks = canvas ? new FireworksShow(canvas) : null;
 
         this.renderProvinceGrid();
         this.renderMoment();
@@ -119,7 +256,7 @@ class CelebrateMerdeka {
         document.getElementById('btn-open-celebrate')?.addEventListener('click', () => this.toggle(true));
 
         this.elements.launchBtn?.addEventListener('click', () => this.launch('normal'));
-        this.elements.megaBtn?.addEventListener('click', () => this.launch('mega'));
+        this.elements.megaBtn?.addEventListener('click', () => this.launchMegaAll());
 
         this.elements.momentPrev?.addEventListener('click', () => this.cycleMoment(-1));
         this.elements.momentNext?.addEventListener('click', () => this.cycleMoment(1));
@@ -139,12 +276,48 @@ class CelebrateMerdeka {
         window.hutri81Mobile?.setMobileNavTab(open ? 'celebrate' : 'explore');
     }
 
+    showToast(message) {
+        const toast = this.elements.toast;
+        if (!toast) return;
+        toast.textContent = message;
+        toast.classList.add('visible');
+        clearTimeout(this.toastTimer);
+        this.toastTimer = setTimeout(() => toast.classList.remove('visible'), 2600);
+    }
+
+    flashScreen() {
+        const flash = this.elements.flash;
+        if (!flash) return;
+        flash.classList.remove('pulse');
+        void flash.offsetWidth;
+        flash.classList.add('pulse');
+    }
+
     launch(intensity) {
+        // Tutup panel agar kembang api terlihat di globe
+        this.toggle(false);
+        document.getElementById('milestone-modal')?.classList.remove('active');
+        window.hutri81Mobile?.setMobileNavTab('explore');
+        window.hutri81Scene?.setPaused(false);
+
+        this.flashScreen();
+        this.fireworks?.start(intensity);
         window.hutri81Scene?.launchMerdekaShow(intensity);
-        this.confetti?.burst(intensity === 'mega' ? 200 : 100);
-        window.hutri81Mobile?.haptic(intensity === 'mega' ? 25 : 15);
+
+        const msg = intensity === 'mega' ? '🇮🇩 Mega Dirgahayu!' : '🎆 Dirgahayu Merdeka!';
+        this.showToast(msg);
+        window.hutri81Mobile?.haptic(intensity === 'mega' ? [20, 40, 20] : [15, 30]);
+
         this.elements.launchBtn?.classList.add('fired');
-        setTimeout(() => this.elements.launchBtn?.classList.remove('fired'), 600);
+        setTimeout(() => this.elements.launchBtn?.classList.remove('fired'), 700);
+    }
+
+    launchMegaAll() {
+        HUTRI81_PROVINCES.forEach((p) => this.litProvinces.add(p.id));
+        this.saveLit();
+        this.renderProvinceGrid();
+        this.updateProgress();
+        this.launch('mega');
     }
 
     renderProvinceGrid() {
@@ -152,7 +325,8 @@ class CelebrateMerdeka {
         this.elements.provinceGrid.innerHTML = HUTRI81_PROVINCES.map((p) => {
             const lit = this.litProvinces.has(p.id);
             return `<button type="button" class="celebrate-province ${lit ? 'lit' : ''}" data-id="${p.id}" data-lat="${p.lat}" data-lon="${p.lon}" title="${p.name}">
-                <span class="prov-abbr">${p.name.slice(0, 3).toUpperCase()}</span>
+                <span class="prov-dot"></span>
+                <span class="prov-name">${p.name}</span>
             </button>`;
         }).join('');
 
@@ -165,9 +339,10 @@ class CelebrateMerdeka {
                 this.saveLit();
                 this.updateProgress();
                 window.hutri81Scene?.launchProvinceSpark(parseFloat(btn.dataset.lat), parseFloat(btn.dataset.lon));
+                this.fireworks?.launchRocket();
                 window.hutri81Mobile?.haptic(8);
                 if (this.litProvinces.size === HUTRI81_PROVINCES.length) {
-                    setTimeout(() => this.launch('mega'), 400);
+                    setTimeout(() => this.launch('mega'), 500);
                 }
             });
         });

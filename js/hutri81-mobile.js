@@ -12,8 +12,8 @@
         document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
     }
 
-    function haptic(ms = 12) {
-        if (navigator.vibrate) navigator.vibrate(ms);
+    function haptic(pattern = 12) {
+        if (navigator.vibrate) navigator.vibrate(pattern);
     }
 
     function setMobileNavTab(tab) {
@@ -126,19 +126,7 @@
     }
 
     function initStandaloneBanner() {
-        if (!isMobile() || isStandalone()) return;
-
-        const dismissed = sessionStorage.getItem('hutri81_install_dismissed');
-        if (dismissed) return;
-
-        const banner = document.getElementById('install-banner');
-        if (!banner) return;
-
-        banner.hidden = false;
-        banner.querySelector('.install-dismiss')?.addEventListener('click', () => {
-            banner.hidden = true;
-            sessionStorage.setItem('hutri81_install_dismissed', '1');
-        });
+        /* Banner PWA dihapus — mengganggu UX mobile */
     }
 
     function applyDeviceClasses() {

@@ -17,44 +17,75 @@ function formatHutLabel(year) {
     return `HUT RI ke-${getHutNumber(year)}`;
 }
 const HUTRI81_PROVINCES = [
-    { id: 'aceh', name: 'Aceh', lat: 4.7, lon: 96.7 },
-    { id: 'sumut', name: 'Sumatera Utara', lat: 2.1, lon: 99.5 },
-    { id: 'sumbar', name: 'Sumatera Barat', lat: -0.9, lon: 100.4 },
-    { id: 'riau', name: 'Riau', lat: 0.5, lon: 101.4 },
-    { id: 'kepri', name: 'Kepulauan Riau', lat: 0.9, lon: 104.5 },
-    { id: 'jambi', name: 'Jambi', lat: -1.6, lon: 103.6 },
-    { id: 'sumsel', name: 'Sumatera Selatan', lat: -3.3, lon: 104.0 },
-    { id: 'bengkulu', name: 'Bengkulu', lat: -3.8, lon: 102.3 },
-    { id: 'lampung', name: 'Lampung', lat: -4.9, lon: 105.3 },
-    { id: 'banten', name: 'Banten', lat: -6.4, lon: 106.1 },
-    { id: 'jakarta', name: 'DKI Jakarta', lat: -6.2, lon: 106.8 },
-    { id: 'jabar', name: 'Jawa Barat', lat: -6.9, lon: 107.6 },
-    { id: 'jateng', name: 'Jawa Tengah', lat: -7.0, lon: 110.4 },
-    { id: 'yogya', name: 'DI Yogyakarta', lat: -7.8, lon: 110.4 },
-    { id: 'jatim', name: 'Jawa Timur', lat: -7.5, lon: 112.5 },
-    { id: 'bali', name: 'Bali', lat: -8.4, lon: 115.1 },
-    { id: 'ntb', name: 'Nusa Tenggara Barat', lat: -8.6, lon: 116.1 },
-    { id: 'ntt', name: 'Nusa Tenggara Timur', lat: -8.7, lon: 121.0 },
-    { id: 'kalbar', name: 'Kalimantan Barat', lat: -0.1, lon: 109.3 },
-    { id: 'kalteng', name: 'Kalimantan Tengah', lat: -1.8, lon: 113.9 },
-    { id: 'kalsel', name: 'Kalimantan Selatan', lat: -3.3, lon: 114.6 },
-    { id: 'kaltim', name: 'Kalimantan Timur', lat: 0.5, lon: 117.1 },
-    { id: 'kaltara', name: 'Kalimantan Utara', lat: 3.1, lon: 117.6 },
-    { id: 'sulut', name: 'Sulawesi Utara', lat: 1.5, lon: 124.8 },
-    { id: 'sulteng', name: 'Sulawesi Tengah', lat: -1.0, lon: 120.0 },
-    { id: 'sulsel', name: 'Sulawesi Selatan', lat: -3.7, lon: 119.9 },
-    { id: 'sultra', name: 'Sulawesi Tenggara', lat: -4.0, lon: 122.5 },
-    { id: 'gorontalo', name: 'Gorontalo', lat: 0.5, lon: 123.1 },
-    { id: 'sulbar', name: 'Sulawesi Barat', lat: -2.7, lon: 119.0 },
-    { id: 'maluku', name: 'Maluku', lat: -3.2, lon: 130.5 },
-    { id: 'malut', name: 'Maluku Utara', lat: 0.8, lon: 127.4 },
-    { id: 'papuabarat', name: 'Papua Barat', lat: -1.3, lon: 133.2 },
-    { id: 'papua', name: 'Papua', lat: -4.3, lon: 138.0 },
-    { id: 'papuatengah', name: 'Papua Tengah', lat: -3.7, lon: 136.4 },
-    { id: 'papuapegunungan', name: 'Papua Pegunungan', lat: -4.0, lon: 139.0 },
-    { id: 'papuaselatan', name: 'Papua Selatan', lat: -6.1, lon: 140.7 },
-    { id: 'papuabaratdaya', name: 'Papua Barat Daya', lat: -1.9, lon: 132.5 },
-    { id: 'bangka', name: 'Bangka Belitung', lat: -2.1, lon: 106.1 }
+    { id: 'aceh', name: 'Aceh', lat: 5.5483, lon: 95.3238 },
+    { id: 'sumut', name: 'Sumatera Utara', lat: 3.5952, lon: 98.6722 },
+    { id: 'sumbar', name: 'Sumatera Barat', lat: -0.9471, lon: 100.4172 },
+    { id: 'riau', name: 'Riau', lat: 0.5071, lon: 101.4478 },
+    { id: 'kepri', name: 'Kepulauan Riau', lat: 0.9186, lon: 104.4663 },
+    { id: 'jambi', name: 'Jambi', lat: -1.6101, lon: 103.6131 },
+    { id: 'sumsel', name: 'Sumatera Selatan', lat: -2.9909, lon: 104.7566 },
+    { id: 'bengkulu', name: 'Bengkulu', lat: -3.7928, lon: 102.2608 },
+    { id: 'lampung', name: 'Lampung', lat: -5.4292, lon: 105.2611 },
+    { id: 'banten', name: 'Banten', lat: -6.1200, lon: 106.1500 },
+    { id: 'jakarta', name: 'DKI Jakarta', lat: -6.2088, lon: 106.8456 },
+    { id: 'jabar', name: 'Jawa Barat', lat: -6.9175, lon: 107.6191 },
+    { id: 'jateng', name: 'Jawa Tengah', lat: -6.9667, lon: 110.4167 },
+    { id: 'yogya', name: 'DI Yogyakarta', lat: -7.7956, lon: 110.3695 },
+    { id: 'jatim', name: 'Jawa Timur', lat: -7.2575, lon: 112.7521 },
+    { id: 'bali', name: 'Bali', lat: -8.6705, lon: 115.2126 },
+    { id: 'ntb', name: 'Nusa Tenggara Barat', lat: -8.5833, lon: 116.1167 },
+    { id: 'ntt', name: 'Nusa Tenggara Timur', lat: -10.1772, lon: 123.6070 },
+    { id: 'kalbar', name: 'Kalimantan Barat', lat: -0.0263, lon: 109.3425 },
+    { id: 'kalteng', name: 'Kalimantan Tengah', lat: -2.2100, lon: 113.9200 },
+    { id: 'kalsel', name: 'Kalimantan Selatan', lat: -3.3186, lon: 114.5944 },
+    { id: 'kaltim', name: 'Kalimantan Timur', lat: -0.5022, lon: 117.1536 },
+    { id: 'kaltara', name: 'Kalimantan Utara', lat: 3.0731, lon: 116.0414 },
+    { id: 'sulut', name: 'Sulawesi Utara', lat: 1.4748, lon: 124.8421 },
+    { id: 'sulteng', name: 'Sulawesi Tengah', lat: -0.8986, lon: 119.8707 },
+    { id: 'sulsel', name: 'Sulawesi Selatan', lat: -5.1477, lon: 119.4327 },
+    { id: 'sultra', name: 'Sulawesi Tenggara', lat: -3.9770, lon: 122.5150 },
+    { id: 'gorontalo', name: 'Gorontalo', lat: 0.5435, lon: 123.0585 },
+    { id: 'sulbar', name: 'Sulawesi Barat', lat: -2.8441, lon: 119.2321 },
+    { id: 'maluku', name: 'Maluku', lat: -3.6954, lon: 128.1814 },
+    { id: 'malut', name: 'Maluku Utara', lat: 0.7829, lon: 127.3614 },
+    { id: 'papuabarat', name: 'Papua Barat', lat: -0.8667, lon: 134.0833 },
+    { id: 'papua', name: 'Papua', lat: -2.5489, lon: 140.7181 },
+    { id: 'papuatengah', name: 'Papua Tengah', lat: -3.3687, lon: 135.4971 },
+    { id: 'papuapegunungan', name: 'Papua Pegunungan', lat: -4.0833, lon: 138.9500 },
+    { id: 'papuaselatan', name: 'Papua Selatan', lat: -7.9833, lon: 131.3000 },
+    { id: 'papuabaratdaya', name: 'Papua Barat Daya', lat: -1.8500, lon: 133.2500 },
+    { id: 'bangka', name: 'Bangka Belitung', lat: -2.1316, lon: 106.1166 }
+];
+
+/** Wilayah klasik (27 provinsi era NKRI) — dipakai untuk milestone tahun tanpa peristiwa kunci */
+const HUTRI81_CLASSIC_REGIONS = [
+    { name: 'Aceh', lat: 5.5483, lon: 95.3238 },
+    { name: 'Sumatera Utara', lat: 3.5952, lon: 98.6722 },
+    { name: 'Sumatera Barat', lat: -0.9471, lon: 100.4172 },
+    { name: 'Riau', lat: 0.5071, lon: 101.4478 },
+    { name: 'Jambi', lat: -1.6101, lon: 103.6131 },
+    { name: 'Sumatera Selatan', lat: -2.9909, lon: 104.7566 },
+    { name: 'Bengkulu', lat: -3.7928, lon: 102.2608 },
+    { name: 'Lampung', lat: -5.4292, lon: 105.2611 },
+    { name: 'DKI Jakarta', lat: -6.2088, lon: 106.8456 },
+    { name: 'Jawa Barat', lat: -6.9175, lon: 107.6191 },
+    { name: 'Jawa Tengah', lat: -6.9667, lon: 110.4167 },
+    { name: 'DI Yogyakarta', lat: -7.7956, lon: 110.3695 },
+    { name: 'Jawa Timur', lat: -7.2575, lon: 112.7521 },
+    { name: 'Bali', lat: -8.6705, lon: 115.2126 },
+    { name: 'Nusa Tenggara Barat', lat: -8.5833, lon: 116.1167 },
+    { name: 'Nusa Tenggara Timur', lat: -10.1772, lon: 123.6070 },
+    { name: 'Kalimantan Barat', lat: -0.0263, lon: 109.3425 },
+    { name: 'Kalimantan Tengah', lat: -2.2100, lon: 113.9200 },
+    { name: 'Kalimantan Selatan', lat: -3.3186, lon: 114.5944 },
+    { name: 'Kalimantan Timur', lat: -0.5022, lon: 117.1536 },
+    { name: 'Sulawesi Utara', lat: 1.4748, lon: 124.8421 },
+    { name: 'Sulawesi Tengah', lat: -0.8986, lon: 119.8707 },
+    { name: 'Sulawesi Selatan', lat: -5.1477, lon: 119.4327 },
+    { name: 'Sulawesi Tenggara', lat: -3.9770, lon: 122.5150 },
+    { name: 'Maluku', lat: -3.6954, lon: 128.1814 },
+    { name: 'Papua', lat: -2.5489, lon: 140.7181 },
+    { name: 'Bangka Belitung', lat: -2.1316, lon: 106.1166 }
 ];
 
 const HUTRI81_KEY_EVENTS = {
@@ -67,19 +98,19 @@ const HUTRI81_KEY_EVENTS = {
     1946: {
         title: 'Perang Kemerdekaan',
         category: 'sejarah',
-        location: { lat: -7.5, lon: 110.0, place: 'Jawa' },
-        description: 'Agresi militer Belanda I (1946–1947) dan perang rakyat semesta mempertahankan kemerdekaan yang baru diproklamasikan.'
+        location: { lat: -7.2575, lon: 112.7521, place: 'Surabaya, Jawa Timur' },
+        description: 'Agresi militer Belanda I (1946–1947) dan perang rakyat semesta — termasuk Pertempuran Surabaya 10 November 1945 — mempertahankan kemerdekaan yang baru diproklamasikan.'
     },
     1948: {
         title: 'Agresi Militer Belanda II & PDRI',
         category: 'sejarah',
-        location: { lat: -6.95, lon: 107.65, place: 'Yogyakarta' },
-        description: 'Belanda melancarkan Agresi Militer II (19 Desember 1948). Soekarno-Hatta ditahan, Pemerintahan Darurat Republik Indonesia (PDRI) dipimpin Sjafruddin Prawiranegara di Sumatra.'
+        location: { lat: -7.7956, lon: 110.3695, place: 'Yogyakarta' },
+        description: 'Belanda melancarkan Agresi Militer II (19 Desember 1948). Soekarno-Hatta ditahan di Yogyakarta; Pemerintahan Darurat Republik Indonesia (PDRI) dipimpin Sjafruddin Prawiranegara di Sumatra.'
     },
     1949: {
         title: 'Konferensi Meja Bundar',
         category: 'diplomasi',
-        location: { lat: 52.0705, lon: 4.3007, place: 'Den Haag, Belanda' },
+        location: { lat: -6.2088, lon: 106.8456, place: 'Den Haag, Belanda' },
         description: '23 Agustus–2 November 1949: Delegasi RI dan Belanda berunding di Den Haag. Belanda mengakui kedaulatan RI per 27 Desember 1949.'
     },
     1950: {
@@ -193,7 +224,7 @@ const HUTRI81_KEY_EVENTS = {
     2016: {
         title: 'Palapa Ring Dimulai',
         category: 'infrastruktur',
-        location: { lat: -2.5, lon: 118.0, place: 'Nusantara' },
+        location: { lat: -6.2088, lon: 106.8456, place: 'Nasional (Jakarta)' },
         description: 'Proyek kabel optik bawah laut Palapa Ring menghubungkan 514 kabupaten/kota ke internet cepat — jaringan tulang punggung digital Nusantara.'
     },
     2019: {
@@ -276,17 +307,17 @@ function generateHutri81Milestones() {
                 place: keyEvent.location.place
             });
         } else {
-            const province = HUTRI81_PROVINCES[(year - HUTRI81_PROCLAMATION_YEAR) % HUTRI81_PROVINCES.length];
+            const region = HUTRI81_CLASSIC_REGIONS[hutNumber % HUTRI81_CLASSIC_REGIONS.length];
             milestones.push({
                 year,
                 hutNumber,
                 tahunKe: hutNumber,
-                title: `${formatHutLabel(year)}: ${province.name}`,
+                title: `${formatHutLabel(year)}: ${region.name}`,
                 category: 'default',
-                description: `Memperingati ${formatHutLabel(year)}. Semangat persatuan dan gotong royong dari ${province.name} ikut membangun bangsa.`,
-                lat: province.lat,
-                lon: province.lon,
-                place: province.name
+                description: `Memperingati ${formatHutLabel(year)}. Semangat persatuan dan gotong royong dari ${region.name} ikut membangun bangsa.`,
+                lat: region.lat,
+                lon: region.lon,
+                place: region.name
             });
         }
     }

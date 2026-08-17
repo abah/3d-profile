@@ -245,10 +245,31 @@ class Hutri81Scene {
         );
     }
 
+    getMarkerLatLon(milestone, stackIndex) {
+        if (!stackIndex) {
+            return { lat: milestone.lat, lon: milestone.lon };
+        }
+        const angle = stackIndex * 1.05;
+        const spread = 0.55;
+        return {
+            lat: milestone.lat + Math.sin(angle) * spread,
+            lon: milestone.lon + Math.cos(angle) * spread
+        };
+    }
+
     createMilestoneMarkers() {
+        const locationCounts = {};
         this.milestones.forEach((milestone) => {
+            const locKey = `${milestone.lat.toFixed(4)},${milestone.lon.toFixed(4)}`;
+            const stackIndex = locationCounts[locKey] || 0;
+            locationCounts[locKey] = stackIndex + 1;
+
+            const { lat, lon } = this.getMarkerLatLon(milestone, stackIndex);
+            milestone.displayLat = lat;
+            milestone.displayLon = lon;
+
             const color = HUTRI81_CATEGORY_COLORS[milestone.category] || HUTRI81_CATEGORY_COLORS.default;
-            const pos = this.latLonToVector3(milestone.lat, milestone.lon, this.earthRadius);
+            const pos = this.latLonToVector3(lat, lon, this.earthRadius);
             const normal = pos.clone().normalize();
             const surfacePos = normal.clone().multiplyScalar(this.earthRadius + 0.08);
 
@@ -412,9 +433,13 @@ class Hutri81Scene {
         this.selectedYear = milestone.year;
         this.isPaused = true;
         this.cameraTargetZ = 32;
-        this.focusOnLatLon(milestone.lat, milestone.lon);
+        this.focusOnLatLon(milestone.displayLat ?? milestone.lat, milestone.displayLon ?? milestone.lon);
 
-        const localPos = this.latLonToVector3(milestone.lat, milestone.lon, this.earthRadius + 1);
+        const localPos = this.latLonToVector3(
+            milestone.displayLat ?? milestone.lat,
+            milestone.displayLon ?? milestone.lon,
+            this.earthRadius + 1
+        );
         const worldPos = localPos.clone();
         this.earth.localToWorld(worldPos);
 
@@ -479,28 +504,32 @@ class Hutri81Scene {
 
     launchMerdekaShow(intensity = 'normal') {
         const isMega = intensity === 'mega';
-        const count = isMega ? 14 : 7;
-        const picks = [...HUTRI81_MILESTONES].sort(() => Math.random() - 0.5).slice(0, count);
+        const count = isMega ? 18 : 10;
+        const keyMilestones = HUTRI81_MILESTONES.filter((m) => HUTRI81_KEY_EVENTS[m.year]);
+        const picks = [...keyMilestones].sort(() => Math.random() - 0.5).slice(0, count);
 
         this.isPaused = false;
-        this.celebrationBoost = isMega ? 1 : 0.6;
-        this.cameraTargetZ = isMega ? 28 : 34;
+        this.selectedYear = null;
+        this.celebrationBoost = isMega ? 1 : 0.65;
+        this.cameraTargetZ = isMega ? 26 : 32;
 
         picks.forEach((m, i) => {
             setTimeout(() => {
-                const localPos = this.latLonToVector3(m.lat, m.lon, this.earthRadius + 1);
+                const lat = m.displayLat ?? m.lat;
+                const lon = m.displayLon ?? m.lon;
+                const localPos = this.latLonToVector3(lat, lon, this.earthRadius + 1);
                 const worldPos = localPos.clone();
                 this.earth.localToWorld(worldPos);
                 const color = HUTRI81_CATEGORY_COLORS[m.category] || 0xff3333;
                 this.triggerExplosion(worldPos, color, true);
-                if (i % 2 === 0) this.focusOnLatLon(m.lat, m.lon);
-            }, i * (isMega ? 180 : 280));
+                if (i === 0 || i % 3 === 0) this.focusOnLatLon(lat, lon);
+            }, i * (isMega ? 160 : 260));
         });
 
         setTimeout(() => {
             this.celebrationBoost = 0;
             this.cameraTargetZ = 42;
-        }, isMega ? 3500 : 2500);
+        }, isMega ? 4200 : 3000);
 
         document.dispatchEvent(new CustomEvent('hutri:celebration-launched', { detail: { intensity } }));
     }
@@ -509,7 +538,7 @@ class Hutri81Scene {
         const localPos = this.latLonToVector3(lat, lon, this.earthRadius + 0.5);
         const worldPos = localPos.clone();
         this.earth.localToWorld(worldPos);
-        this.triggerExplosion(worldPos, 0xff3333, false);
+        this.triggerExplosion(worldPos, 0xff3333, true);
     }
 
     triggerExplosion(position, color, big = false) {
