@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "dev": "wrangler pages dev . --port 8788",
-    "deploy": "wrangler pages deploy . --project-name=indonesia-81"
+    "deploy": "wrangler pages deploy . --project-name=indonesia-81",
+    "deploy:cf": "bash scripts/deploy-cf.sh"
   },
   "devDependencies": {
     "wrangler": "^4.123.0"
