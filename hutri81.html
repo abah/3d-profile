@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Indonesia 81 — Perjalanan Nusantara. Rayakan HUT RI ke-81 dengan timeline 3D interaktif, AI Merdeka Talk, dan Dashboard Patriotisme.">
+    <meta property="og:title" content="Indonesia 81 — Perjalanan Nusantara | HUT RI ke-81">
+    <meta property="og:description" content="Jelajahi 81 tahun kemerdekaan Indonesia dalam pengalaman 3D interaktif.">
+    <title>Indonesia 81 — Perjalanan Nusantara | HUT RI ke-81</title>
+    <link rel="stylesheet" href="css/hutri81.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="loading">
+        <div class="loading-flag">
+            <div class="flag-red"></div>
+            <div class="flag-white"></div>
+        </div>
+        <p class="loading-text">Memuat Perjalanan Nusantara<span class="loading-dots"></span></p>
+        <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+    </div>
+
+    <canvas id="hutri-canvas"></canvas>
+
+    <!-- HUD -->
+    <header id="hutri-hud" class="hutri-panel">
+        <div class="hud-badge">HUT RI ke-81</div>
+        <h1>Indonesia 81</h1>
+        <p class="hud-subtitle">Perjalanan Nusantara · 1945–2025</p>
+        <div class="hud-actions">
+            <button id="btn-open-dashboard" class="hutri-btn hutri-btn-outline" type="button">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </button>
+            <button id="btn-open-chat" class="hutri-btn hutri-btn-outline" type="button">
+                <i class="fas fa-comments"></i> Merdeka Talk
+            </button>
+            <a href="index.html" class="hutri-btn hutri-btn-ghost">
+                <i class="fas fa-user"></i> Profil
+            </a>
+        </div>
+    </header>
+
+    <!-- Instructions -->
+    <div id="instructions" class="hutri-panel">
+        <i class="fas fa-globe-asia"></i>
+        Putar bumi · Klik titik merah-putih · Geser timeline · Tanya Merdeka Talk
+    </div>
+
+    <!-- Timeline -->
+    <div id="timeline-bar" class="hutri-panel">
+        <div class="timeline-header">
+            <span id="timeline-year" class="timeline-year">1945</span>
+            <span id="timeline-label" class="timeline-label">Proklamasi Kemerdekaan</span>
+        </div>
+        <input type="range" id="timeline-slider" min="1945" max="2025" value="1945" aria-label="Timeline tahun kemerdekaan">
+        <div class="timeline-jumps">
+            <button class="timeline-jump hutri-btn-sm" data-year="1945" type="button">1945</button>
+            <button class="timeline-jump hutri-btn-sm" data-year="1955" type="button">1955</button>
+            <button class="timeline-jump hutri-btn-sm" data-year="1998" type="button">1998</button>
+            <button class="timeline-jump hutri-btn-sm" data-year="2022" type="button">2022</button>
+            <button class="timeline-jump hutri-btn-sm" data-year="2025" type="button">2025</button>
+        </div>
+    </div>
+
+    <!-- Milestone Modal -->
+    <div id="milestone-modal" class="hutri-modal">
+        <div class="modal-card">
+            <button id="modal-close" class="modal-close" type="button" aria-label="Tutup">&times;</button>
+            <div class="modal-badge">
+                <span id="modal-year">1945</span>
+                <span id="modal-tahun-ke">HUT ke-1</span>
+            </div>
+            <h2 id="modal-title">Proklamasi Kemerdekaan</h2>
+            <div class="modal-meta">
+                <span><i class="fas fa-map-marker-alt"></i> <span id="modal-place">Jakarta</span></span>
+                <span><i class="fas fa-tag"></i> <span id="modal-category">Sejarah</span></span>
+            </div>
+            <p id="modal-description"></p>
+        </div>
+    </div>
+
+    <!-- Dashboard Panel -->
+    <aside id="dashboard-panel" class="side-panel hutri-panel">
+        <div class="panel-header">
+            <h2><i class="fas fa-chart-line"></i> Dashboard Patriotisme</h2>
+            <span id="live-indicator" class="live-badge"><span class="live-dot"></span> LIVE</span>
+            <button id="dashboard-close" class="panel-close" type="button">&times;</button>
+        </div>
+        <div class="panel-body">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-value" id="stat-greetings">0</span>
+                    <span class="stat-label">Ucapan Dirgahayu</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="stat-visitors">0</span>
+                    <span class="stat-label">Pengunjung</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="stat-hashtag">0</span>
+                    <span class="stat-label">#HUTRI81</span>
+                </div>
+            </div>
+
+            <h3 class="section-title">Heatmap Provinsi</h3>
+            <div id="province-grid" class="province-grid"></div>
+
+            <h3 class="section-title">Kirim Ucapan</h3>
+            <form id="greeting-form" class="greeting-form">
+                <input type="text" id="greeting-name" placeholder="Nama Anda" maxlength="50">
+                <select id="greeting-province"></select>
+                <textarea id="greeting-message" placeholder="Dirgahayu RI ke-81! Merdeka!" rows="2" maxlength="200"></textarea>
+                <button type="submit" class="hutri-btn hutri-btn-primary">
+                    <i class="fas fa-paper-plane"></i> Kirim Ucapan
+                </button>
+            </form>
+
+            <h3 class="section-title">Ucapan Terbaru</h3>
+            <div id="greeting-feed" class="greeting-feed"></div>
+        </div>
+    </aside>
+    <button id="dashboard-toggle" class="fab fab-dashboard" type="button" aria-label="Buka dashboard">
+        <i class="fas fa-chart-line"></i>
+    </button>
+
+    <!-- Merdeka Talk Chat -->
+    <aside id="chat-panel" class="side-panel side-panel-left hutri-panel hutri-chat">
+        <div class="panel-header">
+            <h2><i class="fas fa-microphone-alt"></i> Merdeka Talk</h2>
+            <button id="chat-settings-btn" class="panel-icon-btn" type="button" title="Pengaturan API">
+                <i class="fas fa-cog"></i>
+            </button>
+            <button id="chat-close" class="panel-close" type="button">&times;</button>
+        </div>
+        <div id="chat-settings" class="chat-settings">
+            <p>Gemini API Key (opsional):</p>
+            <input type="password" id="gemini-api-key" placeholder="AIza...">
+            <button id="save-api-key" class="hutri-btn hutri-btn-sm hutri-btn-primary" type="button">Simpan</button>
+            <small>Tanpa API key, chat tetap berjalan dengan knowledge base lokal.</small>
+        </div>
+        <div id="chat-messages" class="chat-messages"></div>
+        <div class="chat-quick">
+            <button class="chat-quick-btn hutri-btn-sm" data-question="Ceritakan Proklamasi 17 Agustus 1945" type="button">Proklamasi</button>
+            <button class="chat-quick-btn hutri-btn-sm" data-question="Apa itu Pancasila?" type="button">Pancasila</button>
+            <button class="chat-quick-btn hutri-btn-sm" data-question="Buatkan ucapan HUT RI ke-81" type="button">Ucapan</button>
+            <button class="chat-quick-btn hutri-btn-sm" data-question="Trivia HUT RI" type="button">Trivia</button>
+        </div>
+        <div class="chat-input-row">
+            <button id="chat-voice" class="chat-voice-btn" type="button" title="Input suara">
+                <i class="fas fa-microphone"></i>
+            </button>
+            <input type="text" id="chat-input" placeholder="Tanya sejarah, Pancasila, trivia..." autocomplete="off">
+            <button id="chat-send" class="hutri-btn hutri-btn-primary" type="button">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </aside>
+    <button id="chat-toggle" class="fab fab-chat" type="button" aria-label="Buka Merdeka Talk">
+        <i class="fas fa-comments"></i>
+    </button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="js/hutri81-data.js"></script>
+    <script src="js/hutri81-scene.js"></script>
+    <script src="js/hutri81-dashboard.js"></script>
+    <script src="js/hutri81-chat.js"></script>
+    <script src="js/hutri81-main.js"></script>
+</body>
+</html>
