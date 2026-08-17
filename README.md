@@ -105,12 +105,12 @@ Jika muncul **Error 404**, GitHub Pages belum diaktifkan. Ikuti langkah berikut:
 
 Setelah Pages aktif, setiap push ke branch **`master`** akan otomatis ter-deploy (via GitHub Actions workflow).
 
-## Deploy ke Cloudflare Pages
+## Cloudflare Pages
 
-Sama seperti project Cloudflare lain (`live-give-away`), push ke **`master`** otomatis deploy via GitHub Actions.
+Push ke `master` — deploy otomatis via Cloudflare Pages (sama seperti project lain).
 
-- URL: `https://indonesia-81.pages.dev/hutri81`
-- Dev lokal: `npm run dev`
+- URL: `/hutri81`
+- Config: `wrangler.toml` + `functions/api/chat.js`
 
 ## Credits
 
