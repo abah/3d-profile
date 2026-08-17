@@ -107,10 +107,10 @@ Setelah Pages aktif, setiap push ke branch **`master`** akan otomatis ter-deploy
 
 ## Cloudflare Pages
 
-Push ke `master` — deploy otomatis via Cloudflare Pages (sama seperti project lain).
+Deploy via **Cloudflare Git Integration** (sama seperti `live-give-away` → nyala-7n7.pages.dev).
 
-- URL: `/hutri81`
-- Config: `wrangler.toml` + `functions/api/chat.js`
+- URL: **https://indonesia-81.pages.dev/hutri81**
+- Lihat `CLOUDFLARE.md` untuk config build
 
 ## Credits
 
