@@ -105,45 +105,12 @@ Jika muncul **Error 404**, GitHub Pages belum diaktifkan. Ikuti langkah berikut:
 
 Setelah Pages aktif, setiap push ke branch **`master`** akan otomatis ter-deploy (via GitHub Actions workflow).
 
-## Deploy ke Cloudflare Pages (HUT RI 81)
+## Deploy ke Cloudflare Pages
 
-Proyek Tier 1 dioptimalkan untuk **Cloudflare Pages** + **Pages Functions** (`/api/chat` sebagai proxy Gemini AI).
+Sama seperti project Cloudflare lain (`live-give-away`), push ke **`master`** otomatis deploy via GitHub Actions.
 
-### URL setelah deploy
-
-- Production: `https://indonesia-81.pages.dev`
-- HUT RI 81: `https://indonesia-81.pages.dev/hutri81` (atau `/hutri81.html`)
-
-### Setup sekali (Cloudflare Dashboard)
-
-1. Buat [API Token](https://dash.cloudflare.com/profile/api-tokens) dengan permission **Cloudflare Pages — Edit**
-2. Di GitHub repo → **Settings → Secrets → Actions**, tambahkan:
-   - `CLOUDFLARE_API_TOKEN`
-   - `CLOUDFLARE_ACCOUNT_ID` (dari dashboard Cloudflare, sidebar kanan)
-3. Di Cloudflare → **Workers & Pages → indonesia-81 → Settings → Variables and Secrets**:
-   - Tambah secret **`GEMINI_API_KEY`** (dari [Google AI Studio](https://aistudio.google.com/apikey))
-   - Opsional: `GEMINI_MODEL` = `gemini-2.0-flash`
-
-### Deploy otomatis
-
-Push ke branch **`master`** menjalankan workflow `.github/workflows/deploy-cloudflare.yml`.
-
-### Deploy manual
-
-```bash
-npm install
-cp .dev.vars.example .dev.vars   # isi GEMINI_API_KEY untuk dev lokal
-npm run dev                       # http://localhost:8788
-npx wrangler pages deploy . --project-name=indonesia-81
-```
-
-### Arsitektur Tier 1 di Cloudflare
-
-| Komponen | Layanan |
-|----------|---------|
-| Static (HTML/CSS/JS/Three.js) | Cloudflare Pages |
-| Merdeka Talk AI | Pages Function `/api/chat` + secret `GEMINI_API_KEY` |
-| Dashboard & 3D Timeline | Client-side (localStorage + WebGL) |
+- URL: `https://indonesia-81.pages.dev/hutri81`
+- Dev lokal: `npm run dev`
 
 ## Credits
 

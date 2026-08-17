@@ -56,8 +56,8 @@ class MerdekaTalk {
             this.elements.settingsPanel?.classList.remove('open');
             this.addBotMessage(
                 this.apiKey
-                    ? 'Kunci API Gemini disimpan (mode dev lokal). Di Cloudflare, AI dijalankan via secret server-side.'
-                    : 'Mode lokal aktif. Di Cloudflare Pages, set secret GEMINI_API_KEY untuk AI penuh.'
+                    ? 'Kunci API Gemini disimpan untuk mode lokal.'
+                    : 'Merdeka Talk siap. Tanya sejarah, Pancasila, atau trivia HUT RI!'
             );
         });
 
