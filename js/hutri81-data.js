@@ -1,5 +1,5 @@
 /**
- * Data HUT RI 81 — 81 milestone kemerdekaan (1945–2025)
+ * Data HUT RI 81 — 81 milestone kemerdekaan (1945–2026)
  */
 const HUTRI81_PROVINCES = [
     { id: 'aceh', name: 'Aceh', lat: 4.7, lon: 96.7 },
@@ -193,23 +193,17 @@ const HUTRI81_KEY_EVENTS = {
         location: { lat: -6.2088, lon: 106.8456, place: 'Jakarta' },
         description: 'Pandemi COVID-19 mempercepat adopsi digital: e-commerce, telemedicine, belajar online, dan layanan pemerintah elektronik (SPBE).'
     },
-    2022: {
-        title: 'Presidensi G20 Indonesia',
-        category: 'diplomasi',
-        location: { lat: -8.5069, lon: 115.2625, place: 'Bali' },
-        description: '15–16 November 2022: Indonesia memimpin G20. KTT di Bali menghasilkan Deklarasi Bali Leaders\' Declaration.'
-    },
     2024: {
         title: 'Pemilu Serentak Terbesar',
         category: 'demokrasi',
         location: { lat: -6.2088, lon: 106.8456, place: 'Nasional' },
         description: '14 Februari 2024: Pemilu serentak presiden, DPR, DPD, dan DPRD — demokrasi skala masif di 204.807 TPS se-Indonesia.'
     },
-    2025: {
-        title: 'Menuju Indonesia Emas 2045',
+    2026: {
+        title: 'Dirgahayu HUT RI ke-81',
         category: 'visi',
         location: { lat: -6.2088, lon: 106.8456, place: 'Nasional' },
-        description: 'Indonesia memasuki dekade menuju 100 tahun kemerdekaan (2045) dengan fokus ekonomi digital, SDM unggul, dan transisi energi hijau.'
+        description: '17 Agustus 2026: Indonesia merayakan 81 tahun kemerdekaan. Semangat persatuan Nusantara membangun bangsa menuju Indonesia Emas 2045.'
     }
 };
 
@@ -251,7 +245,7 @@ const HUTRI81_CATEGORY_LABELS = {
 
 function generateHutri81Milestones() {
     const milestones = [];
-    for (let year = 1945; year <= 2025; year++) {
+    for (let year = 1945; year <= 2026; year++) {
         const tahunKe = year - 1945;
         const keyEvent = HUTRI81_KEY_EVENTS[year];
         if (keyEvent) {
@@ -340,6 +334,6 @@ const MERDEKA_TALK_KB = [
     },
     {
         keywords: ['trivia', 'quiz', 'pertanyaan'],
-        answer: 'Trivia: Presiden pertama RI adalah Soekarno (1945–1967). Proklamasi dibaca 17 Agustus 1945. HUT RI ke-80 = 17 Agustus 2025. HUT RI ke-81 = 17 Agustus 2026. Lagu "Indonesia Raya" pertama kali diperdengarkan 28 Oktober 1928.'
+        answer: 'Trivia: Presiden pertama RI adalah Soekarno (1945–1967). Proklamasi dibaca 17 Agustus 1945. HUT RI ke-81 dirayakan 17 Agustus 2026 — 81 tahun sejak proklamasi kemerdekaan.'
     }
 ];

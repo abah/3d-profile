@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (timelineSlider) {
         timelineSlider.min = 1945;
-        timelineSlider.max = 2025;
+        timelineSlider.max = 2026;
         timelineSlider.value = 1945;
         updateTimelineUI(1945);
 
