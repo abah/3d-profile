@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/hutri81", "destination": "/hutri81.html" }
+  ]
+}

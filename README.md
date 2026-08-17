@@ -8,7 +8,15 @@ Visit the live website: [https://abah.github.io/3d-profile](https://abah.github.
 
 ### HUT RI ke-81 — Indonesia 81: Perjalanan Nusantara
 
-**Buka di sini:** [https://abah.github.io/3d-profile/hutri81](https://abah.github.io/3d-profile/hutri81)
+**Buka langsung (live):**
+
+| Platform | URL |
+|----------|-----|
+| Cloudflare Tunnel | [https://font-northeast-creator-holders.trycloudflare.com/hutri81](https://font-northeast-creator-holders.trycloudflare.com/hutri81) |
+| Vercel (temp ~1 jam) | [https://temporary-agile-valley-j4arsrm.vercel.app/hutri81](https://temporary-agile-valley-j4arsrm.vercel.app/hutri81) |
+| Localtunnel | [https://tall-bats-swim.loca.lt/hutri81](https://tall-bats-swim.loca.lt/hutri81) |
+
+> URL permanen Cloudflare Pages (`indonesia-81.pages.dev`) aktif setelah repo di-connect di dashboard CF (sama seperti nyala). Lihat `CLOUDFLARE.md`.
 
 Fitur Tier 1:
 - **3D Timeline Nusantara** — 81 milestone kemerdekaan (1945–2025) di peta bumi interaktif
