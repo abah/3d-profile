@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="description" content="Indonesia 81 — Perjalanan Nusantara. Rayakan HUT RI ke-81 dengan timeline 3D interaktif, AI Merdeka Talk, dan Dashboard Patriotisme.">
+    <meta name="description" content="Indonesia 81 — Perjalanan Nusantara. Rayakan HUT RI ke-81 dengan timeline 3D, Kembang Merdeka, dan Dashboard Patriotisme.">
     <meta name="theme-color" content="#ce1126">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -45,8 +45,8 @@
             <button id="btn-open-dashboard" class="hutri-btn hutri-btn-outline" type="button">
                 <i class="fas fa-chart-line"></i> Dashboard
             </button>
-            <button id="btn-open-chat" class="hutri-btn hutri-btn-outline" type="button">
-                <i class="fas fa-comments"></i> Merdeka Talk
+            <button id="btn-open-celebrate" class="hutri-btn hutri-btn-outline" type="button">
+                <i class="fas fa-sparkles"></i> Kembang Merdeka
             </button>
             <a href="index.html" class="hutri-btn hutri-btn-ghost">
                 <i class="fas fa-user"></i> Profil
@@ -57,7 +57,7 @@
     <!-- Instructions -->
     <div id="instructions" class="hutri-panel">
         <i class="fas fa-globe-asia"></i>
-        Putar bumi · Klik titik merah-putih · Geser timeline · Tanya Merdeka Talk
+        Putar bumi · Klik titik merah-putih · Geser timeline · Rayakan Merdeka 🎆
     </div>
 
     <!-- Timeline -->
@@ -139,39 +139,45 @@
         <i class="fas fa-chart-line"></i>
     </button>
 
-    <!-- Merdeka Talk Chat -->
-    <aside id="chat-panel" class="side-panel side-panel-left hutri-panel hutri-chat">
+    <canvas id="confetti-canvas" aria-hidden="true"></canvas>
+
+    <!-- Kembang Merdeka -->
+    <aside id="celebrate-panel" class="side-panel side-panel-left hutri-panel celebrate-panel">
         <div class="panel-header">
-            <h2><i class="fas fa-microphone-alt"></i> Merdeka Talk</h2>
-            <button id="chat-settings-btn" class="panel-icon-btn" type="button" title="Pengaturan API">
-                <i class="fas fa-cog"></i>
-            </button>
-            <button id="chat-close" class="panel-close" type="button">&times;</button>
+            <h2><i class="fas fa-sparkles"></i> Kembang Merdeka</h2>
+            <button id="celebrate-close" class="panel-close" type="button">&times;</button>
         </div>
-        <div id="chat-settings" class="chat-settings">
-            <p>Gemini API Key (opsional, dev lokal saja):</p>
-            <input type="password" id="gemini-api-key" placeholder="AIza...">
-            <button id="save-api-key" class="hutri-btn hutri-btn-sm hutri-btn-primary" type="button">Simpan</button>
-        </div>
-        <div id="chat-messages" class="chat-messages"></div>
-        <div class="chat-quick">
-            <button class="chat-quick-btn hutri-btn-sm" data-question="Ceritakan Proklamasi 17 Agustus 1945" type="button">Proklamasi</button>
-            <button class="chat-quick-btn hutri-btn-sm" data-question="Apa itu Pancasila?" type="button">Pancasila</button>
-            <button class="chat-quick-btn hutri-btn-sm" data-question="Buatkan ucapan HUT RI ke-81" type="button">Ucapan</button>
-            <button class="chat-quick-btn hutri-btn-sm" data-question="Trivia HUT RI" type="button">Trivia</button>
-        </div>
-        <div class="chat-input-row">
-            <button id="chat-voice" class="chat-voice-btn" type="button" title="Input suara">
-                <i class="fas fa-microphone"></i>
-            </button>
-            <input type="text" id="chat-input" placeholder="Tanya sejarah, Pancasila, trivia..." autocomplete="off">
-            <button id="chat-send" class="hutri-btn hutri-btn-primary" type="button">
-                <i class="fas fa-paper-plane"></i>
+        <div class="panel-body celebrate-body">
+            <div class="celebrate-hero">
+                <button id="celebrate-launch" class="celebrate-launch-btn" type="button">
+                    <span class="launch-icon">🎆</span>
+                    <span class="launch-text">Luncurkan Kembang Merdeka</span>
+                    <span class="launch-sub">Kembang api 3D di seluruh Nusantara</span>
+                </button>
+                <p class="celebrate-stat">Sudah diluncurkan: <strong id="celebrate-count">0</strong>×</p>
+            </div>
+
+            <div class="moment-card" id="moment-card">
+                <div class="moment-nav">
+                    <button id="moment-prev" type="button" aria-label="Sebelumnya"><i class="fas fa-chevron-left"></i></button>
+                    <span id="moment-emoji" class="moment-emoji">🇮🇩</span>
+                    <button id="moment-next" type="button" aria-label="Selanjutnya"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <h3 id="moment-title">Proklamasi 1945</h3>
+                <p id="moment-fact"></p>
+            </div>
+
+            <h3 class="section-title">Nyala Nusantara</h3>
+            <p id="celebrate-progress" class="celebrate-progress">Nyala Nusantara: 0/38 provinsi</p>
+            <div class="celebrate-progress-bar"><div id="celebrate-progress-fill"></div></div>
+            <div id="celebrate-province-grid" class="celebrate-province-grid"></div>
+            <button id="celebrate-mega" class="hutri-btn hutri-btn-primary celebrate-mega-btn" type="button">
+                <i class="fas fa-bolt"></i> Mega Dirgahayu (semua provinsi)
             </button>
         </div>
     </aside>
-    <button id="chat-toggle" class="fab fab-chat" type="button" aria-label="Buka Merdeka Talk">
-        <i class="fas fa-comments"></i>
+    <button id="celebrate-toggle" class="fab fab-celebrate" type="button" aria-label="Buka Kembang Merdeka">
+        <i class="fas fa-sparkles"></i>
     </button>
 
     <!-- Mobile bottom navigation (native app style) -->
@@ -184,9 +190,9 @@
             <i class="fas fa-sliders-h"></i>
             <span>Timeline</span>
         </button>
-        <button type="button" class="mobile-nav-btn" data-tab="chat">
-            <i class="fas fa-comments"></i>
-            <span>Talk</span>
+        <button type="button" class="mobile-nav-btn" data-tab="celebrate">
+            <i class="fas fa-sparkles"></i>
+            <span>Rayakan</span>
         </button>
         <button type="button" class="mobile-nav-btn" data-tab="dashboard">
             <i class="fas fa-chart-line"></i>
@@ -195,11 +201,11 @@
     </nav>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="js/hutri81-data.js?v=20260817b"></script>
-    <script src="js/hutri81-scene.js?v=20260817b"></script>
-    <script src="js/hutri81-dashboard.js?v=20260817b"></script>
-    <script src="js/hutri81-chat.js?v=20260817b"></script>
-    <script src="js/hutri81-mobile.js?v=20260817b"></script>
-    <script src="js/hutri81-main.js?v=20260817b"></script>
+    <script src="js/hutri81-data.js?v=20260817c"></script>
+    <script src="js/hutri81-scene.js?v=20260817c"></script>
+    <script src="js/hutri81-dashboard.js?v=20260817c"></script>
+    <script src="js/hutri81-celebrate.js?v=20260817c"></script>
+    <script src="js/hutri81-mobile.js?v=20260817c"></script>
+    <script src="js/hutri81-main.js?v=20260817c"></script>
 </body>
 </html>

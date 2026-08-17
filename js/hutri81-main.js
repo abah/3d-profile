@@ -77,8 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-open-dashboard')?.addEventListener('click', () => {
         window.patriotismDashboard?.toggle(true);
     });
-    document.getElementById('btn-open-chat')?.addEventListener('click', () => {
-        window.merdekaTalk?.toggle(true);
+    document.getElementById('btn-open-celebrate')?.addEventListener('click', () => {
+        window.celebrateMerdeka?.toggle(true);
     });
 
     document.addEventListener('hutri:milestone-flash', (e) => {
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
         scene = new Hutri81Scene(canvas, showMilestoneModal);
         window.hutri81Scene = scene;
         window.patriotismDashboard = new PatriotismDashboard();
-        window.merdekaTalk = new MerdekaTalk();
+        window.celebrateMerdeka = new CelebrateMerdeka();
 
         scene.goToYear(HUTRI81_ANNIVERSARY_YEAR);
 

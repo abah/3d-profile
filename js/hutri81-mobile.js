@@ -24,7 +24,7 @@
 
     function closeAllPanels() {
         window.patriotismDashboard?.toggle(false);
-        window.merdekaTalk?.toggle(false);
+        window.celebrateMerdeka?.toggle(false);
         document.getElementById('milestone-modal')?.classList.remove('active');
         window.hutri81Scene?.setPaused(false);
     }
@@ -54,16 +54,16 @@
                     return;
                 }
 
-                if (tab === 'chat') {
+                if (tab === 'celebrate') {
                     document.getElementById('timeline-bar')?.classList.remove('expanded');
                     window.patriotismDashboard?.toggle(false);
-                    window.merdekaTalk?.toggle(true);
+                    window.celebrateMerdeka?.toggle(true);
                     return;
                 }
 
                 if (tab === 'dashboard') {
                     document.getElementById('timeline-bar')?.classList.remove('expanded');
-                    window.merdekaTalk?.toggle(false);
+                    window.celebrateMerdeka?.toggle(false);
                     window.patriotismDashboard?.toggle(true);
                 }
             });
@@ -72,7 +72,7 @@
         document.getElementById('dashboard-close')?.addEventListener('click', () => {
             setMobileNavTab('explore');
         });
-        document.getElementById('chat-close')?.addEventListener('click', () => {
+        document.getElementById('celebrate-close')?.addEventListener('click', () => {
             setMobileNavTab('explore');
         });
         document.getElementById('modal-close')?.addEventListener('click', () => {

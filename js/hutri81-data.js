@@ -295,66 +295,14 @@ function generateHutri81Milestones() {
 
 const HUTRI81_MILESTONES = generateHutri81Milestones();
 
-/** Knowledge base untuk Merdeka Talk (fallback tanpa API) */
-const MERDEKA_TALK_KB = [
-    {
-        keywords: ['proklamasi', '17 agustus', '1945', 'soekarno', 'hatta'],
-        answer: 'Proklamasi Kemerdekaan Indonesia dibaca pada 17 Agustus 1945 oleh Ir. Soekarno dan Drs. Mohammad Hatta di Jalan Pegangsaan Timur 56 (kini Jl. Proklamasi), Jakarta. Inilah momen kelahiran Republik Indonesia.'
-    },
-    {
-        keywords: ['bpupki', 'ppki', 'sidang persiapan'],
-        answer: 'BPUPKI bersidang 29 Mei–1 Juni dan 10–17 Juli 1945. PPKI bersidang 18 Agustus 1945, mengesahkan UUD 1945 dan melantik Soekarno-Hatta sebagai presiden dan wakil presiden.'
-    },
-    {
-        keywords: ['meja bundar', 'kmb', 'den haag', '1949'],
-        answer: 'Konferensi Meja Bundar di Den Haag, Belanda (23 Agustus–2 November 1949). Belanda mengakui kedaulatan RI per 27 Desember 1949. Indonesia menjadi RIS hingga kembali ke NKRI, 17 Agustus 1950.'
-    },
-    {
-        keywords: ['bandung', 'asia afrika', '1955', 'non blok'],
-        answer: 'Konferensi Asia-Afrika di Bandung, 18–24 April 1955, dihadiri 29 negara. Dasasila Bandung melahirkan gerakan Non-Blok dan solidaritas negara berkembang.'
-    },
-    {
-        keywords: ['djuanda', 'wawasan nusantara', 'laut'],
-        answer: 'Deklarasi Djuanda (1 Desember 1957) menegaskan RI sebagai negara kepulauan dengan kedaulatan penuh atas perairan Nusantara — cikal bakal Wawasan Nusantara.'
-    },
-    {
-        keywords: ['pancasila', 'sila'],
-        answer: 'Pancasila adalah ideologi negara Indonesia yang terdiri dari lima sila: Ketuhanan Yang Maha Esa, Kemanusiaan yang Adil dan Beradab, Persatuan Indonesia, Kerakyatan yang Dipimpin oleh Hikmat Kebijaksanaan dalam Permusyawaratan/Perwakilan, dan Keadilan Sosial bagi Seluruh Rakyat Indonesia.'
-    },
-    {
-        keywords: ['bendera', 'merah putih', 'sang saka'],
-        answer: 'Bendera Merah-Putih (Sang Saka Merah Putih) dijadikan bendera nasional berdasarkan UU No. 24 Tahun 2009. Merah melambangkan keberanian, putih melambangkan kesucian.'
-    },
-    {
-        keywords: ['garuda', 'lambang', 'pancasila burung'],
-        answer: 'Garuda Pancasila adalah lambang negara Indonesia. Burung Garuda melambangkan kekuatan, dengan pita bertuliskan "Bhinneka Tunggal Ika" — berbeda-beda tetapi tetap satu jua.'
-    },
-    {
-        keywords: ['bhinneka', 'tunggal ika', 'keberagaman', 'nusantara'],
-        answer: '"Bhinneka Tunggal Ika" berarti berbeda-beda tetapi tetap satu. Indonesia terdiri dari 17.000+ pulau, 700+ bahasa daerah, dan 1.300+ suku bangsa — serta 38 provinsi (2022). Keberagaman ini adalah kekuatan kita.'
-    },
-    {
-        keywords: ['ibu kota', 'jakarta', 'ikn', 'nusantara'],
-        answer: 'Ibu kota Indonesia saat ini Jakarta (DKI Jakarta). Ibu Kota Nusantara (IKN) sedang dibangun di Penajam Paser Utara, Kalimantan Timur, sebagai visi pemerataan pembangunan.'
-    },
-    {
-        keywords: ['lagu kebangsaan', 'indonesia raya', 'wage rudolf'],
-        answer: 'Lagu kebangsaan Indonesia adalah "Indonesia Raya", ciptaan Wage Rudolf Supratman, pertama kali diperdengarkan pada 28 Oktober 1928 di Kongres Pemuda II.'
-    },
-    {
-        keywords: ['ucapan', 'selamat', 'hut', 'dirgahayu'],
-        answer: 'Contoh ucapan HUT RI: "Dirgahayu Republik Indonesia ke-81! Semoga bangsa kita semakin maju, adil, dan sejahtera. Merdeka!" — Anda bisa personalisasi dengan nama instansi atau daerah Anda.'
-    },
-    {
-        keywords: ['teknologi', 'digital', 'ai', 'startup'],
-        answer: 'Indonesia punya ekosistem digital terbesar di ASEAN: GoTo, Traveloka, Tokopedia, dan ratusan startup. Palapa Ring, Satu Data, dan transformasi digital pemerintahan (SPBE) mendorong Indonesia menuju ekonomi digital.'
-    },
-    {
-        keywords: ['trivia', 'quiz', 'pertanyaan'],
-        answer: 'Trivia: Presiden pertama RI adalah Soekarno (1945–1967). Proklamasi dibaca 17 Agustus 1945. HUT RI ke-79 = 2024, ke-80 = 2025, ke-81 = 2026.'
-    },
-    {
-        keywords: ['hut 81', 'hut ri 81', '2026', 'tahun ke 81'],
-        answer: 'HUT RI ke-81 jatuh pada 17 Agustus 2026 — genap 81 tahun sejak Proklamasi Kemerdekaan 17 Agustus 1945. Rumus: tahun HUT minus 1945 (contoh: 2026 − 1945 = 81).'
-    }
+/** Kartu momen untuk Rayakan Merdeka */
+const CELEBRATION_MOMENTS = [
+    { emoji: '🇮🇩', title: 'Proklamasi 1945', fact: '17 Agustus 1945 — Ir. Soekarno & Drs. Mohammad Hatta memproklamasikan kemerdekaan di Jl. Proklamasi, Jakarta.' },
+    { emoji: '🌍', title: 'Bhinneka Tunggal Ika', fact: '17.000+ pulau, 700+ bahasa, 38 provinsi — satu bangsa, satu nasionalisme.' },
+    { emoji: '🎌', title: 'Sang Saka Merah Putih', fact: 'Merah melambangkan keberanian, putih melambangkan kesucian — dikibarkan 17 Agustus setiap tahun.' },
+    { emoji: '🦅', title: 'Garuda Pancasila', fact: 'Lambang negara dengan 17 bulu ekor, 8 bulu ekor, 19 ruas — melambangkan tanggal Proklamasi.' },
+    { emoji: '🎵', title: 'Indonesia Raya', fact: 'Lagu kebangsaan ciptaan Wage Rudolf Supratman, diperdengarkan pertama kali 28 Oktober 1928.' },
+    { emoji: '🏛️', title: 'Pancasila', fact: 'Ideologi negara: Ketuhanan, Kemanusiaan, Persatuan, Kerakyatan, Keadilan Sosial.' },
+    { emoji: '⚓', title: 'Wawasan Nusantara', fact: 'Deklarasi Djuanda 1957 — Indonesia sebagai negara kepulauan (archipelagic state).' },
+    { emoji: '🎆', title: 'HUT RI ke-81', fact: '17 Agustus 2026 — genap 81 tahun merdeka. Dirgahayu Republik Indonesia!' }
 ];

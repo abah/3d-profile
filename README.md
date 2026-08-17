@@ -20,7 +20,7 @@ Visit the live website: [https://abah.github.io/3d-profile](https://abah.github.
 
 Fitur Tier 1:
 - **3D Timeline Nusantara** — perjalanan kemerdekaan 1945–2026 (HUT RI ke-81 = 17 Agustus 2026) di peta bumi interaktif
-- **Merdeka Talk** — AI host virtual (Gemini API opsional + knowledge base lokal)
+- **Kembang Merdeka** — kembang api 3D, nyala 38 provinsi, kartu momen patriotisme
 - **Dashboard Patriotisme** — statistik live, heatmap 38 provinsi, kirim ucapan Dirgahayu
 
 ## Features

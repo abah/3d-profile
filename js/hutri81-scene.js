@@ -28,6 +28,7 @@ class Hutri81Scene {
         this.lastMilestonePos = null;
         this.dragDistance = 0;
         this.touchTapThreshold = 12;
+        this.celebrationBoost = 0;
 
         this.init();
     }
@@ -338,14 +339,14 @@ class Hutri81Scene {
         const onUp = () => { this.isDragging = false; };
 
         window.addEventListener('mousedown', (e) => {
-            if (e.target.closest('.hutri-panel, .hutri-modal, .hutri-chat')) return;
+            if (e.target.closest('.hutri-panel, .hutri-modal, .celebrate-panel, .mobile-nav')) return;
             onDown(e.clientX, e.clientY);
         });
         window.addEventListener('mousemove', (e) => onMove(e.clientX, e.clientY));
         window.addEventListener('mouseup', onUp);
 
         window.addEventListener('touchstart', (e) => {
-            if (e.target.closest('.hutri-panel, .hutri-modal, .hutri-chat')) return;
+            if (e.target.closest('.hutri-panel, .hutri-modal, .celebrate-panel, .mobile-nav')) return;
             if (e.touches.length === 1) onDown(e.touches[0].clientX, e.touches[0].clientY);
         }, { passive: true });
         window.addEventListener('touchmove', (e) => {
@@ -396,12 +397,12 @@ class Hutri81Scene {
         };
 
         window.addEventListener('click', (e) => {
-            if (e.target.closest('.hutri-panel, .hutri-modal, .hutri-chat')) return;
+            if (e.target.closest('.hutri-panel, .hutri-modal, .celebrate-panel, .mobile-nav')) return;
             handleSelect(e.clientX, e.clientY);
         });
 
         window.addEventListener('touchend', (e) => {
-            if (e.target.closest('.hutri-panel, .hutri-modal, .hutri-chat, .mobile-nav')) return;
+            if (e.target.closest('.hutri-panel, .hutri-modal, .celebrate-panel, .mobile-nav')) return;
             const t = e.changedTouches[0];
             handleSelect(t.clientX, t.clientY);
         });
@@ -472,7 +473,43 @@ class Hutri81Scene {
         if (!paused) {
             this.cameraTargetZ = 42;
             this.selectedYear = null;
+            this.celebrationBoost = 0;
         }
+    }
+
+    launchMerdekaShow(intensity = 'normal') {
+        const isMega = intensity === 'mega';
+        const count = isMega ? 14 : 7;
+        const picks = [...HUTRI81_MILESTONES].sort(() => Math.random() - 0.5).slice(0, count);
+
+        this.isPaused = false;
+        this.celebrationBoost = isMega ? 1 : 0.6;
+        this.cameraTargetZ = isMega ? 28 : 34;
+
+        picks.forEach((m, i) => {
+            setTimeout(() => {
+                const localPos = this.latLonToVector3(m.lat, m.lon, this.earthRadius + 1);
+                const worldPos = localPos.clone();
+                this.earth.localToWorld(worldPos);
+                const color = HUTRI81_CATEGORY_COLORS[m.category] || 0xff3333;
+                this.triggerExplosion(worldPos, color, true);
+                if (i % 2 === 0) this.focusOnLatLon(m.lat, m.lon);
+            }, i * (isMega ? 180 : 280));
+        });
+
+        setTimeout(() => {
+            this.celebrationBoost = 0;
+            this.cameraTargetZ = 42;
+        }, isMega ? 3500 : 2500);
+
+        document.dispatchEvent(new CustomEvent('hutri:celebration-launched', { detail: { intensity } }));
+    }
+
+    launchProvinceSpark(lat, lon) {
+        const localPos = this.latLonToVector3(lat, lon, this.earthRadius + 0.5);
+        const worldPos = localPos.clone();
+        this.earth.localToWorld(worldPos);
+        this.triggerExplosion(worldPos, 0xff3333, false);
     }
 
     triggerExplosion(position, color, big = false) {
@@ -599,7 +636,7 @@ class Hutri81Scene {
         }
 
         if (!this.isDragging && !this.isPaused) {
-            this.targetRotation.y += this.autoRotationSpeed;
+            this.targetRotation.y += this.autoRotationSpeed + (this.celebrationBoost || 0) * 0.004;
         }
         this.currentRotation.x += (this.targetRotation.x - this.currentRotation.x) * this.dampingFactor;
         this.currentRotation.y += (this.targetRotation.y - this.currentRotation.y) * this.dampingFactor;
