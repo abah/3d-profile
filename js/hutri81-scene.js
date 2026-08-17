@@ -504,28 +504,32 @@ class Hutri81Scene {
 
     launchMerdekaShow(intensity = 'normal') {
         const isMega = intensity === 'mega';
-        const count = isMega ? 14 : 7;
-        const picks = [...HUTRI81_MILESTONES].sort(() => Math.random() - 0.5).slice(0, count);
+        const count = isMega ? 18 : 10;
+        const keyMilestones = HUTRI81_MILESTONES.filter((m) => HUTRI81_KEY_EVENTS[m.year]);
+        const picks = [...keyMilestones].sort(() => Math.random() - 0.5).slice(0, count);
 
         this.isPaused = false;
-        this.celebrationBoost = isMega ? 1 : 0.6;
-        this.cameraTargetZ = isMega ? 28 : 34;
+        this.selectedYear = null;
+        this.celebrationBoost = isMega ? 1 : 0.65;
+        this.cameraTargetZ = isMega ? 26 : 32;
 
         picks.forEach((m, i) => {
             setTimeout(() => {
-                const localPos = this.latLonToVector3(m.lat, m.lon, this.earthRadius + 1);
+                const lat = m.displayLat ?? m.lat;
+                const lon = m.displayLon ?? m.lon;
+                const localPos = this.latLonToVector3(lat, lon, this.earthRadius + 1);
                 const worldPos = localPos.clone();
                 this.earth.localToWorld(worldPos);
                 const color = HUTRI81_CATEGORY_COLORS[m.category] || 0xff3333;
                 this.triggerExplosion(worldPos, color, true);
-                if (i % 2 === 0) this.focusOnLatLon(m.lat, m.lon);
-            }, i * (isMega ? 180 : 280));
+                if (i === 0 || i % 3 === 0) this.focusOnLatLon(lat, lon);
+            }, i * (isMega ? 160 : 260));
         });
 
         setTimeout(() => {
             this.celebrationBoost = 0;
             this.cameraTargetZ = 42;
-        }, isMega ? 3500 : 2500);
+        }, isMega ? 4200 : 3000);
 
         document.dispatchEvent(new CustomEvent('hutri:celebration-launched', { detail: { intensity } }));
     }
@@ -534,7 +538,7 @@ class Hutri81Scene {
         const localPos = this.latLonToVector3(lat, lon, this.earthRadius + 0.5);
         const worldPos = localPos.clone();
         this.earth.localToWorld(worldPos);
-        this.triggerExplosion(worldPos, 0xff3333, false);
+        this.triggerExplosion(worldPos, 0xff3333, true);
     }
 
     triggerExplosion(position, color, big = false) {

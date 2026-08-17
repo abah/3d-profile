@@ -12,8 +12,8 @@
         document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
     }
 
-    function haptic(ms = 12) {
-        if (navigator.vibrate) navigator.vibrate(ms);
+    function haptic(pattern = 12) {
+        if (navigator.vibrate) navigator.vibrate(pattern);
     }
 
     function setMobileNavTab(tab) {
