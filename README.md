@@ -13,13 +13,13 @@ Visit the live website: [https://abah.github.io/3d-profile](https://abah.github.
 | Platform | URL |
 |----------|-----|
 | Cloudflare Tunnel | [https://font-northeast-creator-holders.trycloudflare.com/hutri81](https://font-northeast-creator-holders.trycloudflare.com/hutri81) |
-| Vercel (temp ~1 jam) | [https://temporary-agile-valley-j4arsrm.vercel.app/hutri81](https://temporary-agile-valley-j4arsrm.vercel.app/hutri81) |
+| Vercel (temp ~1 jam) | [https://temporary-agile-valley-j4arsrm.vercel.app/hutri81.html](https://temporary-agile-valley-j4arsrm.vercel.app/hutri81.html) |
 | Localtunnel | [https://tall-bats-swim.loca.lt/hutri81](https://tall-bats-swim.loca.lt/hutri81) |
 
 > URL permanen Cloudflare Pages (`indonesia-81.pages.dev`) aktif setelah repo di-connect di dashboard CF (sama seperti nyala). Lihat `CLOUDFLARE.md`.
 
 Fitur Tier 1:
-- **3D Timeline Nusantara** — 81 milestone kemerdekaan (1945–2025) di peta bumi interaktif
+- **3D Timeline Nusantara** — perjalanan kemerdekaan 1945–2026 (HUT RI ke-81 = 17 Agustus 2026) di peta bumi interaktif
 - **Merdeka Talk** — AI host virtual (Gemini API opsional + knowledge base lokal)
 - **Dashboard Patriotisme** — statistik live, heatmap 38 provinsi, kirim ucapan Dirgahayu
 

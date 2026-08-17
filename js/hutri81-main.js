@@ -8,14 +8,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalClose = document.getElementById('modal-close');
     const timelineSlider = document.getElementById('timeline-slider');
     const timelineYear = document.getElementById('timeline-year');
+    const timelineHut = document.getElementById('timeline-hut');
     const timelineLabel = document.getElementById('timeline-label');
 
     let scene = null;
 
     function showMilestoneModal(milestone) {
         document.getElementById('modal-year').textContent = milestone.year;
-        document.getElementById('modal-tahun-ke').textContent =
-            milestone.year === 1945 ? 'Tahun Proklamasi' : `HUT ke-${milestone.tahunKe}`;
+        document.getElementById('modal-tahun-ke').textContent = formatHutLabel(milestone.year);
         document.getElementById('modal-title').textContent = milestone.title;
         document.getElementById('modal-place').textContent = milestone.place;
         document.getElementById('modal-category').textContent =
@@ -42,14 +42,15 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateTimelineUI(year) {
         const m = HUTRI81_MILESTONES.find((x) => x.year === year);
         if (timelineYear) timelineYear.textContent = year;
+        if (timelineHut) timelineHut.textContent = formatHutLabel(year);
         if (timelineLabel && m) timelineLabel.textContent = m.title;
     }
 
     if (timelineSlider) {
-        timelineSlider.min = 1945;
-        timelineSlider.max = 2026;
-        timelineSlider.value = 1945;
-        updateTimelineUI(1945);
+        timelineSlider.min = HUTRI81_PROCLAMATION_YEAR;
+        timelineSlider.max = HUTRI81_ANNIVERSARY_YEAR;
+        timelineSlider.value = HUTRI81_ANNIVERSARY_YEAR;
+        updateTimelineUI(HUTRI81_ANNIVERSARY_YEAR);
 
         timelineSlider.addEventListener('input', (e) => {
             updateTimelineUI(parseInt(e.target.value, 10));
@@ -90,6 +91,8 @@ document.addEventListener('DOMContentLoaded', () => {
         window.hutri81Scene = scene;
         window.patriotismDashboard = new PatriotismDashboard();
         window.merdekaTalk = new MerdekaTalk();
+
+        scene.goToYear(HUTRI81_ANNIVERSARY_YEAR);
 
         loading.style.opacity = '0';
         setTimeout(() => { loading.style.display = 'none'; }, 800);

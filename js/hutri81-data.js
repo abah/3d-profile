@@ -1,6 +1,21 @@
 /**
- * Data HUT RI 81 — 81 milestone kemerdekaan (1945–2026)
+ * Data HUT RI 81
+ * Proklamasi 17 Agustus 1945 · HUT RI ke-81 = 17 Agustus 2026
+ * Rumus: HUT RI ke-N = N, dirayakan pada tahun (1945 + N)
  */
+const HUTRI81_PROCLAMATION_YEAR = 1945;
+const HUTRI81_ANNIVERSARY_YEAR = 2026;
+const HUTRI81_ANNIVERSARY_NUMBER = 81;
+
+/** Nomor HUT RI untuk tahun kalender (2026 → 81). 1945 → 0 (proklamasi). */
+function getHutNumber(year) {
+    return year - HUTRI81_PROCLAMATION_YEAR;
+}
+
+function formatHutLabel(year) {
+    if (year === HUTRI81_PROCLAMATION_YEAR) return 'Tahun Proklamasi';
+    return `HUT RI ke-${getHutNumber(year)}`;
+}
 const HUTRI81_PROVINCES = [
     { id: 'aceh', name: 'Aceh', lat: 4.7, lon: 96.7 },
     { id: 'sumut', name: 'Sumatera Utara', lat: 2.1, lon: 99.5 },
@@ -203,7 +218,7 @@ const HUTRI81_KEY_EVENTS = {
         title: 'Dirgahayu HUT RI ke-81',
         category: 'visi',
         location: { lat: -6.2088, lon: 106.8456, place: 'Nasional' },
-        description: '17 Agustus 2026: Indonesia merayakan 81 tahun kemerdekaan. Semangat persatuan Nusantara membangun bangsa menuju Indonesia Emas 2045.'
+        description: '17 Agustus 2026 — HUT Republik Indonesia ke-81. Indonesia genap 81 tahun merdeka sejak Proklamasi 17 Agustus 1945.'
     }
 };
 
@@ -245,13 +260,14 @@ const HUTRI81_CATEGORY_LABELS = {
 
 function generateHutri81Milestones() {
     const milestones = [];
-    for (let year = 1945; year <= 2026; year++) {
-        const tahunKe = year - 1945;
+    for (let year = HUTRI81_PROCLAMATION_YEAR; year <= HUTRI81_ANNIVERSARY_YEAR; year++) {
+        const hutNumber = getHutNumber(year);
         const keyEvent = HUTRI81_KEY_EVENTS[year];
         if (keyEvent) {
             milestones.push({
                 year,
-                tahunKe,
+                hutNumber,
+                tahunKe: hutNumber,
                 title: keyEvent.title,
                 category: keyEvent.category,
                 description: keyEvent.description,
@@ -260,13 +276,14 @@ function generateHutri81Milestones() {
                 place: keyEvent.location.place
             });
         } else {
-            const province = HUTRI81_PROVINCES[(year - 1945) % HUTRI81_PROVINCES.length];
+            const province = HUTRI81_PROVINCES[(year - HUTRI81_PROCLAMATION_YEAR) % HUTRI81_PROVINCES.length];
             milestones.push({
                 year,
-                tahunKe,
-                title: `HUT ke-${tahunKe}: ${province.name}`,
+                hutNumber,
+                tahunKe: hutNumber,
+                title: `${formatHutLabel(year)}: ${province.name}`,
                 category: 'default',
-                description: `Memperingati ${tahunKe} tahun kemerdekaan Indonesia. Semangat persatuan dan gotong royong dari ${province.name} ikut membangun bangsa.`,
+                description: `Memperingati ${formatHutLabel(year)}. Semangat persatuan dan gotong royong dari ${province.name} ikut membangun bangsa.`,
                 lat: province.lat,
                 lon: province.lon,
                 place: province.name
@@ -334,6 +351,10 @@ const MERDEKA_TALK_KB = [
     },
     {
         keywords: ['trivia', 'quiz', 'pertanyaan'],
-        answer: 'Trivia: Presiden pertama RI adalah Soekarno (1945–1967). Proklamasi dibaca 17 Agustus 1945. HUT RI ke-81 dirayakan 17 Agustus 2026 — 81 tahun sejak proklamasi kemerdekaan.'
+        answer: 'Trivia: Presiden pertama RI adalah Soekarno (1945–1967). Proklamasi dibaca 17 Agustus 1945. HUT RI ke-79 = 2024, ke-80 = 2025, ke-81 = 2026.'
+    },
+    {
+        keywords: ['hut 81', 'hut ri 81', '2026', 'tahun ke 81'],
+        answer: 'HUT RI ke-81 jatuh pada 17 Agustus 2026 — genap 81 tahun sejak Proklamasi Kemerdekaan 17 Agustus 1945. Rumus: tahun HUT minus 1945 (contoh: 2026 − 1945 = 81).'
     }
 ];

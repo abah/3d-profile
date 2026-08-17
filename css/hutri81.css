@@ -253,8 +253,20 @@ body:active { cursor: grabbing; }
 .timeline-header {
     display: flex;
     align-items: baseline;
-    gap: 12px;
+    gap: 10px;
     margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+.timeline-hut {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: white;
+    background: var(--red);
+    padding: 2px 10px;
+    border-radius: 12px;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
 }
 
 .timeline-year {
