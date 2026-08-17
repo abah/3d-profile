@@ -19,4 +19,8 @@ logs
 npm-debug.log*
 
 # Dependencies
-node_modules/ 
+node_modules/
+
+# Cloudflare local secrets
+.dev.vars
+.wrangler/

@@ -56,8 +56,8 @@ class MerdekaTalk {
             this.elements.settingsPanel?.classList.remove('open');
             this.addBotMessage(
                 this.apiKey
-                    ? 'Kunci API Gemini disimpan. Merdeka Talk siap dengan AI penuh!'
-                    : 'Mode lokal aktif. Saya tetap bisa jawab trivia & sejarah kemerdekaan.'
+                    ? 'Kunci API Gemini disimpan (mode dev lokal). Di Cloudflare, AI dijalankan via secret server-side.'
+                    : 'Mode lokal aktif. Di Cloudflare Pages, set secret GEMINI_API_KEY untuk AI penuh.'
             );
         });
 
@@ -132,6 +132,26 @@ class MerdekaTalk {
         return 'Maaf, saya belum punya jawaban spesifik untuk itu. Coba tanya tentang: Proklamasi 1945, Pancasila, Bendera Merah-Putih, Garuda Pancasila, IKN, atau minta ucapan HUT RI. Atur kunci API Gemini di ⚙️ untuk jawaban AI lebih lengkap.';
     }
 
+    async askCloudflareApi(query) {
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query })
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (response.ok && data.answer) {
+            return { answer: data.answer, source: 'cloudflare' };
+        }
+
+        if (data.useLocal) {
+            return { answer: this.localAnswer(query), source: 'local', note: data.error };
+        }
+
+        throw new Error(data.error || 'API chat gagal');
+    }
+
     async askGemini(query) {
         const systemPrompt = `Kamu adalah MC virtual Merdeka Talk untuk HUT Republik Indonesia ke-81 (17 Agustus 2026). 
 Jawab dalam Bahasa Indonesia, hangat, patriotik tapi tidak berlebihan. 
@@ -168,19 +188,33 @@ Jawaban maksimal 3 paragraf pendek.`;
 
         try {
             let answer;
-            if (this.apiKey) {
-                try {
-                    answer = await this.askGemini(text);
-                } catch {
-                    answer = this.localAnswer(text) + '\n\n_(Gemini tidak tersedia — menggunakan knowledge base lokal)_';
+            let usedLocal = false;
+
+            try {
+                const result = await this.askCloudflareApi(text);
+                answer = result.answer;
+                usedLocal = result.source === 'local';
+            } catch {
+                if (this.apiKey) {
+                    try {
+                        answer = await this.askGemini(text);
+                    } catch {
+                        answer = this.localAnswer(text);
+                        usedLocal = true;
+                    }
+                } else {
+                    await new Promise((r) => setTimeout(r, 400 + Math.random() * 600));
+                    answer = this.localAnswer(text);
+                    usedLocal = true;
                 }
-            } else {
-                await new Promise((r) => setTimeout(r, 400 + Math.random() * 600));
-                answer = this.localAnswer(text);
             }
+
             this.showTyping(false);
+            if (usedLocal && this.apiKey) {
+                answer += '\n\n_(Menggunakan knowledge base lokal)_';
+            }
             this.addBotMessage(answer);
-            this.speak(answer.split('\n')[0]);
+            this.speak(answer.split('\n')[0].replace(/_/g, ''));
         } catch {
             this.showTyping(false);
             this.addBotMessage('Terjadi kesalahan. Silakan coba lagi.');
