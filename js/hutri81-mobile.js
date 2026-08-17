@@ -126,19 +126,7 @@
     }
 
     function initStandaloneBanner() {
-        if (!isMobile() || isStandalone()) return;
-
-        const dismissed = sessionStorage.getItem('hutri81_install_dismissed');
-        if (dismissed) return;
-
-        const banner = document.getElementById('install-banner');
-        if (!banner) return;
-
-        banner.hidden = false;
-        banner.querySelector('.install-dismiss')?.addEventListener('click', () => {
-            banner.hidden = true;
-            sessionStorage.setItem('hutri81_install_dismissed', '1');
-        });
+        /* Banner PWA dihapus — mengganggu UX mobile */
     }
 
     function applyDeviceClasses() {
