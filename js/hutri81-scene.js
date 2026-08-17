@@ -55,7 +55,6 @@ class Hutri81Scene {
 
         this.setupLights();
         this.createEarth();
-        this.createFloatingMotto();
         this.createStars();
         this.createOrbitalRing();
         this.createMilestoneMarkers();
@@ -155,142 +154,6 @@ class Hutri81Scene {
 
         this.markersGroup = new THREE.Group();
         this.earth.add(this.markersGroup);
-    }
-
-    createFloatingMotto() {
-        const canvas = document.createElement('canvas');
-        const w = 1024;
-        const h = 280;
-        canvas.width = w;
-        canvas.height = h;
-        const ctx = canvas.getContext('2d');
-
-        ctx.clearRect(0, 0, w, h);
-
-        const pillGrad = ctx.createLinearGradient(0, 0, w, 0);
-        pillGrad.addColorStop(0, 'rgba(180, 0, 0, 0.55)');
-        pillGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.12)');
-        pillGrad.addColorStop(1, 'rgba(180, 0, 0, 0.55)');
-        ctx.fillStyle = pillGrad;
-        ctx.beginPath();
-        ctx.roundRect(40, 30, w - 80, h - 60, 36);
-        ctx.fill();
-
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        const drawLine = (text, y, size) => {
-            ctx.font = `bold ${size}px "Segoe UI", system-ui, sans-serif`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.shadowColor = 'rgba(255, 40, 40, 0.9)';
-            ctx.shadowBlur = 18;
-            ctx.fillStyle = '#ffffff';
-            ctx.fillText(text, w / 2, y);
-            ctx.shadowBlur = 0;
-            ctx.fillStyle = '#ff2222';
-            ctx.fillText(text, w / 2, y - 1);
-        };
-
-        drawLine('Indonesia Berdaulat', h * 0.38, 56);
-        drawLine('Adil dan Makmur', h * 0.62, 48);
-
-        const texture = new THREE.CanvasTexture(canvas);
-        texture.minFilter = THREE.LinearFilter;
-        texture.magFilter = THREE.LinearFilter;
-
-        const spriteMat = new THREE.SpriteMaterial({
-            map: texture,
-            transparent: true,
-            depthWrite: false,
-            opacity: 0.95
-        });
-        this.mottoSprite = new THREE.Sprite(spriteMat);
-        this.mottoSprite.scale.set(30, 8.2, 1);
-        this.mottoSprite.renderOrder = 10;
-
-        const glowCanvas = document.createElement('canvas');
-        glowCanvas.width = 256;
-        glowCanvas.height = 64;
-        const gctx = glowCanvas.getContext('2d');
-        const radial = gctx.createRadialGradient(128, 32, 0, 128, 32, 128);
-        radial.addColorStop(0, 'rgba(255, 80, 80, 0.55)');
-        radial.addColorStop(0.5, 'rgba(255, 255, 255, 0.15)');
-        radial.addColorStop(1, 'rgba(255, 40, 40, 0)');
-        gctx.fillStyle = radial;
-        gctx.fillRect(0, 0, 256, 64);
-        const glowTex = new THREE.CanvasTexture(glowCanvas);
-        this.mottoGlow = new THREE.Sprite(
-            new THREE.SpriteMaterial({
-                map: glowTex,
-                transparent: true,
-                depthWrite: false,
-                blending: THREE.AdditiveBlending,
-                opacity: 0.7
-            })
-        );
-        this.mottoGlow.scale.set(34, 10, 1);
-        this.mottoGlow.position.z = -0.5;
-
-        const haloPositions = new Float32Array(24 * 3);
-        const haloColors = new Float32Array(24 * 3);
-        for (let i = 0; i < 24; i++) {
-            const angle = (i / 24) * Math.PI * 2;
-            const r = 14 + Math.sin(i * 1.7) * 1.5;
-            haloPositions[i * 3] = Math.cos(angle) * r;
-            haloPositions[i * 3 + 1] = Math.sin(angle * 0.5) * 2;
-            haloPositions[i * 3 + 2] = Math.sin(angle) * r;
-            const isRed = i % 2 === 0;
-            haloColors[i * 3] = 1;
-            haloColors[i * 3 + 1] = isRed ? 0.2 : 1;
-            haloColors[i * 3 + 2] = isRed ? 0.25 : 1;
-        }
-        const haloGeo = new THREE.BufferGeometry();
-        haloGeo.setAttribute('position', new THREE.BufferAttribute(haloPositions, 3));
-        haloGeo.setAttribute('color', new THREE.BufferAttribute(haloColors, 3));
-        this.mottoHalo = new THREE.Points(
-            haloGeo,
-            new THREE.PointsMaterial({
-                size: 0.45,
-                vertexColors: true,
-                transparent: true,
-                opacity: 0.75,
-                blending: THREE.AdditiveBlending,
-                depthWrite: false
-            })
-        );
-
-        this.mottoGroup = new THREE.Group();
-        this.mottoGroup.add(this.mottoGlow, this.mottoHalo, this.mottoSprite);
-        this.mottoBaseY = this.earthRadius + 9;
-        this.mottoGroup.position.set(0, this.mottoBaseY, 0);
-        this.earth.add(this.mottoGroup);
-    }
-
-    updateFloatingMotto(t) {
-        if (!this.mottoGroup) return;
-
-        const boost = this.celebrationBoost || 0;
-        const bob = Math.sin(t * (0.85 + boost * 0.5)) * (1.4 + boost * 1.8);
-        const swayX = Math.sin(t * (0.42 + boost * 0.3)) * (1.1 + boost);
-        const swayZ = Math.cos(t * (0.38 + boost * 0.3)) * (1.1 + boost);
-        this.mottoGroup.position.set(swayX, this.mottoBaseY + bob, swayZ);
-
-        const pulse = 1 + Math.sin(t * 1.15) * 0.045;
-        this.mottoSprite.scale.set(30 * pulse, 8.2 * pulse, 1);
-        this.mottoSprite.material.opacity = 0.82 + Math.sin(t * 1.4) * 0.12;
-
-        if (this.mottoGlow) {
-            this.mottoGlow.scale.set(34 * pulse, 10 * pulse, 1);
-            this.mottoGlow.material.opacity = 0.55 + Math.sin(t * 1.8) * 0.2;
-        }
-
-        if (this.mottoHalo) {
-            this.mottoHalo.rotation.y = t * 0.25;
-            this.mottoHalo.rotation.x = Math.sin(t * 0.5) * 0.15;
-            this.mottoHalo.material.opacity = 0.5 + Math.sin(t * 2) * 0.25;
-        }
     }
 
     createStars() {
@@ -841,8 +704,6 @@ class Hutri81Scene {
         this.camera.position.y = 5 + Math.cos(t * 0.1) * 1.0;
         this.camera.position.z = this.cameraCurrentZ;
         this.camera.lookAt(0, 0, 0);
-
-        this.updateFloatingMotto(t);
 
         if (dt < 0.2) {
             this.updateExplosions(dt);

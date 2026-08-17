@@ -983,6 +983,114 @@ body:active { cursor: grabbing; }
     animation: yearPulse 0.6s ease-out;
 }
 
+/* Floating motto — crisp HTML overlay above globe */
+.floating-motto {
+    position: fixed;
+    left: 50%;
+    top: clamp(30%, 36vh, 40%);
+    transform: translateX(-50%);
+    z-index: 4;
+    pointer-events: none;
+    text-align: center;
+    padding: 0 20px;
+    max-width: min(94vw, 560px);
+    opacity: 0;
+    animation: mottoReveal 1.4s ease-out 1s forwards, mottoFloat 6s ease-in-out 2.4s infinite;
+    transition: opacity 0.35s ease, filter 0.35s ease;
+}
+
+.floating-motto.is-dimmed {
+    opacity: 0.25 !important;
+    filter: blur(1px);
+}
+
+.floating-motto.celebrating {
+    animation: mottoReveal 1.4s ease-out 1s forwards, mottoCelebrate 2.8s ease-in-out infinite;
+}
+
+.motto-line {
+    margin: 0;
+    font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+    font-weight: 700;
+    font-size: clamp(1.25rem, 4.5vw, 2rem);
+    line-height: 1.25;
+    letter-spacing: 0.04em;
+    color: #ffffff;
+    text-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.8),
+        0 0 24px rgba(206, 17, 38, 0.35);
+}
+
+.motto-line-accent {
+    margin-top: 0.15em;
+    font-weight: 600;
+    font-size: clamp(1rem, 3.8vw, 1.55rem);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    background: linear-gradient(
+        90deg,
+        #ff6b6b 0%,
+        #ffffff 45%,
+        #ffffff 55%,
+        #ff6b6b 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.7));
+}
+
+.motto-ornament {
+    width: min(120px, 28vw);
+    height: 1px;
+    margin: 0 auto 0.65em;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.15) 20%,
+        rgba(206, 17, 38, 0.85) 50%,
+        rgba(255, 255, 255, 0.15) 80%,
+        transparent
+    );
+}
+
+.motto-ornament-bottom {
+    margin: 0.65em auto 0;
+    opacity: 0.7;
+}
+
+@keyframes mottoReveal {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+@keyframes mottoFloat {
+    0%, 100% {
+        transform: translateX(-50%) translateY(0);
+    }
+    50% {
+        transform: translateX(-50%) translateY(-10px);
+    }
+}
+
+@keyframes mottoCelebrate {
+    0%, 100% {
+        transform: translateX(-50%) translateY(0) scale(1);
+    }
+    35% {
+        transform: translateX(-50%) translateY(-14px) scale(1.03);
+    }
+    70% {
+        transform: translateX(-50%) translateY(-4px) scale(1.01);
+    }
+}
+
 @media (max-width: 768px) {
     .mobile-nav { display: flex; }
 
@@ -994,6 +1102,20 @@ body:active { cursor: grabbing; }
     #hutri-hud h1 { font-size: 1.45rem; }
     .hud-subtitle { font-size: 0.7rem; margin-bottom: 0; }
     .hud-actions { display: none; }
+
+    .floating-motto {
+        top: clamp(26%, 32vh, 36%);
+        padding: 0 12px;
+    }
+
+    .motto-line {
+        font-size: clamp(1.05rem, 5vw, 1.45rem);
+    }
+
+    .motto-line-accent {
+        font-size: clamp(0.82rem, 3.8vw, 1.1rem);
+        letter-spacing: 0.12em;
+    }
 
     #instructions {
         font-size: 0.65rem;
