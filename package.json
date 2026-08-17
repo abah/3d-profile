@@ -1,0 +1,11 @@
+{
+  "name": "indonesia-81",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler pages dev . --port 8788",
+    "deploy": "wrangler pages deploy . --project-name=indonesia-81"
+  },
+  "devDependencies": {
+    "wrangler": "^4.123.0"
+  }
+}

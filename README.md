@@ -6,6 +6,15 @@ A modern, interactive 3D profile website built with Three.js and HTML/CSS. This 
 
 Visit the live website: [https://abah.github.io/3d-profile](https://abah.github.io/3d-profile)
 
+### HUT RI ke-81 — Indonesia 81: Perjalanan Nusantara
+
+Proyek khusus perayaan HUT RI ke-81: [https://abah.github.io/3d-profile/hutri81.html](https://abah.github.io/3d-profile/hutri81.html)
+
+Fitur Tier 1:
+- **3D Timeline Nusantara** — 81 milestone kemerdekaan (1945–2025) di peta bumi interaktif
+- **Merdeka Talk** — AI host virtual (Gemini API opsional + knowledge base lokal)
+- **Dashboard Patriotisme** — statistik live, heatmap 38 provinsi, kirim ucapan Dirgahayu
+
 ## Features
 
 - Interactive 3D Earth that users can rotate to discover information
@@ -95,6 +104,13 @@ Jika muncul **Error 404**, GitHub Pages belum diaktifkan. Ikuti langkah berikut:
 ### Update otomatis
 
 Setelah Pages aktif, setiap push ke branch **`master`** akan otomatis ter-deploy (via GitHub Actions workflow).
+
+## Deploy ke Cloudflare Pages
+
+Sama seperti project Cloudflare lain (`live-give-away`), push ke **`master`** otomatis deploy via GitHub Actions.
+
+- URL: `https://indonesia-81.pages.dev/hutri81`
+- Dev lokal: `npm run dev`
 
 ## Credits
 
