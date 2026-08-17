@@ -50,7 +50,8 @@ body:active { cursor: grabbing; }
     touch-action: none;
 }
 
-#hutri-canvas {
+/* Loading */
+#loading {
     position: fixed;
     inset: 0;
     z-index: 2000;
