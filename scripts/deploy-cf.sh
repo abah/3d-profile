@@ -8,4 +8,6 @@ fi
 
 cd "$(dirname "$0")/.."
 npx wrangler pages deploy . --project-name=indonesia-81 --commit-dirty=true
-echo "Live: https://indonesia-81.pages.dev/hutri81"
+echo ""
+echo "Pages:  https://indonesia-81.pages.dev/hutri81"
+echo "Domain: https://hutri81.abah.me  (setelah custom domain di CF Dashboard)"

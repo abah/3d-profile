@@ -10,8 +10,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const timelineYear = document.getElementById('timeline-year');
     const timelineHut = document.getElementById('timeline-hut');
     const timelineLabel = document.getElementById('timeline-label');
+    const floatingMotto = document.getElementById('floating-motto');
 
     let scene = null;
+    let mottoCelebrateTimer = null;
 
     function showMilestoneModal(milestone) {
         document.getElementById('modal-year').textContent = milestone.year;
@@ -26,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateTimelineUI(milestone.year);
 
         modal?.classList.add('active');
+        floatingMotto?.classList.add('is-dimmed');
         scene?.setPaused(true);
         window.hutri81Mobile?.haptic(12);
         window.hutri81Mobile?.setMobileNavTab('explore');
@@ -33,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function hideModal() {
         modal?.classList.remove('active');
+        floatingMotto?.classList.remove('is-dimmed');
         scene?.setPaused(false);
     }
 
@@ -85,6 +89,16 @@ document.addEventListener('DOMContentLoaded', () => {
         timelineYear?.classList.remove('flash');
         void timelineYear?.offsetWidth;
         timelineYear?.classList.add('flash');
+    });
+
+    document.addEventListener('hutri:celebration-launched', (e) => {
+        if (!floatingMotto) return;
+        floatingMotto.classList.add('celebrating');
+        clearTimeout(mottoCelebrateTimer);
+        const duration = e.detail?.intensity === 'mega' ? 3500 : 2500;
+        mottoCelebrateTimer = setTimeout(() => {
+            floatingMotto.classList.remove('celebrating');
+        }, duration);
     });
 
     // Init modules
