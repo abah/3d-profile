@@ -1,0 +1,14 @@
+{
+  "name": "3d-profile",
+  "install": "npm install",
+  "terminals": [
+    {
+      "name": "hutri81",
+      "command": "npx wrangler pages dev . --port 8788 --ip 0.0.0.0",
+      "description": "HUT RI 81 Tier 1 preview on port 8788 — open /hutri81"
+    }
+  ],
+  "ports": [
+    { "name": "hutri81", "port": 8788 }
+  ]
+}
