@@ -578,8 +578,8 @@ function createCircuit(scene, bannerMap) {
     if (bannerMap) {
         const steel = new THREE.MeshStandardMaterial({ color: 0x2a2e34, roughness: 0.42, metalness: 0.55 });
         const posterMat = new THREE.MeshBasicMaterial({ map: bannerMap, toneMapped: false });
-        const boardW = 15;
-        const boardH = 10;
+        const boardW = 16;
+        const boardH = 9.2;
         const lift = 1.35;
         function addSponsor(p, side) {
             const dist = HALF + 13.5;
