@@ -723,7 +723,7 @@ function createCircuit(scene, bannerMap) {
 export async function loadTrack(scene) {
     const bannerMap = await new Promise((resolve) => {
         new THREE.TextureLoader().load(
-            './images/sponsors/transmigrasi-patriot.jpg',
+            './images/sponsors/transmigrasi-patriot-grafis.jpg',
             (tex) => {
                 tex.colorSpace = THREE.SRGBColorSpace;
                 tex.anisotropy = 8;

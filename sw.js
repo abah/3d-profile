@@ -1,4 +1,4 @@
-const CACHE = 'car-showroom-v20';
+const CACHE = 'car-showroom-v21';
 
 const SHELL = [
     './visualizer.html',
@@ -22,7 +22,7 @@ const SHELL = [
     './icons/icon-512.png',
     './icons/icon-512-maskable.png',
     './icons/apple-touch-icon.png',
-    './images/sponsors/transmigrasi-patriot.jpg'
+    './images/sponsors/transmigrasi-patriot-grafis.jpg'
 ];
 
 self.addEventListener('install', (event) => {
