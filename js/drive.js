@@ -56,10 +56,10 @@ stage.appendChild(renderer.domElement);
 const envMap = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x8aa7bc);
-scene.fog = new THREE.Fog(0xb7c6d2, 70, 260);
+scene.fog = new THREE.Fog(0xb7c6d2, 90, 340);
 scene.environment = envMap;
 
-const camera = new THREE.PerspectiveCamera(58, window.innerWidth / window.innerHeight, 0.3, 420);
+const camera = new THREE.PerspectiveCamera(58, window.innerWidth / window.innerHeight, 0.3, 520);
 scene.add(new THREE.HemisphereLight(0xe8f0f6, 0x6a6560, 0.95));
 const sun = new THREE.DirectionalLight(0xfff3dc, 1.55);
 sun.position.set(40, 80, 28);
@@ -161,8 +161,8 @@ function placeCar() {
 }
 
 function chaseCamera() {
-    const back = 11.2;
-    const height = 4.8;
+    const back = 16;
+    const height = 6.4;
     const camX = state.x - Math.sin(state.heading) * back;
     const camZ = state.z - Math.cos(state.heading) * back;
     const target = new THREE.Vector3(camX, state.y + height, camZ);
