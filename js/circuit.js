@@ -275,7 +275,7 @@ function outSign(pts, p) {
     return insideLoop(pts, p.x + p.nx * 24, p.z + p.nz * 24) ? -1 : 1;
 }
 
-function createCircuit(scene) {
+function createCircuit(scene, bannerMap) {
     const pts = sampleLoop();
     const startIndex = pickStart(pts);
     const start = pts[startIndex];
@@ -574,6 +574,43 @@ function createCircuit(scene) {
         scene.add(head);
     });
 
+    const sponsorSpots = [];
+    if (bannerMap) {
+        const steel = new THREE.MeshStandardMaterial({ color: 0x2a2e34, roughness: 0.42, metalness: 0.55 });
+        const posterMat = new THREE.MeshBasicMaterial({ map: bannerMap, toneMapped: false });
+        const boardW = 15;
+        const boardH = 10;
+        const lift = 1.35;
+        function addSponsor(p, side) {
+            const dist = HALF + 13.5;
+            const x = p.x + p.nx * side * dist;
+            const z = p.z + p.nz * side * dist;
+            if (distToCenterline(pts, x, z) < HALF + 6) return;
+            sponsorSpots.push({ x, z });
+            const group = new THREE.Group();
+            group.position.set(x, p.y, z);
+            group.lookAt(p.x, p.y, p.z);
+            [-boardW * 0.42, boardW * 0.42].forEach((ox) => {
+                const post = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.2, lift + boardH + 0.25, 8), steel);
+                post.position.set(ox, (lift + boardH + 0.25) / 2, 0);
+                post.castShadow = true;
+                group.add(post);
+            });
+            const frame = new THREE.Mesh(new THREE.BoxGeometry(boardW + 0.35, boardH + 0.35, 0.16), steel);
+            frame.position.set(0, lift + boardH / 2, 0);
+            frame.castShadow = true;
+            group.add(frame);
+            const poster = new THREE.Mesh(new THREE.PlaneGeometry(boardW, boardH), posterMat);
+            poster.position.set(0, lift + boardH / 2, 0.1);
+            group.add(poster);
+            scene.add(group);
+        }
+        [36, 58, 84, 140].forEach((off) => {
+            const p = pts[(startIndex + off) % SEGMENTS];
+            addSponsor(p, outSign(pts, p));
+        });
+    }
+
     const trunkMat = new THREE.MeshStandardMaterial({ color: 0x5a3a22, roughness: 0.9, metalness: 0.02 });
     const leafMat = new THREE.MeshStandardMaterial({ color: 0x2f6b2a, roughness: 0.82, metalness: 0.02 });
     const trunks = [];
@@ -600,6 +637,7 @@ function createCircuit(scene) {
             const x = gx + (n1 - Math.floor(n1) - 0.5) * 7;
             const z = gz + (n2 - Math.floor(n2) - 0.5) * 7;
             if (insideLoop(pts, x, z)) continue;
+            if (sponsorSpots.some((s) => Math.hypot(x - s.x, z - s.z) < 12)) continue;
             const d = distToCenterline(pts, x, z);
             if (d < HALF + TREE_CLEAR + CANOPY) continue;
             if (d > HALF + TREE_BAND) continue;
@@ -683,5 +721,17 @@ function createCircuit(scene) {
 }
 
 export async function loadTrack(scene) {
-    return createCircuit(scene);
+    const bannerMap = await new Promise((resolve) => {
+        new THREE.TextureLoader().load(
+            './images/sponsors/transmigrasi-patriot.jpg',
+            (tex) => {
+                tex.colorSpace = THREE.SRGBColorSpace;
+                tex.anisotropy = 8;
+                resolve(tex);
+            },
+            undefined,
+            () => resolve(null)
+        );
+    });
+    return createCircuit(scene, bannerMap);
 }
