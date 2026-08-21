@@ -48,21 +48,34 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.05;
+renderer.toneMappingExposure = 1.12;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 stage.appendChild(renderer.domElement);
 
 const envMap = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x8ec4e8);
-scene.fog = new THREE.Fog(0xc5dceb, 70, 260);
+scene.background = new THREE.Color(0x87c4e6);
+scene.fog = new THREE.Fog(0xb7d6c4, 90, 420);
 scene.environment = envMap;
 
-const camera = new THREE.PerspectiveCamera(58, window.innerWidth / window.innerHeight, 0.3, 420);
-scene.add(new THREE.HemisphereLight(0xfff1d2, 0x6a5344, 0.85));
-const sun = new THREE.DirectionalLight(0xfff3dc, 1.55);
-sun.position.set(60, 90, 28);
+const camera = new THREE.PerspectiveCamera(58, window.innerWidth / window.innerHeight, 0.3, 720);
+scene.add(new THREE.HemisphereLight(0xd7ecff, 0x3d5a32, 0.9));
+const sun = new THREE.DirectionalLight(0xfff3dc, 1.7);
+sun.position.set(160, 140, -40);
+sun.target.position.set(80, 0, 160);
+scene.add(sun.target);
+sun.castShadow = true;
+sun.shadow.mapSize.set(1536, 1536);
+sun.shadow.camera.near = 8;
+sun.shadow.camera.far = 420;
+sun.shadow.camera.left = -220;
+sun.shadow.camera.right = 220;
+sun.shadow.camera.top = 220;
+sun.shadow.camera.bottom = -220;
+sun.shadow.bias = -0.00025;
 scene.add(sun);
-scene.add(new THREE.AmbientLight(0xffffff, 0.28));
+scene.add(new THREE.AmbientLight(0xffffff, 0.22));
 
 let circuit = {
     start: { x: 0, z: -48, heading: Math.PI / 2 },
@@ -128,6 +141,12 @@ async function spawnCar(id) {
     }
     state.car = next;
     next.root.rotation.y = 0;
+    next.root.traverse((obj) => {
+        if (obj.isMesh) {
+            obj.castShadow = true;
+            obj.receiveShadow = true;
+        }
+    });
     scene.add(next.root);
     sitOnGround(next.root);
     state.yawOffset = inferNoseYaw(next.root);
