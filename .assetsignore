@@ -9,3 +9,5 @@ worker.js
 README.md
 node_modules
 *.md
+.tmp-previews
+.cursor

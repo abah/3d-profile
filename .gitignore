@@ -22,4 +22,7 @@ npm-debug.log*
 node_modules/
 
 # Wrangler / Cloudflare
-.wrangler/ 
+.wrangler/
+
+# Local scratch
+.tmp-previews/ 
