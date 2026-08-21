@@ -233,10 +233,38 @@ function closestIndex(pts, x, z) {
     return best;
 }
 
+function distToCenterline(pts, x, z) {
+    let best = Infinity;
+    const n = pts.length;
+    for (let i = 0; i < n; i += 1) {
+        const a = pts[i];
+        const b = pts[(i + 1) % n];
+        const abx = b.x - a.x;
+        const abz = b.z - a.z;
+        const len2 = abx * abx + abz * abz;
+        const t = len2 < 1e-8
+            ? 0
+            : Math.max(0, Math.min(1, ((x - a.x) * abx + (z - a.z) * abz) / len2));
+        const d = Math.hypot(x - (a.x + abx * t), z - (a.z + abz * t));
+        if (d < best) best = d;
+    }
+    return best;
+}
+
+function insideLoop(pts, x, z) {
+    let inside = false;
+    for (let i = 0, j = pts.length - 1; i < pts.length; j = i, i += 1) {
+        const zi = pts[i].z;
+        const zj = pts[j].z;
+        if ((zi > z) === (zj > z)) continue;
+        const atX = (pts[j].x - pts[i].x) * (z - zi) / ((zj - zi) || 1e-8) + pts[i].x;
+        if (x < atX) inside = !inside;
+    }
+    return inside;
+}
+
 function offAsphalt(pts, x, z, margin) {
-    const p = pts[closestIndex(pts, x, z)];
-    const side = (x - p.x) * p.nx + (z - p.z) * p.nz;
-    return Math.abs(side) > HALF + margin;
+    return distToCenterline(pts, x, z) > HALF + margin;
 }
 
 function createCircuit(scene) {
@@ -520,33 +548,42 @@ function createCircuit(scene) {
     const leafMat = new THREE.MeshStandardMaterial({ color: 0x2f6b2a, roughness: 0.82, metalness: 0.02 });
     const trunks = [];
     const leaves = [];
-    const mid = { x: 0, z: 0 };
+    const CANOPY = 3.8;
+    const TREE_CLEAR = 12;
+    const TREE_BAND = 44;
+    let minX = Infinity;
+    let maxX = -Infinity;
+    let minZ = Infinity;
+    let maxZ = -Infinity;
     pts.forEach((p) => {
-        mid.x += p.x;
-        mid.z += p.z;
+        if (p.x < minX) minX = p.x;
+        if (p.x > maxX) maxX = p.x;
+        if (p.z < minZ) minZ = p.z;
+        if (p.z > maxZ) maxZ = p.z;
     });
-    mid.x /= pts.length;
-    mid.z /= pts.length;
-    const TREE_CLEAR = 16;
-    for (let i = 0; i < SEGMENTS; i += 4) {
-        const p = pts[i];
-        const ox = p.x - mid.x;
-        const oz = p.z - mid.z;
-        const len = Math.hypot(ox, oz) || 1;
-        const ux = ox / len;
-        const uz = oz / len;
-        for (let d = HALF + TREE_CLEAR; d <= HALF + 46; d += 4) {
-            const x = p.x + ux * d;
-            const z = p.z + uz * d;
-            if (!offAsphalt(pts, x, z, TREE_CLEAR)) continue;
-            const scale = 0.9 + (i % 5) * 0.1;
+    let gi = 0;
+    for (let gx = minX - 42; gx <= maxX + 42; gx += 11) {
+        for (let gz = minZ - 42; gz <= maxZ + 42; gz += 11) {
+            gi += 1;
+            const n1 = Math.sin(gi * 127.1 + 19.7) * 43758.5453;
+            const n2 = Math.sin(gi * 269.5 + 7.3) * 23421.631;
+            const x = gx + (n1 - Math.floor(n1) - 0.5) * 7;
+            const z = gz + (n2 - Math.floor(n2) - 0.5) * 7;
+            if (insideLoop(pts, x, z)) continue;
+            const d = distToCenterline(pts, x, z);
+            if (d < HALF + TREE_CLEAR + CANOPY) continue;
+            if (d > HALF + TREE_BAND) continue;
+            const p = pts[closestIndex(pts, x, z)];
+            const n3 = Math.sin(gi * 89.4) * 9123.12;
+            const scale = 0.85 + (n3 - Math.floor(n3)) * 0.45;
             trunks.push(dummyMatrix(x, p.y + 1.6 * scale, z, 0, 1, scale, 1.6 * scale, scale));
             leaves.push(dummyMatrix(x, p.y + 5.4 * scale, z, 0, 1, 2.4 * scale, 2.8 * scale, 2.4 * scale));
-            break;
         }
     }
-    addInstanced(scene, new THREE.CylinderGeometry(0.28, 0.38, 3.2, 6), trunkMat, trunks);
-    addInstanced(scene, new THREE.SphereGeometry(1.15, 8, 6), leafMat, leaves);
+    if (trunks.length) {
+        addInstanced(scene, new THREE.CylinderGeometry(0.28, 0.38, 3.2, 6), trunkMat, trunks);
+        addInstanced(scene, new THREE.SphereGeometry(1.15, 8, 6), leafMat, leaves);
+    }
 
     const hillMat = new THREE.MeshLambertMaterial({ color: 0x4d7a3a });
     [[-280, 80, 90], [90, 420, 120], [380, 40, 100], [-60, -160, 70], [300, 360, 85]].forEach(([x, z, s]) => {
