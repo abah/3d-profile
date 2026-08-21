@@ -1,4 +1,4 @@
-const CACHE = 'car-showroom-v12';
+const CACHE = 'car-showroom-v13';
 
 const SHELL = [
     './visualizer.html',
@@ -48,6 +48,17 @@ function isCdnAsset(url) {
     );
 }
 
+async function networkFirst(request) {
+    const cache = await caches.open(CACHE);
+    try {
+        const fresh = await fetch(request);
+        if (fresh && fresh.ok) cache.put(request, fresh.clone());
+        return fresh;
+    } catch {
+        return (await cache.match(request)) || Response.error();
+    }
+}
+
 async function staleWhileRevalidate(request) {
     const cache = await caches.open(CACHE);
     const cached = await cache.match(request);
@@ -79,7 +90,7 @@ self.addEventListener('fetch', (event) => {
     }
 
     if (url.origin === self.location.origin) {
-        event.respondWith(staleWhileRevalidate(request));
+        event.respondWith(networkFirst(request));
         return;
     }
 
