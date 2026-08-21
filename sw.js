@@ -1,4 +1,4 @@
-const CACHE = 'car-showroom-v11';
+const CACHE = 'car-showroom-v12';
 
 const SHELL = [
     './visualizer.html',

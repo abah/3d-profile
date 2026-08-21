@@ -54,10 +54,10 @@ stage.appendChild(renderer.domElement);
 const envMap = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x8ec4e8);
-scene.fog = new THREE.Fog(0xc5dceb, 140, 640);
+scene.fog = new THREE.Fog(0xc5dceb, 70, 260);
 scene.environment = envMap;
 
-const camera = new THREE.PerspectiveCamera(58, window.innerWidth / window.innerHeight, 0.3, 900);
+const camera = new THREE.PerspectiveCamera(58, window.innerWidth / window.innerHeight, 0.3, 420);
 scene.add(new THREE.HemisphereLight(0xfff1d2, 0x6a5344, 0.85));
 const sun = new THREE.DirectionalLight(0xfff3dc, 1.55);
 sun.position.set(60, 90, 28);
@@ -65,8 +65,8 @@ scene.add(sun);
 scene.add(new THREE.AmbientLight(0xffffff, 0.28));
 
 let circuit = {
-    start: { x: -110, z: 220, heading: Math.PI / 2 + 0.35 },
-    sampleHeight: (_x, _z, fallback) => fallback,
+    start: { x: 0, z: -48, heading: Math.PI / 2 },
+    sampleHeight: () => 0,
     keepOnTrack(pos) { return { x: pos.x, z: pos.z, hit: false }; },
     update() {}
 };
@@ -207,6 +207,10 @@ function animate(now) {
     state.heading += steer * grip * 1.35 * dt;
     state.x += Math.sin(state.heading) * state.speed * dt;
     state.z += Math.cos(state.heading) * state.speed * dt;
+    const held = circuit.keepOnTrack(state);
+    state.x = held.x;
+    state.z = held.z;
+    if (held.hit) state.speed *= 0.84;
     state.y = circuit.sampleHeight(state.x, state.z, state.y);
     if (state.y < -8) resetToStart();
     placeCar();
@@ -234,7 +238,7 @@ function animate(now) {
     } catch (err) {
         console.error(err);
         const copy = loadingEl.querySelector('p');
-        if (copy) copy.textContent = 'Gagal memuat peta gurun. Refresh halaman.';
+        if (copy) copy.textContent = 'Gagal memuat sirkuit. Refresh halaman.';
     }
 })();
 
