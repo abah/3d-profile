@@ -1,39 +1,27 @@
 import * as THREE from 'three';
 
 const HALF = 8.6;
-const SEGMENTS = 280;
+const SEGMENTS = 320;
 const LIMIT = HALF - 1.65;
 
 const CONTROL = [
+    [-80, 0],
     [0, 0],
-    [70, 0],
-    [150, 2],
-    [230, 8],
-    [300, 42],
-    [345, 110],
-    [350, 185],
-    [310, 250],
-    [230, 285],
-    [145, 278],
-    [85, 240],
-    [55, 185],
-    [58, 130],
-    [30, 85],
-    [-35, 62],
-    [-110, 78],
-    [-170, 130],
-    [-195, 210],
-    [-165, 290],
-    [-80, 340],
-    [20, 355],
-    [120, 335],
-    [200, 285],
-    [250, 215],
-    [255, 140],
-    [215, 75],
-    [140, 22],
-    [65, 4]
-];
+    [80, 2],
+    [160, 10],
+    [220, 40],
+    [250, 100],
+    [245, 165],
+    [200, 215],
+    [130, 245],
+    [50, 250],
+    [-30, 235],
+    [-100, 200],
+    [-145, 145],
+    [-160, 80],
+    [-155, 25],
+    [-120, 4]
+].map(([x, z]) => [x * 1.75, z * 1.75]);
 
 function catmull(p0, p1, p2, p3, t) {
     const t2 = t * t;
@@ -70,8 +58,7 @@ function rawSpline(t) {
         CONTROL[wrap(i + 2, n)][1],
         f
     );
-    const climb = 2.4 * Math.sin(u * Math.PI * 2) + 1.1 * Math.sin(u * Math.PI * 4 + 0.6);
-    return { x, y: Math.max(0, climb), z };
+    return { x, y: 0, z };
 }
 
 function sampleLoop() {
@@ -267,9 +254,40 @@ function offAsphalt(pts, x, z, margin) {
     return distToCenterline(pts, x, z) > HALF + margin;
 }
 
+function pickStart(pts) {
+    let best = 0;
+    let bestScore = -Infinity;
+    for (let i = 0; i < pts.length; i += 1) {
+        let score = 0;
+        for (let k = 0; k < 24; k += 1) {
+            const p = pts[(i + k) % pts.length];
+            score += 1 / (1 + p.curve * 55);
+        }
+        if (score > bestScore) {
+            bestScore = score;
+            best = i;
+        }
+    }
+    return best;
+}
+
+function outSign(pts, p) {
+    return insideLoop(pts, p.x + p.nx * 24, p.z + p.nz * 24) ? -1 : 1;
+}
+
 function createCircuit(scene) {
     const pts = sampleLoop();
-    const start = pts[8];
+    const startIndex = pickStart(pts);
+    const start = pts[startIndex];
+    const outside = outSign(pts, start);
+    let cx = 0;
+    let cz = 0;
+    pts.forEach((p) => {
+        cx += p.x;
+        cz += p.z;
+    });
+    cx /= pts.length;
+    cz /= pts.length;
 
     const grassMap = noiseTexture(256, '#4f8a3c', 3800, (g, size) => {
         g.fillStyle = '#3f7430';
@@ -277,7 +295,7 @@ function createCircuit(scene) {
             g.fillRect((Math.random() * size) | 0, (Math.random() * size) | 0, 18, 10);
         }
     });
-    grassMap.repeat.set(72, 72);
+    grassMap.repeat.set(90, 90);
 
     const asphaltMap = noiseTexture(512, '#2c3038', 9000, (g, size) => {
         g.fillStyle = 'rgba(10, 11, 13, 0.32)';
@@ -297,11 +315,11 @@ function createCircuit(scene) {
     gravelMap.repeat.set(36, 4);
 
     const grass = new THREE.Mesh(
-        new THREE.CircleGeometry(520, 72),
+        new THREE.PlaneGeometry(2200, 2200),
         new THREE.MeshStandardMaterial({ color: 0x6aa34a, map: grassMap, roughness: 0.95, metalness: 0.02 })
     );
     grass.rotation.x = -Math.PI / 2;
-    grass.position.y = -0.12;
+    grass.position.set(cx, -0.12, cz);
     grass.receiveShadow = true;
     scene.add(grass);
 
@@ -312,7 +330,8 @@ function createCircuit(scene) {
             color: 0xa8b0ba,
             map: asphaltMap,
             roughness: 0.42,
-            metalness: 0.16
+            metalness: 0.16,
+            side: THREE.DoubleSide
         })
     );
     roadMesh.receiveShadow = true;
@@ -341,29 +360,37 @@ function createCircuit(scene) {
     scene.add(new THREE.Mesh(ribbon(kInner.inner, kInner.outer), kerbMat));
     scene.add(new THREE.Mesh(ribbon(kOuter.inner, kOuter.outer), kerbMat));
 
-    const runoff = offset(pts, HALF + 0.1, HALF + 9.5, -0.03);
-    const runoffMesh = new THREE.Mesh(
-        ribbon(runoff.inner, runoff.outer),
-        new THREE.MeshStandardMaterial({ color: 0xc2a56c, map: gravelMap, roughness: 0.92, metalness: 0.03 })
-    );
-    runoffMesh.receiveShadow = true;
-    scene.add(runoffMesh);
+    const runoffMat = new THREE.MeshStandardMaterial({
+        color: 0xc2a56c,
+        map: gravelMap,
+        roughness: 0.92,
+        metalness: 0.03,
+        side: THREE.DoubleSide
+    });
+    [1, -1].forEach((dir) => {
+        const runoff = offset(pts, dir * (HALF + 0.1), dir * (HALF + 9.5), -0.03);
+        const runoffMesh = new THREE.Mesh(ribbon(runoff.inner, runoff.outer), runoffMat);
+        runoffMesh.receiveShadow = true;
+        scene.add(runoffMesh);
+    });
 
     const wallMat = new THREE.MeshStandardMaterial({ color: 0x8a9098, roughness: 0.38, metalness: 0.55 });
     const wallGeo = new THREE.BoxGeometry(0.22, 1.05, 4.4);
     const walls = [];
     for (let i = 0; i < SEGMENTS; i += 2) {
         const p = pts[i];
-        walls.push(dummyMatrix(
-            p.x + p.nx * (HALF + 2.4),
-            p.y + 0.55,
-            p.z + p.nz * (HALF + 2.4),
-            p.tx,
-            p.tz,
-            1,
-            1,
-            1
-        ));
+        [-1, 1].forEach((dir) => {
+            walls.push(dummyMatrix(
+                p.x + p.nx * dir * (HALF + 2.4),
+                p.y + 0.55,
+                p.z + p.nz * dir * (HALF + 2.4),
+                p.tx,
+                p.tz,
+                1,
+                1,
+                1
+            ));
+        });
     }
     addInstanced(scene, wallGeo, wallMat, walls);
 
@@ -387,12 +414,13 @@ function createCircuit(scene) {
     tireGeo.rotateX(Math.PI / 2);
     const tires = [];
     [48, 118, 190].forEach((idx) => {
-        const p = pts[idx];
+        const p = pts[(startIndex + idx) % SEGMENTS];
+        const side = outSign(pts, p);
         for (let k = 0; k < 10; k += 1) {
             tires.push(dummyMatrix(
-                p.x + p.nx * (HALF + 3.6) + p.tx * (k - 4.5) * 0.9,
+                p.x + p.nx * side * (HALF + 3.6) + p.tx * (k - 4.5) * 0.9,
                 p.y + 0.42,
-                p.z + p.nz * (HALF + 3.6) + p.tz * (k - 4.5) * 0.9,
+                p.z + p.nz * side * (HALF + 3.6) + p.tz * (k - 4.5) * 0.9,
                 p.tx,
                 p.tz,
                 1,
@@ -447,8 +475,8 @@ function createCircuit(scene) {
     });
     scene.add(gantry);
 
-    const pitX = start.x + start.nx * (HALF + 16);
-    const pitZ = start.z + start.nz * (HALF + 16);
+    const pitX = start.x + start.nx * outside * (HALF + 16);
+    const pitZ = start.z + start.nz * outside * (HALF + 16);
     const pit = new THREE.Group();
     pit.position.set(pitX, start.y, pitZ);
     pit.lookAt(start.x, start.y, start.z);
@@ -516,9 +544,10 @@ function createCircuit(scene) {
         }
         scene.add(group);
     }
-    addStand(pts[10], -(HALF + 14), 48, 6);
-    addStand(pts[18], -(HALF + 12), 32, 5);
-    addStand(pts[210], -(HALF + 13), 36, 5);
+    addStand(pts[(startIndex + 8) % SEGMENTS], -outside * (HALF + 14), 48, 6);
+    addStand(pts[(startIndex + 18) % SEGMENTS], -outside * (HALF + 12), 32, 5);
+    const back = pts[(startIndex + Math.floor(SEGMENTS * 0.52)) % SEGMENTS];
+    addStand(back, outSign(pts, back) * (HALF + 14), 36, 5);
     crowd.instanceMatrix.needsUpdate = true;
     if (crowd.instanceColor) crowd.instanceColor.needsUpdate = true;
     crowd.count = crowdI;
@@ -532,14 +561,15 @@ function createCircuit(scene) {
         emissiveIntensity: 0.55,
         roughness: 0.3
     });
-    [16, 70, 130, 175, 230].forEach((idx) => {
-        const p = pts[idx];
+    [0, 64, 128, 192, 256].forEach((off) => {
+        const p = pts[(startIndex + off) % SEGMENTS];
+        const side = outSign(pts, p);
         const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.28, 14, 8), poleMat);
-        pole.position.set(p.x + p.nx * (HALF + 8), p.y + 7, p.z + p.nz * (HALF + 8));
+        pole.position.set(p.x + p.nx * side * (HALF + 8), p.y + 7, p.z + p.nz * side * (HALF + 8));
         pole.castShadow = true;
         scene.add(pole);
         const head = new THREE.Mesh(new THREE.BoxGeometry(3.4, 0.45, 1.1), lightMat);
-        head.position.set(p.x + p.nx * (HALF + 6.2), p.y + 13.6, p.z + p.nz * (HALF + 6.2));
+        head.position.set(p.x + p.nx * side * (HALF + 6.2), p.y + 13.6, p.z + p.nz * side * (HALF + 6.2));
         head.lookAt(p.x, p.y + 4, p.z);
         scene.add(head);
     });
@@ -586,7 +616,14 @@ function createCircuit(scene) {
     }
 
     const hillMat = new THREE.MeshLambertMaterial({ color: 0x4d7a3a });
-    [[-280, 80, 90], [90, 420, 120], [380, 40, 100], [-60, -160, 70], [300, 360, 85]].forEach(([x, z, s]) => {
+    [
+        [cx - 520, cz - 40, 90],
+        [cx + 40, cz + 560, 110],
+        [cx + 540, cz - 80, 95],
+        [cx - 80, cz - 480, 80],
+        [cx + 400, cz + 500, 85]
+    ].forEach(([x, z, s]) => {
+        if (distToCenterline(pts, x, z) < s * 1.8 + HALF + 36) return;
         const hill = new THREE.Mesh(new THREE.SphereGeometry(1, 10, 8), hillMat);
         hill.position.set(x, -s * 0.28, z);
         hill.scale.set(s * 1.6, s * 0.42, s * 1.2);
@@ -604,22 +641,24 @@ function createCircuit(scene) {
         })
     );
     lake.rotation.x = -Math.PI / 2;
-    lake.position.set(40, 0.02, 200);
-    if (offAsphalt(pts, 40, 200, 22)) scene.add(lake);
+    lake.position.set(cx, 0.02, cz);
+    if (offAsphalt(pts, cx, cz, 28)) scene.add(lake);
 
     const markerMat = new THREE.MeshStandardMaterial({ color: 0xf0c400, roughness: 0.4, metalness: 0.1 });
-    [30, 60, 110].forEach((idx) => {
-        const p = pts[idx];
+    [24, 48, 88].forEach((off) => {
+        const p = pts[(startIndex + off) % SEGMENTS];
+        const side = outSign(pts, p);
         const board = new THREE.Mesh(new THREE.BoxGeometry(0.18, 1.8, 1.4), markerMat);
-        board.position.set(p.x + p.nx * (HALF + 3.8), p.y + 1.1, p.z + p.nz * (HALF + 3.8));
+        board.position.set(p.x + p.nx * side * (HALF + 3.8), p.y + 1.1, p.z + p.nz * side * (HALF + 3.8));
         board.lookAt(p.x, p.y + 1.1, p.z);
         scene.add(board);
     });
 
     const sky = new THREE.Mesh(
-        new THREE.SphereGeometry(640, 24, 16),
+        new THREE.SphereGeometry(1600, 24, 16),
         new THREE.MeshBasicMaterial({ color: 0x8ec8ee, side: THREE.BackSide, fog: true })
     );
+    sky.position.set(cx, 0, cz);
     scene.add(sky);
 
     return {
